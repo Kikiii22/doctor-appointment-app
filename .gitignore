@@ -1,0 +1,54 @@
+# Gradle / JVM build folders anywhere in repo
+.gradle/
+build/
+out/
+
+# Keep gradle wrapper jar anywhere
+!gradle/wrapper/gradle-wrapper.jar
+
+# Ignore bin, out, Kotlin cache folders anywhere
+bin/
+.kotlin/
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Frontend / Node
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+tmp/
+out-tsc/
+bazel-out/
+.angular/
+.sass-cache/
+connect.lock
+coverage/
+libpeerconnection.log
+testem.log
+typings/
+
+# IDEs & Editors
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+*.sublime-workspace
+
+# System
+.DS_Store
+Thumbs.db
+
+# Misc
+.history/
