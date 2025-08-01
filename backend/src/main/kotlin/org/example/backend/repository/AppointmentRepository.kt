@@ -1,12 +1,14 @@
 package org.example.backend.repository
-import org.example.backend.model.Appointment
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
-import java.time.LocalDate
-import java.util.UUID
 
-@Repository
-interface AppointmentRepository : JpaRepository<Appointment, Long> {
-    fun findByDoctorIdAndSlot_Date(doctorId: Long, date: LocalDate): List<Appointment>
-    fun findByUserId(userId: Long): List<Appointment>
+import org.example.backend.model.Appointment
+import org.example.backend.model.AppointmentStatus
+import org.example.backend.model.Slot
+import org.example.backend.model.Patient
+import org.springframework.data.jpa.repository.JpaRepository
+
+interface AppointmentRepository: JpaRepository<Appointment, Long> {
+    fun findByPatient(patient: Patient)
+    fun findBySlot(slot: Slot)
+    fun findByPatientAndStatus(patient: Patient, status: AppointmentStatus)
+    fun findByStatus(status: AppointmentStatus)
 }

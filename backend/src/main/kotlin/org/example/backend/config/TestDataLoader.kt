@@ -3,16 +3,12 @@ package org.example.backend.config
 import org.example.backend.model.DoctorBreak
 import org.example.backend.model.Hospital
 import org.example.backend.model.Role
-import org.example.backend.repository.DoctorBreakRepository
-import org.example.backend.repository.HospitalRepository
 import java.time.LocalDate
 
 // DataLoader.kt - Creates test data on startup
 
 import org.example.backend.model.Doctor
 import org.example.backend.model.DoctorWorkingSchedule
-import org.example.backend.repository.DoctorRepository
-import org.example.backend.repository.DoctorWorkingScheduleRepository
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.core.annotation.Order

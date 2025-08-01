@@ -10,6 +10,7 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.GenerationType
 
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import java.util.UUID
 
@@ -19,19 +20,25 @@ data class Doctor(
     @Id @GeneratedValue
         (strategy = GenerationType.AUTO)
     val id: Long = 0,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id", nullable = false)
+    val hospital: Hospital,
+
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    val department: Department,
+
     val fullName: String="",
 
     val email: String="",
 
     val phone: String="",
 
-    val specialization: String="",
-/**
-   // @ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "hospital_id", nullable = false)
-   // val hospital: Hospital,
-**/
     @Enumerated(EnumType.STRING)
     val role: Role = Role.DOCTOR,
-    //val password: String
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    val user: User,
 )

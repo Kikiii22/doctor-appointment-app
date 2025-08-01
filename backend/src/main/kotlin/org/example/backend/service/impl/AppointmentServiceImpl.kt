@@ -2,9 +2,7 @@ package org.example.backend.service.impl
 
 import org.example.backend.model.Appointment
 import org.example.backend.model.AppointmentStatus
-import org.example.backend.repository.AppointmentRepository
-import org.example.backend.repository.DoctorSlotRepository
-import org.example.backend.repository.UserRepository
+import org.example.backend.repository.PatientRepository
 import org.example.backend.service.AppointmentService
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.retry.annotation.Backoff
@@ -16,7 +14,7 @@ import java.util.*
 
 @Service
 class AppointmentServiceImpl(
-    private val userRepo: UserRepository,
+    private val userRepo: PatientRepository,
     private val slotRepo: DoctorSlotRepository,
     private val appointmentRepo: AppointmentRepository
 ) : AppointmentService {

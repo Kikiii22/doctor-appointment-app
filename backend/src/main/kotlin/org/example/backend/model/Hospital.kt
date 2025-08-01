@@ -4,6 +4,10 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.Entity
 import jakarta.persistence.GenerationType
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import jakarta.persistence.Version
 import java.util.UUID
@@ -18,10 +22,10 @@ data class Hospital(
     val name: String,
     @Column(nullable = false)
     val email: String,
-
     @Column(nullable = false)
     val phone: String,
-    @Version
-var version: Long = 0
 
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    val user: User,
 )

@@ -1,7 +1,6 @@
 package org.example.backend.service.impl
 
 import org.example.backend.model.DoctorSlot
-import org.example.backend.repository.DoctorSlotRepository
 import org.example.backend.service.DoctorSlotService
 import org.springframework.stereotype.Service
 import java.time.LocalDate

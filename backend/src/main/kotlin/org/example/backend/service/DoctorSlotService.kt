@@ -1,10 +1,9 @@
 package org.example.backend.service
 
-import org.example.backend.model.DoctorSlot
+import org.example.backend.model.Slot
 import java.time.LocalDate
-import java.util.UUID
 
 interface DoctorSlotService {
-    fun getEarliestAvailableSlot(doctorId: Long): DoctorSlot?
-    fun getAvailableSlotsByDate(doctorId: Long, date: LocalDate): List<DoctorSlot>
+    fun getEarliestAvailableSlot(doctorId: Long): Slot?
+    fun getAvailableSlotsByDate(doctorId: Long, date: LocalDate): List<Slot>
 }

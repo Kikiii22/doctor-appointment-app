@@ -19,7 +19,9 @@ data class DoctorBreak(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
     val doctor: Doctor?=null,
-    val date: LocalDate?=null,
+
+    val startDate: LocalDate?=null,
+    val endDate: LocalDate?=null,
     val startTime: LocalTime?=null,
     val endTime: LocalTime?=null,
     val reason: String? = null

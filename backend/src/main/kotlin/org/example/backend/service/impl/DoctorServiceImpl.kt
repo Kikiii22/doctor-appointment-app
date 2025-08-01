@@ -2,11 +2,6 @@ package org.example.backend.service.impl
 
 import org.example.backend.model.Doctor
 import org.example.backend.model.DoctorSlot
-import org.example.backend.repository.AppointmentRepository
-import org.example.backend.repository.DoctorBreakRepository
-import org.example.backend.repository.DoctorRepository
-import org.example.backend.repository.DoctorWorkingScheduleRepository
-import org.example.backend.repository.HospitalRepository
 import org.example.backend.service.DoctorService
 import org.springframework.stereotype.Service
 import java.time.LocalDate
