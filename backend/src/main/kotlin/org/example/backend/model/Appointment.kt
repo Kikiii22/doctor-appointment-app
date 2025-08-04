@@ -16,7 +16,7 @@ class Appointment(
     @JoinColumn(name="patient_id", referencedColumnName = "id")
     val patient: Patient,
 
-    val status: AppointmentStatus = AppointmentStatus.BOOKED,
+    val status: AppointmentStatus = AppointmentStatus.AVAILABLE,
 
     val description: String = "",
 )

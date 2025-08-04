@@ -29,14 +29,12 @@ data class Doctor(
     @JoinColumn(name = "department_id", nullable = false)
     val department: Department,
 
+    @Column(name = "full_name")
     val fullName: String="",
 
     val email: String="",
 
     val phone: String="",
-
-    @Enumerated(EnumType.STRING)
-    val role: Role = Role.DOCTOR,
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)

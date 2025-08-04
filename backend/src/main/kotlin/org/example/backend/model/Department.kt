@@ -8,5 +8,7 @@ data class Department (
     val id: Long = 0,
 
     @Column(name = "name", unique = true)
-    val name: String = ""
+    val name: String = "",
+
+    val description: String = ""
 )
