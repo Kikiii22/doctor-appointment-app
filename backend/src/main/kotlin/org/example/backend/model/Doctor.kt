@@ -1,21 +1,9 @@
 package org.example.backend.model
-import jakarta.persistence.Column
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.Id
-import jakarta.persistence.Entity
-import jakarta.persistence.Enumerated
-import jakarta.persistence.FetchType
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.EnumType
-import jakarta.persistence.GenerationType
 
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
-import java.util.UUID
+import jakarta.persistence.*
 
 @Entity
-@Table(name="doctor")
+@Table(name = "doctor")
 data class Doctor(
     @Id @GeneratedValue
         (strategy = GenerationType.AUTO)
@@ -30,11 +18,11 @@ data class Doctor(
     val department: Department,
 
     @Column(name = "full_name")
-    val fullName: String="",
+    val fullName: String = "",
 
-    val email: String="",
+    val email: String = "",
 
-    val phone: String="",
+    val phone: String = "",
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)

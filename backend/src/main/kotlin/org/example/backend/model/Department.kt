@@ -1,8 +1,9 @@
 package org.example.backend.model
+
 import jakarta.persistence.*
 
 @Entity
-data class Department (
+data class Department(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,

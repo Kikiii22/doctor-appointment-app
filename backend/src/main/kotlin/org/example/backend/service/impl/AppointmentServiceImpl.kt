@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class AppointmentServiceImpl(
-    private val appointmentRepository: AppointmentRepository): AppointmentService {
+    private val appointmentRepository: AppointmentRepository
+) : AppointmentService {
 
     override fun findAppointmentsByDoctor(id: Long): List<Appointment> {
         return appointmentRepository.findBySlotDoctorId(id)

@@ -13,7 +13,7 @@ class Appointment(
     val slot: Slot,
 
     @ManyToOne
-    @JoinColumn(name="patient_id", referencedColumnName = "id")
+    @JoinColumn(name = "patient_id", referencedColumnName = "id")
     val patient: Patient,
 
     val status: AppointmentStatus = AppointmentStatus.AVAILABLE,
