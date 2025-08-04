@@ -17,6 +17,7 @@ class Appointment(
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     val patient: Patient = Patient(),
 
+    @Enumerated(EnumType.STRING)
     val status: AppointmentStatus = AppointmentStatus.AVAILABLE,
 
     val description: String = "",
