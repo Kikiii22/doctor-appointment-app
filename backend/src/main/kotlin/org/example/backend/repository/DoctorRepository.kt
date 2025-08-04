@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface DoctorRepository : JpaRepository<Doctor, Long> {
     fun findByFullName(fullName: String)
     fun findByDepartment(department: Department)
+    fun findByHospitalId(id: Long): List<Doctor>
 }
