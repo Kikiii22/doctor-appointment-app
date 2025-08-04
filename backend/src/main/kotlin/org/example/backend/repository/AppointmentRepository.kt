@@ -7,8 +7,8 @@ import org.example.backend.model.Patient
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface AppointmentRepository: JpaRepository<Appointment, Long> {
-    fun findByPatient(patient: Patient)
-    fun findBySlot(slot: Slot)
-    fun findByPatientAndStatus(patient: Patient, status: AppointmentStatus)
-    fun findByStatus(status: AppointmentStatus)
+    fun findByPatientId(id: Long): List<Appointment>
+    fun findBySlotDoctorId(id: Long): List<Appointment>
+    fun findBySlotDoctorHospitalId(id: Long): List<Appointment>
+    fun findBySlotDoctorDepartmentId(id: Long): List<Appointment>
 }
