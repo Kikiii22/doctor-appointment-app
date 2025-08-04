@@ -3,19 +3,19 @@ package org.example.backend.model
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "hospital")
+@Table(name = "hospitals")
 data class Hospital(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long = 0,
     @Column(nullable = false)
-    val name: String,
+    val name: String = "",
     @Column(nullable = false)
-    val email: String,
+    val email: String = "",
     @Column(nullable = false)
-    val phone: String,
+    val phone: String = "",
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    val user: User,
+    val user: User = User(),
 )

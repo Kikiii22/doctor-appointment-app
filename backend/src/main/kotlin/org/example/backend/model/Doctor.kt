@@ -3,7 +3,7 @@ package org.example.backend.model
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "doctor")
+@Table(name = "doctors")
 data class Doctor(
     @Id @GeneratedValue
         (strategy = GenerationType.AUTO)
@@ -11,11 +11,11 @@ data class Doctor(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
-    val hospital: Hospital,
+    val hospital: Hospital = Hospital(),
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
-    val department: Department,
+    val department: Department = Department(),
 
     @Column(name = "full_name")
     val fullName: String = "",
@@ -26,5 +26,5 @@ data class Doctor(
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    val user: User,
+    val user: User = User()
 )

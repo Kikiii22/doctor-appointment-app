@@ -2,6 +2,7 @@ package org.example.backend.model
 
 import jakarta.persistence.*
 
+@Table(name="appointments")
 @Entity
 class Appointment(
     @Id
@@ -10,11 +11,11 @@ class Appointment(
 
     @OneToOne
     @JoinColumn(name = "slot_id", referencedColumnName = "id")
-    val slot: Slot,
+    val slot: Slot = Slot(),
 
     @ManyToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
-    val patient: Patient,
+    val patient: Patient = Patient(),
 
     val status: AppointmentStatus = AppointmentStatus.AVAILABLE,
 

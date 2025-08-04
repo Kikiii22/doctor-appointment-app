@@ -17,5 +17,5 @@ data class Patient(
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    val user: User,
+    val user: User = User()
 )
