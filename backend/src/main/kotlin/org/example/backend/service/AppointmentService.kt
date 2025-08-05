@@ -7,4 +7,5 @@ interface AppointmentService {
     fun findAppointmentsByPatient(id: Long): List<Appointment>
     fun findAppointmentsInHospital(id: Long): List<Appointment>
     fun findAppointmentsByDepartment(id: Long): List<Appointment>
+    fun bookAppointment(slotId: Long, patientId: Long): Appointment
 }

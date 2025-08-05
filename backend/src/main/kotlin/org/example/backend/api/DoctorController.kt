@@ -42,7 +42,7 @@ class DoctorController(
     fun getDoctorSchedule(@PathVariable id: Long): ResponseEntity<List<DoctorWorkingSchedule>> {
         return ResponseEntity.ok(doctorService.findSchedule(id))
     }
-
+//TO DO show slots only after the local time for today
     @GetMapping("/{id}/slots")
     fun getDoctorSlots(
         @PathVariable id: Long,
