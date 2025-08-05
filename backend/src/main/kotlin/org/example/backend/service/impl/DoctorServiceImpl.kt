@@ -1,6 +1,5 @@
 package org.example.backend.service.impl
 
-import org.example.backend.exception.DoctorNotFoundException
 import org.example.backend.model.DoctorWorkingSchedule
 import org.example.backend.repository.DoctorRepository
 import org.example.backend.repository.DoctorScheduleRepository

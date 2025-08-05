@@ -53,15 +53,18 @@ CREATE TABLE slots
 
 CREATE TABLE schedule
 (
-    id SERIAL PRIMARY KEY,
-    doctor_id  INTEGER REFERENCES doctors (id),
-    date DATE NOT NULL,
-    is_working BOOLEAN DEFAULT FALSE,
-    start_time TIME,
-    end_time TIME,
+    id          SERIAL PRIMARY KEY,
+    doctor_id   INTEGER REFERENCES doctors (id),
+    day_of_week VARCHAR(10) NOT NULL CHECK (day_of_week IN
+                                            ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY',
+                                             'SUNDAY')),
+    is_working  BOOLEAN DEFAULT FALSE,
+    start_time  TIME,
+    end_time    TIME,
     break_start TIME,
-    break_end TIME
+    break_end   TIME
 );
+
 
 CREATE TABLE appointments
 (
@@ -69,7 +72,7 @@ CREATE TABLE appointments
     slot_id     INTEGER REFERENCES slots (id),
     patient_id  INTEGER REFERENCES patients (id),
     description TEXT,
-    status     VARCHAR(20)        NOT NULL CHECK (status IN ('AVAILABLE', 'BOOKED', 'FINISHED'))
+    status      VARCHAR(20) NOT NULL CHECK (status IN ('AVAILABLE', 'BOOKED', 'FINISHED'))
 );
 
 INSERT INTO users (id, username, password, role)
@@ -109,6 +112,6 @@ INSERT INTO appointments (id, slot_id, patient_id, description, status)
 VALUES (1, 1, 1, 'Annual heart checkup', 'BOOKED'),
        (2, 4, 2, 'Skin allergy consultation', 'BOOKED');
 
-INSERT INTO schedule (doctor_id, date, is_working, start_time, end_time, break_start, break_end)
-VALUES (1, '2025-08-05', TRUE, '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-        (1, '2025-08-04', TRUE, '09:00:00', '17:00:00', '12:00:00', '13:00:00')
+INSERT INTO schedule (doctor_id, day_of_week, is_working, start_time, end_time, break_start, break_end)
+VALUES (1, 'TUESDAY', TRUE, '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+       (1, 'MONDAY', TRUE, '09:00:00', '17:00:00', '12:00:00', '13:00:00');
