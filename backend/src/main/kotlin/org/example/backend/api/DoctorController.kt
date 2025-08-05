@@ -3,13 +3,16 @@ package org.example.backend.api
 import org.example.backend.exception.DoctorNotFoundException
 import org.example.backend.model.Appointment
 import org.example.backend.model.Doctor
+import org.example.backend.model.DoctorBreak
 import org.example.backend.model.DoctorWorkingSchedule
 import org.example.backend.model.Slot
 import org.example.backend.repository.DoctorRepository
 import org.example.backend.service.AppointmentService
 import org.example.backend.service.DoctorService
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -44,10 +47,25 @@ class DoctorController(
     fun getDoctorSlots(
         @PathVariable id: Long,
         @RequestParam(required = false, defaultValue = "28")
-        limit: Int
+        limit: Int,
+        @RequestParam (required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate?
     ): ResponseEntity<List<Slot>> {
-        return ResponseEntity.ok(doctorService.findSlots(id, limit))
+        val slots = if (date != null) {
+            doctorService.findByDoctorIdAndDate(id, date)
+        } else {
+            doctorService.findSlots(id,limit)
+        }
+        return ResponseEntity.ok(slots)
     }
 
-
+    @GetMapping("/{id}/break")
+    fun getDoctorBreak(@PathVariable id: Long): ResponseEntity<DoctorBreak?> {
+        val doctorBreak = doctorService.findBreak(id)
+        return if (doctorBreak != null) {
+            ResponseEntity.ok(doctorBreak)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
 }

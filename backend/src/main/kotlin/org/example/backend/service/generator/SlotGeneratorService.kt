@@ -2,6 +2,7 @@ package org.example.backend.service.generator
 
 import jakarta.annotation.PostConstruct
 import org.example.backend.model.Doctor
+import org.example.backend.model.DoctorBreak
 import org.example.backend.model.DoctorWorkingSchedule
 import org.example.backend.model.Slot
 import org.example.backend.repository.DoctorBreakRepository
@@ -34,11 +35,11 @@ class SlotGeneratorService(
         val standardEnd = LocalTime.of(17, 0)
         val breakStart = LocalTime.of(12, 0)
         val breakEnd = LocalTime.of(13, 0)
-
         for (doctor in doctors) {
             val existingSchedules = scheduleRepository.findByDoctorId(doctor.id).map { it.dayOfWeek }.toSet()
 
-            for (day in DayOfWeek.values()) {
+            // Only MONDAY to FRIDAY
+            for (day in DayOfWeek.values().filter { it.value in DayOfWeek.MONDAY.value..DayOfWeek.FRIDAY.value }) {
                 if (day !in existingSchedules) {
                     val schedule = DoctorWorkingSchedule(
                         doctor = doctor,
@@ -51,9 +52,32 @@ class SlotGeneratorService(
                     )
                     scheduleRepository.save(schedule)
                 }
+
             }
+
         }
+        val doctor1 = doctors.find { it.id == 1L }
+        val doctor2 = doctors.find { it.id == 2L }
+        if (!breakRepository.existsByDoctorIdAndDate(doctor1!!.id, LocalDate.of(2025, 8, 10))) {
+            val break1 = DoctorBreak(
+                doctor = doctor1,
+                dates = listOf(LocalDate.of(2025, 8, 10), LocalDate.of(2025, 8, 11)),
+                reason = "Annual leave"
+            )
+            breakRepository.save(break1)
+        }
+        if (!breakRepository.existsByDoctorIdAndDate(doctor2!!.id, LocalDate.of(2025, 8, 15))) {
+            val break2 = DoctorBreak(
+                doctor = doctor2,
+                dates = listOf(LocalDate.of(2025, 8, 15)),
+                reason = "Conference"
+            )
+            breakRepository.save(break2)
+
+        }
+
     }
+
 
     private val logger = LoggerFactory.getLogger(SlotGeneratorService::class.java)
 
@@ -76,7 +100,7 @@ class SlotGeneratorService(
             var date = from
             while (!date.isAfter(to)) {
                 try {
-                    val isUnavailable = breakRepository.existsByDoctorAndDate(doctor.id, date)
+                    val isUnavailable = breakRepository.existsByDoctorIdAndDate(doctor.id, date)
                     if (isUnavailable) {
                         logger.debug("Doctor {} unavailable on {}", doctor.fullName, date)
                         date = date.plusDays(1)
@@ -84,7 +108,7 @@ class SlotGeneratorService(
                     }
 
                     val schedule = scheduleRepository.findByDoctorIdAndDayOfWeek(doctor.id, date.dayOfWeek)
-                    if (!schedule.isWorking) {
+                    if (schedule == null) {
                         logger.debug("No working schedule for doctor {} on {}", doctor.fullName, date.dayOfWeek)
                         date = date.plusDays(1)
                         continue
@@ -160,9 +184,14 @@ class SlotGeneratorService(
             var date = fromDate
             while (!date.isAfter(toDate)) {
                 val schedule = scheduleRepository.findByDoctorIdAndDayOfWeek(doctor.id, date.dayOfWeek)
+                if (schedule == null) {
+                    logger.debug("No schedule for doctor ${doctor.fullName} on $date, skipping...")
+                    date = date.plusDays(1)
+                    continue
+                }
                 if (schedule != null && schedule.isWorking &&
                     !slotRepository.existsByDoctorIdAndDate(doctor.id, date) &&
-                    !breakRepository.existsByDoctorAndDate(doctor.id, date)
+                    !breakRepository.existsByDoctorIdAndDate(doctor.id, date)
                 ) {
 
                     generateSlotsForDoctorAndDate(doctor, date, schedule)

@@ -12,4 +12,5 @@ interface SlotRepository : JpaRepository<Slot, Long> {
     fun findByBooked(booked: Boolean)
     fun existsByDoctorIdAndDate(id: Long, date: LocalDate): Boolean
     fun findByDoctorId(id: Long): List<Slot>
+    fun findByDoctorIdAndDate(id: Long, date: LocalDate): List<Slot>
 }

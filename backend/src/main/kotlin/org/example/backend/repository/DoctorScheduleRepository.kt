@@ -6,5 +6,5 @@ import java.time.DayOfWeek
 
 interface DoctorScheduleRepository : JpaRepository<DoctorWorkingSchedule, Long> {
     fun findByDoctorId(id: Long): List<DoctorWorkingSchedule>
-    fun findByDoctorIdAndDayOfWeek(id: Long, dayOfWeek: DayOfWeek): DoctorWorkingSchedule
+    fun findByDoctorIdAndDayOfWeek(id: Long, dayOfWeek: DayOfWeek): DoctorWorkingSchedule?
 }
