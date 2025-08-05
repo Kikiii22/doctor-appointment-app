@@ -12,7 +12,7 @@ class DoctorServiceImpl(
     private val doctorScheduleRepository: DoctorScheduleRepository,
     private val doctorRepository: DoctorRepository
 ) : DoctorService {
-    override fun findSchedule(id: Long): DoctorWorkingSchedule {
+    override fun findSchedule(id: Long): List<DoctorWorkingSchedule> {
         return doctorScheduleRepository.findByDoctorId(id)
     }
 }

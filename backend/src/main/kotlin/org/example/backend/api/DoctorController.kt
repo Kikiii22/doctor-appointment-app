@@ -35,7 +35,7 @@ class DoctorController(
     }
 
     @GetMapping("/{id}/schedule")
-    fun getDoctorSchedule(@PathVariable id: Long): ResponseEntity<DoctorWorkingSchedule> {
+    fun getDoctorSchedule(@PathVariable id: Long): ResponseEntity<List<DoctorWorkingSchedule>> {
         return ResponseEntity.ok(doctorService.findSchedule(id))
     }
 }
