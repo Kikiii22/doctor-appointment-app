@@ -3,11 +3,10 @@ package org.example.backend.model
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.LocalTime
-import javax.print.Doc
 
 
 @Entity
-@Table(name="slots")
+@Table(name = "slots")
 data class Slot(
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long = 0,

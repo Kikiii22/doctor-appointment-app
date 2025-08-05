@@ -2,7 +2,7 @@ package org.example.backend.model
 
 import jakarta.persistence.*
 
-@Table(name="appointments")
+@Table(name = "appointments")
 @Entity
 class Appointment(
     @Id

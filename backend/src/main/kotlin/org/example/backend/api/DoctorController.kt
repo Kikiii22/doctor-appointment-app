@@ -4,10 +4,10 @@ import org.example.backend.exception.DoctorNotFoundException
 import org.example.backend.model.Appointment
 import org.example.backend.model.Doctor
 import org.example.backend.model.DoctorWorkingSchedule
+import org.example.backend.model.Slot
 import org.example.backend.repository.DoctorRepository
 import org.example.backend.service.AppointmentService
 import org.example.backend.service.DoctorService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -25,8 +25,9 @@ class DoctorController(
 
     @GetMapping("/{id}")
     fun getDoctorById(@PathVariable id: Long): ResponseEntity<Doctor> {
-        return ResponseEntity.ok(doctorRepository.findById(id)
-            .orElseThrow { DoctorNotFoundException(id) })
+        return ResponseEntity.ok(
+            doctorRepository.findById(id)
+                .orElseThrow { DoctorNotFoundException(id) })
     }
 
     @GetMapping("/{id}/appointments")
@@ -38,4 +39,15 @@ class DoctorController(
     fun getDoctorSchedule(@PathVariable id: Long): ResponseEntity<List<DoctorWorkingSchedule>> {
         return ResponseEntity.ok(doctorService.findSchedule(id))
     }
+
+    @GetMapping("/{id}/slots")
+    fun getDoctorSlots(
+        @PathVariable id: Long,
+        @RequestParam(required = false, defaultValue = "28")
+        limit: Int
+    ): ResponseEntity<List<Slot>> {
+        return ResponseEntity.ok(doctorService.findSlots(id, limit))
+    }
+
+
 }

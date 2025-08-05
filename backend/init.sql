@@ -101,17 +101,6 @@ INSERT INTO patients (id, user_id, full_name, phone, email)
 VALUES (1, 3, 'John Doe', '+1555123456', 'john.doe@example.com'),
        (2, 5, 'Mary Johnson', '+1555987654', 'mary.j@example.com');
 
-INSERT INTO slots (id, doctor_id, start_time, booked, date)
-VALUES (1, 1, '2023-12-01 09:00:00', FALSE, '2023-12-01'),
-       (2, 1, '2023-12-01 09:15:00', FALSE, '2023-12-01'),
-       (3, 1, '2023-12-01 09:30:00', FALSE, '2023-12-01'),
-       (4, 2, '2023-12-02 10:00:00', FALSE, '2023-12-02'),
-       (5, 2, '2023-12-02 10:15:00', FALSE, '2023-12-02');
-
 INSERT INTO appointments (id, slot_id, patient_id, description, status)
 VALUES (1, 1, 1, 'Annual heart checkup', 'BOOKED'),
        (2, 4, 2, 'Skin allergy consultation', 'BOOKED');
-
-INSERT INTO schedule (doctor_id, day_of_week, is_working, start_time, end_time, break_start, break_end)
-VALUES (1, 'TUESDAY', TRUE, '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-       (1, 'MONDAY', TRUE, '09:00:00', '17:00:00', '12:00:00', '13:00:00');

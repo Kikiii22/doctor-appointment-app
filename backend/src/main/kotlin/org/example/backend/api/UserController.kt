@@ -1,4 +1,3 @@
 package org.example.backend.api
 
-class UserController {
-}
+class UserController
