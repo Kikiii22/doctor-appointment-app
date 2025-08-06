@@ -13,8 +13,6 @@ data class Patient(
 
     val phone: String = "",
 
-    val email: String = "",
-
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     val user: User = User()

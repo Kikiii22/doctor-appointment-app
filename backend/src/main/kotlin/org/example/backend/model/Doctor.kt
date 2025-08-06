@@ -20,8 +20,6 @@ data class Doctor(
     @Column(name = "full_name")
     val fullName: String = "",
 
-    val email: String = "",
-
     val phone: String = "",
 
     @OneToOne

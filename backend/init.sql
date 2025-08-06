@@ -10,6 +10,7 @@ CREATE TABLE users
     id       SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(100)       NOT NULL,
+    email    TEXT               NOT NULL,
     role     VARCHAR(20)        NOT NULL CHECK (role IN ('PATIENT', 'DOCTOR', 'ADMIN'))
 );
 
@@ -17,7 +18,6 @@ CREATE TABLE hospitals
 (
     id      SERIAL PRIMARY KEY,
     name    TEXT NOT NULL,
-    email   TEXT,
     phone   TEXT,
     user_id INTEGER REFERENCES users (id)
 );
@@ -29,7 +29,6 @@ CREATE TABLE doctors
     department_id INTEGER REFERENCES departments (id),
     hospital_id   INTEGER REFERENCES hospitals (id),
     full_name     TEXT,
-    email         TEXT,
     phone         TEXT
 );
 
@@ -38,8 +37,7 @@ CREATE TABLE patients
     id        SERIAL PRIMARY KEY,
     user_id   INTEGER REFERENCES users (id),
     full_name TEXT,
-    phone     TEXT,
-    email     TEXT
+    phone     TEXT
 );
 
 CREATE TABLE slots
@@ -65,7 +63,6 @@ CREATE TABLE schedule
     break_end   TIME
 );
 
-
 CREATE TABLE appointments
 (
     id          SERIAL PRIMARY KEY,
@@ -75,31 +72,28 @@ CREATE TABLE appointments
     status      VARCHAR(20) NOT NULL CHECK (status IN ('AVAILABLE', 'BOOKED', 'FINISHED'))
 );
 
-INSERT INTO users (id, username, password, role)
-VALUES (1, 'admin', 'password', 'ADMIN'),
-       (2, 'dr_smith', 'password', 'DOCTOR'),
-       (3, 'patient_john', 'password', 'PATIENT'),
-       (4, 'dr_jones', 'password', 'DOCTOR'),
-       (5, 'patient_mary', 'password', 'PATIENT');
+INSERT INTO users (id, username, password, email, role)
+VALUES (1, 'admin', 'password', 'hospital@gmail.com', 'ADMIN'),
+       (2, 'dr_smith', 'password', 'dr.smith@hospital.com', 'DOCTOR'),
+       (3, 'patient_john', 'password', 'john.doe@example.com', 'PATIENT'),
+       (4, 'dr_jones', 'password', 'dr.jones@hospital.com', 'DOCTOR'),
+       (5, 'patient_mary', 'password', 'mary.j@example.com', 'PATIENT');
 
-INSERT INTO hospitals (id, name, email, phone, user_id)
-VALUES (1, 'Hospital', 'hospital@gmail.com', '+1234567890', 1);
-
+INSERT INTO hospitals (id, name, phone, user_id)
+VALUES (1, 'Hospital', '+1234567890', 1);
 
 INSERT INTO departments (id, name, description)
 VALUES (1, 'Cardiology', 'Heart and cardiovascular diseases'),
        (2, 'Dermatology', 'Skin conditions treatment'),
        (3, 'Neurology', 'Nervous system disorders');
 
+INSERT INTO doctors (id, user_id, department_id, hospital_id, full_name, phone)
+VALUES (1, 2, 1, 1, 'Dr. John Smith', '+1234567890'),
+       (2, 4, 2, 1, 'Dr. Emily Jones', '+1987654321');
 
-INSERT INTO doctors (id, user_id, department_id, hospital_id, full_name, email, phone)
-VALUES (1, 2, 1, 1, 'Dr. John Smith', 'dr.smith@hospital.com', '+1234567890'),
-       (2, 4, 2, 1, 'Dr. Emily Jones', 'dr.jones@hospital.com', '+1987654321');
-
-
-INSERT INTO patients (id, user_id, full_name, phone, email)
-VALUES (1, 3, 'John Doe', '+1555123456', 'john.doe@example.com'),
-       (2, 5, 'Mary Johnson', '+1555987654', 'mary.j@example.com');
+INSERT INTO patients (id, user_id, full_name, phone)
+VALUES (1, 3, 'John Doe', '+1555123456'),
+       (2, 5, 'Mary Johnson', '+1555987654');
 
 INSERT INTO appointments (id, slot_id, patient_id, description, status)
 VALUES (1, 1, 1, 'Annual heart checkup', 'BOOKED'),
