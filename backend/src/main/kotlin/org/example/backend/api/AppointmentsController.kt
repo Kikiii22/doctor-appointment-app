@@ -1,6 +1,6 @@
 package org.example.backend.api
 
-import org.example.backend.dto.CreateAppointmentRequest
+import org.example.backend.dto.AppointmentRequest
 import org.example.backend.model.Appointment
 import org.example.backend.service.AppointmentService
 import org.springframework.http.ResponseEntity
@@ -11,14 +11,22 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/appointments")
-class AppointmentsControler(
+class AppointmentsController(
     private val appointmentService: AppointmentService
 ) {
     @PostMapping
     fun createAppointment(
-        @RequestBody request: CreateAppointmentRequest
+        @RequestBody request: AppointmentRequest
     ): ResponseEntity<Appointment> {
         val appointment = appointmentService.bookAppointment(request.slotId, request.patientId)
         return ResponseEntity.ok(appointment)
+    }
+
+    @PostMapping
+    fun cancelAppointment(
+        @RequestBody request: AppointmentRequest
+    ): ResponseEntity<Appointment> {
+        appointmentService.cancelAppointment(request.slotId, request.patientId)
+        return ResponseEntity.ok().build()
     }
 }

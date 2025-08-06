@@ -1,6 +1,7 @@
 package org.example.backend.repository
 
 import org.example.backend.model.Appointment
+import org.example.backend.model.Slot
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface AppointmentRepository : JpaRepository<Appointment, Long> {
@@ -8,4 +9,5 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
     fun findBySlotDoctorId(id: Long): List<Appointment>
     fun findBySlotDoctorHospitalId(id: Long): List<Appointment>
     fun findBySlotDoctorDepartmentId(id: Long): List<Appointment>
+    fun findBySlot(slot: Slot): Appointment
 }
