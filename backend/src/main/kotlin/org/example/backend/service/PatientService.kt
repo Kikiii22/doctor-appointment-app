@@ -1,4 +1,3 @@
 package org.example.backend.service
 
-interface PatientService {
-}
+interface PatientService

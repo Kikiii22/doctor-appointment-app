@@ -42,5 +42,6 @@ class AppointmentServiceImpl(
             patient = patient,
             status = AppointmentStatus.BOOKED
         )
-        return appointmentRepository.save(appointment)    }
+        return appointmentRepository.save(appointment)
+    }
 }

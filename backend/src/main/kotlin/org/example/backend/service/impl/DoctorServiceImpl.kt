@@ -24,8 +24,9 @@ class DoctorServiceImpl(
         return slotRepository.findByDoctorId(id).take(limit)
     }
 
-    override fun findBreak(id: Long):DoctorBreak {
-    return doctorBreakRepository.findByDoctorId(id)   }
+    override fun findBreak(id: Long): DoctorBreak {
+        return doctorBreakRepository.findByDoctorId(id)
+    }
 
     override fun findByDoctorIdAndDate(
         doctorId: Long,

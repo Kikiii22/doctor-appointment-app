@@ -1,11 +1,7 @@
 package org.example.backend.api
 
 import org.example.backend.exception.DoctorNotFoundException
-import org.example.backend.model.Appointment
-import org.example.backend.model.Doctor
-import org.example.backend.model.DoctorBreak
-import org.example.backend.model.DoctorWorkingSchedule
-import org.example.backend.model.Slot
+import org.example.backend.model.*
 import org.example.backend.repository.DoctorRepository
 import org.example.backend.service.AppointmentService
 import org.example.backend.service.DoctorService
@@ -42,19 +38,20 @@ class DoctorController(
     fun getDoctorSchedule(@PathVariable id: Long): ResponseEntity<List<DoctorWorkingSchedule>> {
         return ResponseEntity.ok(doctorService.findSchedule(id))
     }
-//TO DO show slots only after the local time for today
+
+    //TO DO show slots only after the local time for today
     @GetMapping("/{id}/slots")
     fun getDoctorSlots(
         @PathVariable id: Long,
         @RequestParam(required = false, defaultValue = "28")
         limit: Int,
-        @RequestParam (required = false)
+        @RequestParam(required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate?
     ): ResponseEntity<List<Slot>> {
         val slots = if (date != null) {
             doctorService.findByDoctorIdAndDate(id, date)
         } else {
-            doctorService.findSlots(id,limit)
+            doctorService.findSlots(id, limit)
         }
         return ResponseEntity.ok(slots)
     }
