@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 class AppointmentsController(
     private val appointmentService: AppointmentService
 ) {
-    @PostMapping
+    @PostMapping("/book")
     fun createAppointment(
         @RequestBody request: AppointmentRequest
     ): ResponseEntity<Appointment> {
@@ -22,10 +22,10 @@ class AppointmentsController(
         return ResponseEntity.ok(appointment)
     }
 
-    @PostMapping
+    @PostMapping("/cancel")
     fun cancelAppointment(
         @RequestBody request: AppointmentRequest
-    ): ResponseEntity<Appointment> {
+    ): ResponseEntity<Void> {
         appointmentService.cancelAppointment(request.slotId, request.patientId)
         return ResponseEntity.ok().build()
     }
