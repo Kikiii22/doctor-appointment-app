@@ -45,8 +45,7 @@ class DoctorController(
         @PathVariable id: Long,
         @RequestParam(required = false, defaultValue = "28")
         limit: Int,
-        @RequestParam(required = false)
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate?
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate?
     ): ResponseEntity<List<Slot>> {
         val slots = if (date != null) {
             doctorService.findByDoctorIdAndDate(id, date)
@@ -59,10 +58,6 @@ class DoctorController(
     @GetMapping("/{id}/break")
     fun getDoctorBreak(@PathVariable id: Long): ResponseEntity<DoctorBreak?> {
         val doctorBreak = doctorService.findBreak(id)
-        return if (doctorBreak != null) {
-            ResponseEntity.ok(doctorBreak)
-        } else {
-            ResponseEntity.notFound().build()
-        }
+        return ResponseEntity.ok(doctorBreak)
     }
 }

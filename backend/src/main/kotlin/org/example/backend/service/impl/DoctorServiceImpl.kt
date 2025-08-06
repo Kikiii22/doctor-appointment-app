@@ -21,7 +21,7 @@ class DoctorServiceImpl(
     }
 
     override fun findSlots(id: Long, limit: Int): List<Slot> {
-        return slotRepository.findByDoctorId(id).take(limit)
+        return slotRepository.findByDoctorIdAndDateAfter(id, LocalDate.now()).take(limit)
     }
 
     override fun findBreak(id: Long): DoctorBreak {
