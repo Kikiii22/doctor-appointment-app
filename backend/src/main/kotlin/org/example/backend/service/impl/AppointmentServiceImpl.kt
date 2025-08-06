@@ -7,6 +7,8 @@ import org.example.backend.repository.PatientRepository
 import org.example.backend.repository.SlotRepository
 import org.example.backend.service.AppointmentService
 import org.springframework.stereotype.Service
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class AppointmentServiceImpl(
@@ -53,6 +55,26 @@ class AppointmentServiceImpl(
         slotRepository.save(slot)
         val appointment = appointmentRepository.findBySlot(slot)
         appointmentRepository.delete(appointment)
+    }
+
+    override fun finishAppointment(
+        appointmentId: Long,
+        doctorId: Long,
+        description: String
+    ): Appointment {
+        val appointment = appointmentRepository.findById(appointmentId).orElseThrow { RuntimeException("Appointment not found") }
+        if (appointment.status == AppointmentStatus.FINISHED) throw RuntimeException("Appointment already finished!")
+        if (appointment.slot.doctor.id != doctorId) throw RuntimeException("Not your appointment!")
+        val now= LocalDateTime.now()
+        val startDateTime = LocalDateTime.of(appointment.slot.date, appointment.slot.startTime)
+
+        if (now.isBefore(startDateTime.plusMinutes(15)) ) {
+                throw IllegalStateException("You can only finish the appointment 15 minutes after its scheduled start time.")
+            }
+
+        appointment.status = AppointmentStatus.FINISHED
+        appointment.description = description
+        return appointmentRepository.save(appointment)
     }
 
 

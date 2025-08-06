@@ -1,5 +1,6 @@
 package org.example.backend.api
 
+import jakarta.transaction.Transactional
 import org.example.backend.dto.AuthRequest
 import org.example.backend.dto.RegisterRequest
 import org.example.backend.model.Patient
@@ -23,6 +24,7 @@ class AuthController(
     private val passwordEncoder: PasswordEncoder
 ) {
 
+     @Transactional
     @PostMapping("/register")
     fun register(@RequestBody req: RegisterRequest): ResponseEntity<Any> {
         if (userRepository.existsByUsername(req.username)) {
@@ -37,7 +39,6 @@ class AuthController(
                 email = req.email
             )
         )
-
         val newPatient = patientRepository.save(
             Patient(
                 fullName = req.fullName,
@@ -45,7 +46,7 @@ class AuthController(
                 user = newUser
             )
         )
-
+         println("Saved patient: $newPatient")
         return ResponseEntity.ok(newPatient)
     }
 
