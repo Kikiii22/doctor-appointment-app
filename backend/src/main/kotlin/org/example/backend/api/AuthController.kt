@@ -2,12 +2,14 @@ package org.example.backend.api
 
 import jakarta.transaction.Transactional
 import org.example.backend.dto.AuthRequest
+import org.example.backend.dto.JwtResponse
 import org.example.backend.dto.RegisterRequest
 import org.example.backend.model.Patient
 import org.example.backend.model.Role
 import org.example.backend.model.User
 import org.example.backend.repository.PatientRepository
 import org.example.backend.repository.UserRepository
+import org.example.backend.service.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -21,10 +23,11 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val userRepository: UserRepository,
     private val patientRepository: PatientRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val authService: AuthService
 ) {
 
-     @Transactional
+
     @PostMapping("/register")
     fun register(@RequestBody req: RegisterRequest): ResponseEntity<Any> {
         if (userRepository.existsByUsername(req.username)) {
@@ -46,18 +49,11 @@ class AuthController(
                 user = newUser
             )
         )
-         println("Saved patient: $newPatient")
-        return ResponseEntity.ok(newPatient)
-    }
+        println("Saved patient: $newPatient")
+        return ResponseEntity.ok(newPatient)    }
 
     @PostMapping("/login")
-    fun login(@RequestBody req: AuthRequest): ResponseEntity<Any> {
-        val user = userRepository.findByUsername(req.username)
-
-        if (!passwordEncoder.matches(req.password, user.password)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")
-        }
-
-        return ResponseEntity.ok(user)
+    fun login(@RequestBody req: AuthRequest): JwtResponse{
+        return authService.login(req)
     }
 }

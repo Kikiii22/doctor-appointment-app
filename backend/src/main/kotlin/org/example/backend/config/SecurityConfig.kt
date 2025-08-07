@@ -1,28 +1,50 @@
 package org.example.backend.config
 
+import org.example.backend.dto.JwtResponse
+import org.example.backend.repository.UserRepository
+import org.example.backend.service.CustomDetailsService
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
-class SecurityConfig {
+@EnableConfigurationProperties(JwtProperties::class)
+class SecurityConfig( private val userDetailsService: UserDetailsService,
+                     jwtAuthenticationFilter: JwtAuthenticationFilter ) {
+
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
-    }
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    fun securityFilterChain(http: HttpSecurity, jwtAuthenticationFilter: JwtAuthenticationFilter): SecurityFilterChain {
         http
             .csrf { it.disable() }
-            .authorizeHttpRequests { it.anyRequest().permitAll() }
+            .authorizeHttpRequests { authz ->
+                authz
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .anyRequest().authenticated()
+            }
+            .userDetailsService(userDetailsService) // <- This wires your custom service
             .formLogin { it.disable() }
-            .httpBasic { it.disable() }
-
+            // --- ADD THIS ---
+            .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
+
+    @Bean
+    fun authenticationManager(
+        authConfig: AuthenticationConfiguration,
+        passwordEncoder: PasswordEncoder
+    ): AuthenticationManager = authConfig.authenticationManager
 }
