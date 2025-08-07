@@ -29,28 +29,9 @@ class AuthController(
 
 
     @PostMapping("/register")
-    fun register(@RequestBody req: RegisterRequest): ResponseEntity<Any> {
-        if (userRepository.existsByUsername(req.username)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already taken")
-        }
-
-        val newUser = userRepository.save(
-            User(
-                username = req.username,
-                password = passwordEncoder.encode(req.password),
-                role = Role.PATIENT,
-                email = req.email
-            )
-        )
-        val newPatient = patientRepository.save(
-            Patient(
-                fullName = req.fullName,
-                phone = req.phone,
-                user = newUser
-            )
-        )
-        println("Saved patient: $newPatient")
-        return ResponseEntity.ok(newPatient)    }
+    fun register(@RequestBody req: RegisterRequest): JwtResponse {
+        return authService.register(req)
+    }
 
     @PostMapping("/login")
     fun login(@RequestBody req: AuthRequest): JwtResponse{

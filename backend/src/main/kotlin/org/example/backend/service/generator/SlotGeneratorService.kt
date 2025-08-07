@@ -57,7 +57,6 @@ class SlotGeneratorService(
 
         }
         val doctor1 = doctors.find { it.id == 1L }
-        val doctor2 = doctors.find { it.id == 2L }
         if (!breakRepository.existsByDoctorIdAndDate(doctor1!!.id, LocalDate.of(2025, 8, 10))) {
             val break1 = DoctorBreak(
                 doctor = doctor1,
@@ -66,15 +65,7 @@ class SlotGeneratorService(
             )
             breakRepository.save(break1)
         }
-        if (!breakRepository.existsByDoctorIdAndDate(doctor2!!.id, LocalDate.of(2025, 8, 15))) {
-            val break2 = DoctorBreak(
-                doctor = doctor2,
-                dates = listOf(LocalDate.of(2025, 8, 15)),
-                reason = "Conference"
-            )
-            breakRepository.save(break2)
 
-        }
 
     }
 
