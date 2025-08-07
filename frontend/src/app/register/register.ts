@@ -1,33 +1,37 @@
-import { Component } from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Auth} from '../services/auth';
+import {Auth} from "../services/auth";
+import {NgForOf} from "@angular/common";
+
 
 @Component({
   selector: 'app-register',
   imports: [
     ReactiveFormsModule,
-    RouterLink
+    NgForOf,
   ],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
-export class Register {
-  registerForm: FormGroup
+export class Register implements OnInit{
+  registerForm!: FormGroup;
+  departments: any[] = [];
+
   constructor(
-    private fb: FormBuilder,
-    private router: Router
-  ) {
-    this.registerForm = this.fb.group({
-      fullName: ['', Validators.required],
-      username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
-  }
+      private fb: FormBuilder,
+      private service: Auth
+  ) {}
+  ngOnInit(): void {
+    this.service.getDepartments(1).subscribe({
+      next: (data) => {
+        console.log('Departments from API:', data);
+        this.departments = data;
+      },
+      error: (err) => {
+        console.error('Error fetching departments:', err);
+        alert('Failed to fetch departments!');
+      }
+    });    }
 
-  onSubmit() {
 
-  }
 }

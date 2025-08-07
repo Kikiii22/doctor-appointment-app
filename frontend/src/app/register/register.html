@@ -1,16 +1,7 @@
-<p>register works!</p>
-<div class="register-container">
-  <div class="register-form">
-    <h2>Register as Patient</h2>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" formControlName="fullName">
-      </div>      <input type="text" formControlName="username">
-      <input type="email" formControlName="email">
-      <input type="text" formControlName="phone">
-      <input type="password" formControlName="password">
-      <button type="submit">Register</button>
-    </form>
-</div>
-</div>
+<h2>hi register</h2>
+<h3>Departments test:</h3>
+<ul>
+    <li *ngFor="let d of departments">
+        {{ d.id }} - {{ d.name }}
+    </li>
+</ul>

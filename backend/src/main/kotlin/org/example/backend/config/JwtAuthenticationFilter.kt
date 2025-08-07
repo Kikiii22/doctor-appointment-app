@@ -17,7 +17,9 @@ class JwtAuthenticationFilter (private val userDetailsService: CustomDetailsServ
         override fun shouldNotFilter(request: HttpServletRequest): Boolean {
     val path = request.servletPath
             println("shouldNotFilter called for $path")
-            return path.startsWith("/api/auth/")
+            return path.startsWith("/api/auth/") || path == "/api/roles"
+                    || path == "/api/hospitals"
+                    || path == "/api/departments"
 }
     override fun doFilterInternal(
         request: HttpServletRequest,
