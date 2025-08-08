@@ -1,5 +1,6 @@
 package org.example.backend.dto
 
+import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import org.example.backend.model.Role
@@ -11,6 +12,9 @@ data class RegisterRequest(
     @field:NotBlank
     @field:Size(min = 6, max = 40)
     val password: String,
+    @field:NotBlank
+    @field:Size(max = 254)
+    @field:Email
     val email: String,
     @field:NotBlank
     @field:Size(max = 50)
