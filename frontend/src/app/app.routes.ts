@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import {Login} from './login/login';
 import {Register} from './register/register';
 import {Test} from './test/test';
+import {Dashboard} from './dashboard/dashboard';
 
 
 export const routes: Routes = [
@@ -14,8 +15,8 @@ export const routes: Routes = [
     component: Register
   },
   {
-    path:'test',
-    component:Test
+    path:'dashboard',
+    component:Dashboard
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 

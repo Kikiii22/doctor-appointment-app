@@ -1,20 +1,25 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {User} from '../interfaces/user';
-import {HttpClient} from '@angular/common/http';
-import {Patient} from '../interfaces/patient';
+import { HttpClient } from '@angular/common/http';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class Auth {
+  private api = '/api';
 
   constructor(private http: HttpClient) {}
 
-  getDepartments(hospitalId: number): Observable<any[]> {
-    return this.http.get<any[]>('/api/departments');
+  getRoles() {
+    return this.http.get<string[]>(`${this.api}/roles`);
   }
 
+  getHospitals() {
+    return this.http.get<any[]>(`${this.api}/hospitals`);
+  }
 
+  getDepartments() {
+    return this.http.get<any[]>(`${this.api}/departments`);
+  }
 
+  register(data: any) {
+    return this.http.post(`${this.api}/auth/register`, data);
+  }
 }
