@@ -8,18 +8,12 @@ import org.example.backend.model.Doctor
 import org.example.backend.model.Patient
 import org.example.backend.model.Role
 import org.example.backend.model.User
-import org.example.backend.repository.DepartmentRepository
-import org.example.backend.repository.DoctorRepository
-import org.example.backend.repository.HospitalRepository
-import org.example.backend.repository.PatientRepository
-import org.example.backend.repository.UserRepository
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import org.example.backend.repository.*
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.Date
+import java.util.*
 
 @Service
 class AuthService
@@ -33,7 +27,7 @@ class AuthService
     private val passwordEncoder: PasswordEncoder,
     private val doctorRepository: DoctorRepository,
     private val hospitalRepository: HospitalRepository,
-            private val departmentRepository: DepartmentRepository
+    private val departmentRepository: DepartmentRepository
 ) {
     fun login(authRequest: AuthRequest): JwtResponse {
         //authManager.authenticate(UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password))
@@ -74,10 +68,15 @@ class AuthService
                     )
                 )
             }
+
             Role.DOCTOR -> {
-                val hospital = req.hospitalId?.let { hospitalRepository.findById(it).orElseThrow { Exception("Hospital not found") } }
+                val hospital = req.hospitalId?.let {
+                    hospitalRepository.findById(it).orElseThrow { Exception("Hospital not found") }
+                }
                     ?: throw IllegalArgumentException("Hospital is required for doctor")
-                val department = req.departmentId?.let { departmentRepository.findById(it).orElseThrow { Exception("Department not found") } }
+                val department = req.departmentId?.let {
+                    departmentRepository.findById(it).orElseThrow { Exception("Department not found") }
+                }
                     ?: throw IllegalArgumentException("Department is required for doctor")
 
                 doctorRepository.save(
@@ -90,6 +89,7 @@ class AuthService
                     )
                 )
             }
+
             else -> throw IllegalArgumentException("Invalid role")
         }
         val userDetails = org.example.backend.model.CustomUserDetails(newUser)

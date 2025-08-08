@@ -8,7 +8,7 @@ data class JwtProperties(
     val key: Secret,
     val accessTokenExpiration: Token,
     val refreshTokenExpiration: Refresh
-){
+) {
     data class Secret(val key: String)
     data class Token(val expiration: Long)
     data class Refresh(val expiration: Long)

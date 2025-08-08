@@ -12,15 +12,19 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class JwtAuthenticationFilter (private val userDetailsService: CustomDetailsService,private val tokenService: TokenService):
+class JwtAuthenticationFilter(
+    private val userDetailsService: CustomDetailsService,
+    private val tokenService: TokenService
+) :
     OncePerRequestFilter() {
-        override fun shouldNotFilter(request: HttpServletRequest): Boolean {
-    val path = request.servletPath
-            println("shouldNotFilter called for $path")
-            return path.startsWith("/api/auth/") || path == "/api/roles"
-                    || path == "/api/hospitals"
-                    || path == "/api/departments"
-}
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        val path = request.servletPath
+        println("shouldNotFilter called for $path")
+        return path.startsWith("/api/auth/") || path == "/api/roles"
+                || path == "/api/hospitals"
+                || path == "/api/departments"
+    }
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,

@@ -7,8 +7,9 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 
 @Service
-class CustomDetailsService (
-     val userRepository : UserRepository): UserDetailsService {
+class CustomDetailsService(
+    val userRepository: UserRepository
+) : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
         println("Loading user by username: $username")
 

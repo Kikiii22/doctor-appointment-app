@@ -1,23 +1,13 @@
 package org.example.backend.api
 
-import jakarta.transaction.Transactional
 import org.example.backend.dto.AuthRequest
 import org.example.backend.dto.JwtResponse
 import org.example.backend.dto.RegisterRequest
-import org.example.backend.model.Patient
-import org.example.backend.model.Role
-import org.example.backend.model.User
 import org.example.backend.repository.PatientRepository
 import org.example.backend.repository.UserRepository
 import org.example.backend.service.AuthService
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/auth")
@@ -36,7 +26,7 @@ class AuthController(
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody req: AuthRequest): JwtResponse{
+    fun login(@RequestBody req: AuthRequest): JwtResponse {
         return authService.login(req)
     }
 }

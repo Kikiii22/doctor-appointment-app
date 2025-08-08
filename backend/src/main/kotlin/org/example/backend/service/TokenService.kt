@@ -6,11 +6,12 @@ import io.jsonwebtoken.security.Keys
 import org.example.backend.config.JwtProperties
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
-import java.util.Date
+import java.util.*
+
 @Service
 class TokenService
     (jwtProperties: JwtProperties) {
-        private val secretKey= Keys.hmacShaKeyFor(jwtProperties.key.key.toByteArray())
+    private val secretKey = Keys.hmacShaKeyFor(jwtProperties.key.key.toByteArray())
 
     fun generate(
         userDetails: UserDetails,
@@ -25,22 +26,25 @@ class TokenService
             .signWith(secretKey)
             .compact()
     }
-    fun isExpired(token:String): Boolean {
+
+    fun isExpired(token: String): Boolean {
         return getAllClaims(token).expiration.before(Date(System.currentTimeMillis()))
     }
-    fun getUsername(token:String): String? {
+
+    fun getUsername(token: String): String? {
         return getAllClaims(token).subject
     }
-    fun isValid(token:String,userDetails: UserDetails): Boolean {
-        return getUsername(token)==userDetails.username && !isExpired(token)
+
+    fun isValid(token: String, userDetails: UserDetails): Boolean {
+        return getUsername(token) == userDetails.username && !isExpired(token)
     }
-    fun getAllClaims(token:String): Claims {
+
+    fun getAllClaims(token: String): Claims {
         return Jwts.parserBuilder()
             .setSigningKey(secretKey)
             .build()
             .parseClaimsJws(token)
             .body
-
 
 
     }

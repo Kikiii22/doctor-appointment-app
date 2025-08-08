@@ -14,28 +14,32 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableConfigurationProperties(JwtProperties::class)
-class New( private val userDetailsService: UserDetailsService,
-                     jwtAuthenticationFilter: JwtAuthenticationFilter ) {
+class New(
+    private val userDetailsService: UserDetailsService,
+    jwtAuthenticationFilter: JwtAuthenticationFilter
+) {
 
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity,
-                            jwtAuthenticationFilter: JwtAuthenticationFilter): SecurityFilterChain {
+    fun securityFilterChain(
+        http: HttpSecurity,
+        jwtAuthenticationFilter: JwtAuthenticationFilter
+    ): SecurityFilterChain {
         println(">>> SecurityConfig loaded and being used! <<<")
         http
             .csrf { it.disable() }
             .cors { }
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/api/auth/**","api/departments","api/roles","api/hospitals").permitAll()
+                    .requestMatchers("/api/auth/**", "api/departments", "api/roles", "api/hospitals").permitAll()
                     .anyRequest().authenticated()
             }
             .userDetailsService(userDetailsService) // <- This wires your custom service
             .formLogin { it.disable() }
-            .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
 
