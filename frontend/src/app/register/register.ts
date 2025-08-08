@@ -17,6 +17,7 @@ import {Router, RouterLink} from "@angular/router";
   styleUrl: './register.css'
 })
 export class Register implements OnInit {
+  loading=false;
   registerForm!: FormGroup;
   roles: string[] = [];
   hospitals: any[] = [];

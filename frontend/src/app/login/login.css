@@ -1,0 +1,84 @@
+.transition-all {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.form-control:focus {
+  border-color: #0891b2 !important;
+  box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.15) !important;
+  transform: translateY(-1px);
+}
+
+.form-control:hover:not(:focus) {
+  border-color: #0891b2 !important;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(8, 145, 178, 0.3) !important;
+}
+
+.btn-primary:hover:not(:disabled) .position-absolute {
+  opacity: 0.1 !important;
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) !important;
+}
+
+.form-control.is-invalid {
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* Register link hover effect */
+a[routerLink]:hover span {
+  transform: scaleX(1) !important;
+  transform-origin: left !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .card-body {
+    padding: 2rem 1.5rem !important;
+  }
+}
+
+/* Loading button state */
+.btn:disabled {
+  opacity: 0.65;
+  transform: none !important;
+}
+
+/* Card animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate__fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Medical theme enhancements */
+.bg-gradient {
+  background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%) !important;
+}
+
+.card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+.card, .container, .d-flex {
+  overflow: visible !important;
+}

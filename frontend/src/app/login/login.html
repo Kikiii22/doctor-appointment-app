@@ -1,1 +1,112 @@
-<p>login works!</p>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div class="d-flex align-items-center justify-content-center min-vh-100 bg-gradient position-relative overflow-hidden" style="background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);">
+  <!-- Background decoration -->
+  <div class="position-absolute top-0 start-0 w-100 h-100"
+       style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cdefs%3E%3Cpattern id=%22grid%22 width=%2210%22 height=%2210%22 patternUnits=%22userSpaceOnUse%22%3E%3Cpath d=%22M 10 0 L 0 0 0 10%22 fill=%22none%22 stroke=%22%23e2e8f0%22 stroke-width=%220.5%22/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=%22100%22 height=%22100%22 fill=%22url(%23grid)%22/%3E%3C/svg%3E'); opacity: 0.3;">
+  </div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden animate__animated animate__fadeInUp" style="animation-duration: 0.6s;">
+
+        <div class="card-header bg-primary text-white text-center py-4 position-relative" style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%) !important;">
+        <div class="position-relative">
+          <i class="fas fa-user-md fs-1 mb-2 text-white-50"></i>
+          <h2 class="h3 fw-bold mb-0 text-white">Najdi si Doktorce</h2>
+          <p class="small mb-0 text-white-50">Your Healthcare Platform</p>
+        </div>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+          <div class="mb-4">
+            <label for="username" class="form-label fw-medium text-dark mb-2">
+              <i class="fas fa-user me-2 text-primary"></i>Username
+            </label>
+            <div class="position-relative">
+              <input
+                type="text"
+                id="username"
+                formControlName="username"
+                class="form-control form-control-lg border-2 rounded-3 ps-4 pe-6 transition-all"
+                [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+                placeholder="Enter your username"
+                style="border-color: #e2e8f0; transition: all 0.3s ease; --bs-focus-ring-color: rgba(8, 145, 178, 0.25);">
+              <div class="invalid-feedback" *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                Username is required
+              </div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label for="password" class="form-label fw-medium text-dark mb-2">
+              <i class="fas fa-lock me-2 text-primary"></i>Password
+            </label>
+            <div class="position-relative">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                formControlName="password"
+                class="form-control form-control-lg border-2 rounded-3 ps-4 pe-6 transition-all"
+                [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                placeholder="Enter your password"
+                style="border-color: #e2e8f0; transition: all 0.3s ease; --bs-focus-ring-color: rgba(8, 145, 178, 0.25);">
+              <button
+                type="button"
+                class="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 text-muted"
+                (click)="showPassword = !showPassword"
+                style="z-index: 10;">
+                <i [class]="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+              </button>
+              <div class="invalid-feedback" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+
+                Password is required
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            [disabled]="loginForm.invalid || loading"
+            class="btn btn-primary btn-lg w-100 rounded-3 fw-semibold position-relative login-btn py-3"
+            style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); border: none; transition: all 0.3s ease; min-height: 56px;">
+
+                <span *ngIf="!loading" class="d-flex align-items-center justify-content-center">
+                  <i class="fas fa-sign-in-alt me-2"></i>
+                  Login
+                </span>
+
+            <span *ngIf="loading" class="d-flex align-items-center justify-content-center">
+                  <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  Logging in...
+                </span>
+          </button>
+
+
+        </form>
+
+        <div class="text-center mt-4 pt-3 border-top border-light">
+          <p class="text-muted mb-0">
+            Don't have an account?
+            <a [routerLink]="['/register']"
+               class="text-primary text-decoration-none fw-medium position-relative">
+              Register here
+              <span class="position-absolute bottom-0 start-0 w-100 bg-primary" style="height: 2px; transform: scaleX(0); transition: transform 0.3s ease; transform-origin: right;"></span>
+            </a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+

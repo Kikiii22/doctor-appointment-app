@@ -1,121 +1,118 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-
+.register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(8, 145, 178, 0.3);
 }
 
-body {
-  overflow: hidden;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #e0f7fa 0%, #80d0c7 100%);
+.form-control:focus, .form-select:focus {
+  border-color: #0891b2;
+  box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.25);
+}
+.transition-all {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.register-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  padding: 2rem;
-  background: linear-gradient(135deg, #D5FFFF 0%, #90D5FF 100%);
-}
-*, *::before, *::after {
-  box-sizing: border-box;
+.form-control:focus {
+  border-color: #0891b2 !important;
+  box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.15) !important;
+  transform: translateY(-1px);
 }
 
-.register-form {
-  background: #fff;
-  padding: 2.5rem 2rem 2rem 2rem;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
-  width: 100%;
-  max-width: 420px;
-  animation: fadeIn 0.8s cubic-bezier(.7, -.41, .28, 1.34);
+.form-control:hover:not(:focus) {
+  border-color: #0891b2 !important;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #234567;
-  letter-spacing: 1px;
-  font-weight: 700;
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(8, 145, 178, 0.3) !important;
 }
 
-.form-group {
-  margin-bottom: 1.1rem;
+.btn-primary:hover:not(:disabled) .position-absolute {
+  opacity: 0.1 !important;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #256272;
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) !important;
 }
 
-input,
-select {
-  max-width: 400px;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 1.08rem;
-  background: #f8fafc;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  margin-bottom: 0.2rem;
+.form-control.is-invalid {
+  animation: shake 0.3s ease-in-out;
 }
 
-input:focus,
-select:focus {
-  border-color: #45b4ea;
-  box-shadow: 0 0 0 2px rgba(69, 180, 234, 0.15);
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
 
-button {
-  width: 100%;
-  padding: 0.85rem 0;
-  background: linear-gradient(90deg, #52A7F9 60%, #3DB8C9 100%);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 3px 15px rgba(60, 183, 202, 0.13);
-  margin-top: 1rem;
-  letter-spacing: 1px;
-  transition: background 0.2s, box-shadow 0.2s;
+/* Register link hover effect */
+a[routerLink]:hover span {
+  transform: scaleX(1) !important;
+  transform-origin: left !important;
 }
 
-button:hover:not(:disabled) {
-  background: linear-gradient(90deg, #3DB8C9 40%, #52A7F9 100%);
-  box-shadow: 0 7px 22px rgba(80, 180, 220, 0.16);
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .card-body {
+    padding: 2rem 1.5rem !important;
+  }
 }
 
-button:disabled {
-  background: #b7e1fc;
-  cursor: not-allowed;
+/* Loading button state */
+.btn:disabled {
+  opacity: 0.65;
+  transform: none !important;
 }
 
-.login-link {
-  text-align: center;
-  margin-top: 1.6rem;
-  color: #256272;
-  font-size: 1rem;
+/* Card animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.login-link a {
-  color: #388ebb;
-  text-decoration: underline;
-  font-weight: 500;
-  transition: color 0.2s;
+.animate__fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
 }
 
-.login-link a:hover {
-  color: #256272;
+/* Medical theme enhancements */
+.bg-gradient {
+  background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%) !important;
 }
 
+.card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+.card, .container, .d-flex {
+  overflow: visible !important;
+}
 
+.login-link:hover span {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.doctor-fields {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
