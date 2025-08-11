@@ -49,17 +49,26 @@
                 </label>
                 <div class="position-relative">
                   <input
-                    type="password"
+                    [type]="showPassword ? 'text' : 'password'"
                     id="password"
                     formControlName="password"
                     class="form-control form-control-lg border-2 rounded-3 ps-4 pe-3"
                     [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
                     placeholder="Enter your password (min 6 chars)"
                     style="border-color: #e2e8f0; transition: all 0.3s ease;">
+                  <button
+                    type="button"
+                    class="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 text-muted"
+                    (click)="showPassword = !showPassword"
+                    style="z-index: 10;">
+                    <i [class]="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+                  </button>
+
                   <div class="invalid-feedback" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
                     <i class="fas fa-exclamation-circle me-1"></i>
                     Password is required (min 6 chars)
                   </div>
+
                 </div>
               </div>
 
@@ -160,7 +169,7 @@
                     </select>
                   </div>
 
-                  <!-- Department Field -->
+                  <!-- Department.ts Field -->
                   <div class="mb-4">
                     <label for="departmentId" class="form-label fw-medium text-dark mb-2">
                       <i class="fas fa-stethoscope me-2 text-primary"></i>Department

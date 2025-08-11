@@ -6,6 +6,7 @@ import org.example.backend.dto.RegisterRequest
 import org.example.backend.repository.PatientRepository
 import org.example.backend.repository.UserRepository
 import org.example.backend.service.AuthService
+import org.example.backend.service.TokenService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 
@@ -16,7 +17,8 @@ class AuthController(
     private val userRepository: UserRepository,
     private val patientRepository: PatientRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val tokenService: TokenService
 ) {
 
 

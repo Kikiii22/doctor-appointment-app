@@ -1,0 +1,39 @@
+#noAppointments i {
+  opacity: 0.8;
+}
+
+#noAppointments .btn:hover {
+  transform: scale(1.03);
+  transition: 0.2s ease;
+}
+.sidebar {
+  width: 260px;
+  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+  overflow: visible !important;
+}
+
+.sidebar .nav-link {
+  font-size: 1rem;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+.sidebar .dropdown { position: relative; z-index: 1050; }
+
+.sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.action-card {
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.content {
+  background-color: #f8fafc;
+}

@@ -4,13 +4,14 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.example.backend.config.JwtProperties
+import org.example.backend.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class TokenService
-    (jwtProperties: JwtProperties) {
+    (jwtProperties: JwtProperties, private val userRepository: UserRepository, repository: UserRepository) {
     private val secretKey = Keys.hmacShaKeyFor(jwtProperties.key.key.toByteArray())
 
     fun generate(
@@ -18,6 +19,7 @@ class TokenService
         expirationDate: Date,
         additionalClaims: Map<String, Any> = emptyMap()
     ): String {
+
         return Jwts.builder()
             .setSubject(userDetails.username)
             .setIssuedAt(Date())

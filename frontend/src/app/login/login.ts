@@ -44,16 +44,17 @@ export class Login {
 
       this.authService.login(username, password).subscribe({
         next: (user) => {
-          this.authService.setCurrentUser(user);
-alert("Logged in")
-          if (user.role === 'PATIENT') {
-            this.router.navigate(['/dashboard']);
+          this.authService.setCurrentUser(user.user);
+          this.notificationService.addNotification('Login successful!', 'success');
+          console.log('Logged in:', user.user.role);
+          if (user.user.role === 'PATIENT') {
+            this.router.navigate(['/patient/dashboard']);
           } else {
             this.router.navigate(['/dashboard']);
           }
         },
         error: (error) => {
-alert("Invalid credentials")
+          this.notificationService.addNotification('Invalid credentials', 'error');
           this.loading = false;
         }
       });

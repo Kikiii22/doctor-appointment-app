@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -31,11 +32,12 @@ class New(
         println(">>> SecurityConfig loaded and being used! <<<")
         http
             .csrf { it.disable() }
-            .cors { }
+            .cors { }.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/api/auth/**", "api/departments", "api/roles", "api/hospitals").permitAll()
-                    .anyRequest().authenticated()
+                    .requestMatchers("/api/auth/**", "api/departments", "api/roles", "api/hospitals","api/appointments/book").permitAll()
+                    .requestMatchers("/api/patients/*/appointments",).hasRole("PATIENT").anyRequest().authenticated()
             }
             .userDetailsService(userDetailsService) // <- This wires your custom service
             .formLogin { it.disable() }

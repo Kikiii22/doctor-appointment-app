@@ -18,6 +18,7 @@ import {Router, RouterLink} from "@angular/router";
 })
 export class Register implements OnInit {
   loading=false;
+  showPassword=false;
   registerForm!: FormGroup;
   roles: string[] = [];
   hospitals: any[] = [];
@@ -76,11 +77,19 @@ export class Register implements OnInit {
     this.registerService.register(this.registerForm.value).subscribe(
         (res: any) => {
           if (res && res.token) {
-            localStorage.setItem('jwt_token', res.token);
+            localStorage.setItem('jwt', res.token);
+            localStorage.setItem('currentUser', JSON.stringify(res.user));
             alert('Registered and logged in!');
-            this.router.navigate(['/dashboard']);
-          } else {
+            if(res.user.role === 'PATIENT'){
+            this.router.navigate(['/patient/dashboard']);
+          } else{
+
+            }
+          }
+            else {
             alert('Registered! Please log in.');
+            this.router.navigate(['/login']);
+
           }
         },
         err => alert('Registration failed')

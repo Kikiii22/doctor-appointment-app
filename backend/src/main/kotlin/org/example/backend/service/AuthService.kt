@@ -4,6 +4,7 @@ import org.example.backend.config.JwtProperties
 import org.example.backend.dto.AuthRequest
 import org.example.backend.dto.JwtResponse
 import org.example.backend.dto.RegisterRequest
+import org.example.backend.dto.UserDto
 import org.example.backend.model.Doctor
 import org.example.backend.model.Patient
 import org.example.backend.model.Role
@@ -35,12 +36,20 @@ class AuthService
         println("Authenticating: ${authRequest.username}")
         authManager.authenticate(UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password))
         println("passed")
+        val domainUser=userRepository.findByUsername(authRequest.username) ?: throw Exception("User ${authRequest.username} not found")
         val user = userDetailsService.loadUserByUsername(authRequest.username)
+        val claims = mapOf(
+            "id" to domainUser.id,
+            "roles" to listOf(domainUser.role.name)
+        )
         val userToken = tokenService.generate(
             userDetails = user,
-            expirationDate = Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration.expiration)
+            expirationDate = Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration.expiration),
+            additionalClaims = claims
         )
-        return JwtResponse(userToken)
+        val userDto= UserDto(domainUser.id,domainUser.username,domainUser.role,domainUser.email)
+        println("JWT claims at issue time = ${tokenService.getAllClaims(userToken)}")
+        return JwtResponse(userToken,userDto)
     }
 
     fun register(req: RegisterRequest): JwtResponse {
@@ -93,11 +102,17 @@ class AuthService
             else -> throw IllegalArgumentException("Invalid role")
         }
         val userDetails = org.example.backend.model.CustomUserDetails(newUser)
+        val claims = mapOf(
+            "id" to newUser.id,
+            "roles" to listOf(newUser.role.name)
+        )
         val jwt = tokenService.generate(
             userDetails = userDetails,
-            expirationDate = Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration.expiration)
+            expirationDate = Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration.expiration),
+            additionalClaims = claims
         )
-        return JwtResponse(jwt)
+        val userDto= UserDto(newUser.id,newUser.username,newUser.role,newUser.email)
+        return JwtResponse(jwt,userDto)
     }
 
 }
