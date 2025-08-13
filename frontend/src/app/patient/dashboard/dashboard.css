@@ -7,7 +7,7 @@
   transition: 0.2s ease;
 }
 .sidebar {
-  width: 260px;
+  width: 280px;
   background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
   overflow: visible !important;
 }

@@ -11,6 +11,11 @@
     </div>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
+      <li>
+        <a (click)="navigateTo('/patient/dashboard')" class="nav-link text-white active">
+          <i class="fas fas fa-gauge me-2"></i> Dashboard
+        </a>
+      </li>
       <li class="nav-item">
         <a (click)="navigateTo('/patient/doctors')" class="nav-link text-white">
           <i class="fas fa-search me-2"></i> Find Doctors
