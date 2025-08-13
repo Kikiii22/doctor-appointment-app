@@ -71,3 +71,8 @@ CREATE TABLE appointments
     description TEXT,
     status      VARCHAR(20) NOT NULL CHECK (status IN ('AVAILABLE', 'BOOKED', 'FINISHED'))
 );
+
+INSERT INTO departments (id, name, description)
+VALUES (1, 'Cardiology', 'Heart and cardiovascular diseases'),
+       (2, 'Dermatology', 'Skin conditions treatment'),
+       (3, 'Neurology', 'Nervous system disorders');

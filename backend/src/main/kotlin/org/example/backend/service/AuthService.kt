@@ -108,6 +108,7 @@ class AuthService
             Role.ADMIN -> {
                 hospitalRepository.save(
                     Hospital(
+                        name = req.fullName,
                         phone = req.phone,
                         user = newUser
                     )
