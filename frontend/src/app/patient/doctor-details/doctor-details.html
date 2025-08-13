@@ -1,0 +1,179 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<div class="d-flex vh-100 bg-light">
+  <!-- Sidebar -->
+  <nav class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white">
+    <div class="d-flex align-items-center mb-3 text-white text-decoration-none">
+      <i class="fas fa-user-md fs-3 me-2"></i>
+      <span class="fs-4 fw-bold">Patient Panel</span>
+    </div>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a routerLink="/patient/doctors" class="nav-link text-white">
+          <i class="fas fa-search me-2"></i> Find Doctors
+        </a>
+      </li>
+      <li>
+        <a routerLink="/patient/appointments" class="nav-link text-white">
+          <i class="fas fa-calendar-check me-2"></i> My Appointments
+        </a>
+      </li>
+    </ul>
+    <hr>
+
+    <div class="mt-auto pt-3 border-top">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center text-white">
+          <i class="fas fa-user-circle me-2 fs-4"></i>
+          <strong>{{ currentUser?.username || 'Guest' }}</strong>
+        </div>
+        <button class="btn btn-outline-light btn-sm" (click)="logout()">
+          <i class="fas fa-right-from-bracket me-1"></i> Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="content flex-grow-1 p-4">
+    <div class="d-flex align-items-center mb-3">
+      <button class="btn btn-link text-decoration-none me-2" (click)="goBack()">
+        <i class="fas fa-arrow-left me-1"></i> Back
+      </button>
+      <h2 class="mb-0">Doctor Details</h2>
+    </div>
+
+    <div class="row g-4">
+      <!-- Doctor card -->
+      <div class="col-12 col-lg-5">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-start">
+              <div class="me-3 d-none d-sm-block">
+                <div class="avatar-circle">
+                  <i class="fas fa-user-doctor"></i>
+                </div>
+              </div>
+
+              <div class="flex-grow-1">
+                <h4 class="card-title mb-1">Dr. {{ doctor?.fullName || '—' }}</h4>
+
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge bg-secondary" *ngIf="doctor?.department?.name">
+                    {{ doctor?.department?.name }}
+                  </span>
+                  <span class="badge bg-info text-dark" *ngIf="hospitalName && hospitalName !== '—'">
+                    <i class="fas fa-hospital me-1"></i> {{ hospitalName }}
+                  </span>
+                </div>
+
+                <div class="small text-muted mt-3">
+                  <div class="d-flex align-items-center mb-1" *ngIf="doctor?.phone">
+                    <i class="fas fa-phone me-2"></i>
+                    <span>{{ doctor?.phone }}</span>
+                  </div>
+                  <div class="d-flex align-items-center" *ngIf="(doctor ?.user?.email)">
+                    <i class="fas fa-envelope me-2"></i>
+                    <span>{{ (doctor ?.user?.email )}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="earliestSlot" class="mt-4 p-3 rounded border-start next-available">
+              <div class="fw-semibold small">Next Available</div>
+              <div class="text-muted small">
+                {{ earliestSlot?.date }} at {{ earliestSlot?.startTime || '—' }}
+              </div>
+              <button class="btn btn-primary btn-sm mt-2" (click)="bookSlot(earliestSlot!)">
+                <i class="far fa-calendar-plus me-1"></i> Book
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="col-12 col-lg-7">
+        <div class="card shadow-sm h-100">
+          <div class="card-header d-flex align-items-center justify-content-between bg-primary text-white">
+            <div>
+              <i class="far fa-calendar-alt me-2"></i> Schedule
+            </div>
+            <div class="small">
+              <span class="badge bg-success-subtle text-success me-1">Available</span>
+              <span class="badge bg-secondary">Booked</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- Month label -->
+            <div class="calendar-toolbar d-flex align-items-center justify-content-between mb-2">
+              <div class="text-muted small">
+                {{ selectedDateISO | date:'MMMM yyyy' }}
+              </div>
+            </div>
+
+            <!-- Calendar pills -->
+            <div class="calendar-bar d-flex flex-nowrap gap-2 mb-3 overflow-auto">
+              <button
+                *ngFor="let d of days"
+                type="button"
+                class="btn btn-outline-primary btn-date flex-shrink-0"
+                [class.active]="selectedDateISO === d.iso"
+                (click)="loadSlotsForDate(d.iso)">
+                {{ dayLabel(d) }}
+              </button>
+            </div>
+
+            <!-- Slots -->
+            <div class="d-flex justify-content-center my-3" *ngIf="loadingSlots">
+              <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
+            </div>
+
+            <div *ngIf="!loadingSlots && slots.length === 0" class="alert alert-light border">
+              No slots for {{ selectedDateISO }}.
+            </div>
+
+            <div class="list-group" *ngIf="!loadingSlots && slots.length > 0">
+              <div class="list-group-item d-flex justify-content-between align-items-center slot-row"
+                   *ngFor="let s of slots">
+                <div class="d-flex align-items-center">
+                  <i class="far fa-clock me-2 text-muted"></i>
+                  <div>
+                    <div class="fw-semibold">{{ s.date }} · {{ s.startTime || '—' }}</div>
+                    <div class="small text-muted">
+                      {{ isAvailable(s) ? 'Available' : 'Booked / Unavailable' }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge rounded-pill px-3 py-2"
+                        [ngClass]="{
+                          'bg-success-subtle text-success fw-bold': isAvailable(s),
+                          'bg-secondary': !isAvailable(s)
+                        }">
+                    {{ isAvailable(s) ? 'Available' : 'Booked' }}
+                  </span>
+
+                  <button class="btn btn-sm"
+                          [class.btn-primary]="isAvailable(s)"
+                          [class.btn-outline-secondary]="!isAvailable(s)"
+                          [disabled]="!isAvailable(s)"
+                          (click)="bookSlot(s)">
+                    <i class="far fa-calendar-plus me-1"></i>
+                    {{ isAvailable(s) ? 'Book' : 'Not available' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /card-body -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
