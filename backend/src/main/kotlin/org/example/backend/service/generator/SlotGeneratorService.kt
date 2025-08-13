@@ -17,6 +17,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 
@@ -128,7 +129,7 @@ class SlotGeneratorService(
         date: LocalDate,
         schedule: DoctorWorkingSchedule
     ): Int {
-        val slotLength: Duration = 15.minutes
+        val slotLength: Duration = 1.hours
         val start = date.atTime(schedule.startTime)
         val end = date.atTime(schedule.endTime)
 
