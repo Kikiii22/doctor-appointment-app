@@ -71,30 +71,3 @@ CREATE TABLE appointments
     description TEXT,
     status      VARCHAR(20) NOT NULL CHECK (status IN ('AVAILABLE', 'BOOKED', 'FINISHED'))
 );
-
-INSERT INTO users (id, username, password, email, role)
-VALUES (1, 'admin', 'password', 'hospital@gmail.com', 'ADMIN'),
-       (2, 'dr_smith', 'password', 'dr.smith@hospital.com', 'DOCTOR'),
-       (3, 'patient_john', 'password', 'john.doe@example.com', 'PATIENT'),
-       (4, 'dr_jones', 'password', 'dr.jones@hospital.com', 'DOCTOR'),
-       (5, 'patient_mary', 'password', 'mary.j@example.com', 'PATIENT');
-
-INSERT INTO hospitals (id, name, phone, user_id)
-VALUES (1, 'Hospital', '+1234567890', 1);
-
-INSERT INTO departments (id, name, description)
-VALUES (1, 'Cardiology', 'Heart and cardiovascular diseases'),
-       (2, 'Dermatology', 'Skin conditions treatment'),
-       (3, 'Neurology', 'Nervous system disorders');
-
-INSERT INTO doctors (id, user_id, department_id, hospital_id, full_name, phone)
-VALUES (1, 2, 1, 1, 'Dr. John Smith', '+1234567890'),
-       (2, 4, 2, 1, 'Dr. Emily Jones', '+1987654321');
-
-INSERT INTO patients (id, user_id, full_name, phone)
-VALUES (1, 3, 'John Doe', '+1555123456'),
-       (2, 5, 'Mary Johnson', '+1555987654');
-
-INSERT INTO appointments (id, slot_id, patient_id, description, status)
-VALUES (1, 1, 1, 'Annual heart checkup', 'BOOKED'),
-       (2, 4, 2, 'Skin allergy consultation', 'BOOKED');

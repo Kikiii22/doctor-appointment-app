@@ -6,10 +6,12 @@ import org.example.backend.dto.JwtResponse
 import org.example.backend.dto.RegisterRequest
 import org.example.backend.dto.UserDto
 import org.example.backend.model.Doctor
+import org.example.backend.model.Hospital
 import org.example.backend.model.Patient
 import org.example.backend.model.Role
 import org.example.backend.model.User
 import org.example.backend.repository.*
+import org.example.backend.service.generator.SlotGeneratorService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -28,6 +30,7 @@ class AuthService
     private val passwordEncoder: PasswordEncoder,
     private val doctorRepository: DoctorRepository,
     private val hospitalRepository: HospitalRepository,
+    private val slotGeneratorService: SlotGeneratorService,
     private val departmentRepository: DepartmentRepository
 ) {
     fun login(authRequest: AuthRequest): JwtResponse {
@@ -88,13 +91,25 @@ class AuthService
                 }
                     ?: throw IllegalArgumentException("Department is required for doctor")
 
-                doctorRepository.save(
+                val doctor: Doctor = doctorRepository.save(
                     Doctor(
                         fullName = req.fullName,
                         phone = req.phone,
                         user = newUser,
                         hospital = hospital,
                         department = department
+                    )
+                )
+
+                slotGeneratorService.generateDoctorSlots(doctor)
+
+            }
+
+            Role.ADMIN -> {
+                hospitalRepository.save(
+                    Hospital(
+                        phone = req.phone,
+                        user = newUser
                     )
                 )
             }

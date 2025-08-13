@@ -32,6 +32,10 @@ class SlotGeneratorService(
     @PostConstruct
     fun createDefaultSchedulesForAllDoctors() {
         val doctors = doctorRepository.findAll()
+
+        if (doctors.isEmpty()){
+            return
+        }
         val standardStart = LocalTime.of(9, 0)
         val standardEnd = LocalTime.of(17, 0)
         val breakStart = LocalTime.of(12, 0)
@@ -122,6 +126,42 @@ class SlotGeneratorService(
             }
 
         }
+    }
+
+    fun generateDoctorSlots(doctor: Doctor) {
+        val from = LocalDate.now().plusDays(1)
+        val to = from.plusMonths(3)
+            var date = from
+            while (!date.isAfter(to)) {
+                try {
+                    val isUnavailable = breakRepository.existsByDoctorIdAndDate(doctor.id, date)
+                    if (isUnavailable) {
+                        logger.debug("Doctor {} unavailable on {}", doctor.fullName, date)
+                        date = date.plusDays(1)
+                        continue
+                    }
+
+                    val schedule = scheduleRepository.findByDoctorIdAndDayOfWeek(doctor.id, date.dayOfWeek)
+                    if (schedule == null) {
+                        logger.debug("No working schedule for doctor {} on {}", doctor.fullName, date.dayOfWeek)
+                        date = date.plusDays(1)
+                        continue
+                    }
+
+                    if (slotRepository.existsByDoctorIdAndDate(doctor.id, date)) {
+                        logger.debug("Slots already exist for doctor {} on {}", doctor.fullName, date)
+                        date = date.plusDays(1)
+                        continue
+                    }
+
+                    generateSlotsForDoctorAndDate(doctor, date, schedule)
+
+                } catch (e: Exception) {
+                    logger.error("Error generating slots for doctor ${doctor.fullName} on $date", e)
+                }
+
+                date = date.plusDays(1)
+            }
     }
 
     private fun generateSlotsForDoctorAndDate(
