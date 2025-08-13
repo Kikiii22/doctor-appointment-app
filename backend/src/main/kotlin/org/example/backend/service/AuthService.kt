@@ -101,7 +101,7 @@ class AuthService
                     )
                 )
 
-                slotGeneratorService.generateDoctorSlots(doctor)
+                slotGeneratorService.initializeNewDoctor(doctor)
 
             }
 
