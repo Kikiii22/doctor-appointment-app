@@ -1,0 +1,150 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="d-flex vh-100 bg-light">
+  <!-- Sidebar -->
+  <nav class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
+    <div class="d-flex align-items-center mb-3 text-white text-decoration-none">
+      <i class="fas fa-user-md fs-3 me-2"></i>
+      <span class="fs-4 fw-bold">Patient Panel</span>
+    </div>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li>
+        <a (click)="navigateTo('/patient/dashboard')" class="nav-link text-white">
+          <i class="fas fa-gauge me-2"></i> Dashboard
+        </a>
+      </li>
+      <li>
+        <a (click)="navigateTo('/patient/doctors')" class="nav-link text-white">
+          <i class="fas fa-search me-2"></i> Find Doctors
+        </a>
+      </li>
+      <li>
+        <a (click)="navigateTo('/patient/appointments')" class="nav-link text-white active">
+          <i class="fas fa-calendar-check me-2"></i> My Appointments
+        </a>
+      </li>
+    </ul>
+    <hr>
+    <div class="mt-auto pt-3 border-top">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center text-white">
+          <i class="fas fa-user-circle me-2 fs-4"></i>
+          <strong>{{ currentUser?.username || 'Guest' }}</strong>
+        </div>
+        <button class="btn btn-outline-light btn-sm" (click)="logout()">
+          <i class="fas fa-right-from-bracket me-1"></i> Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="content flex-grow-1 p-4">
+    <h1 class="mb-4">My Appointments</h1>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3 col-sm-6" *ngFor="let stat of [
+        {label: 'Today', value: stats.today, icon: 'far fa-clock'},
+        {label: 'Upcoming', value: stats.upcoming, icon: 'far fa-calendar'},
+        {label: 'This Month', value: stats.thisMonth, icon: 'fas fa-users'},
+        {label: 'Completed', value: stats.completed, icon: 'fas fa-check-circle'}
+      ]">
+        <div class="card text-center shadow-sm border-0">
+          <div class="card-body">
+            <div class="text-primary mb-2"><i class="{{ stat.icon }} fa-lg"></i></div>
+            <h5 class="fw-bold mb-0">{{ stat.value }}</h5>
+            <small class="text-muted">{{ stat.label }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab==='today'" (click)="switchTab('today')">
+          <i class="far fa-clock me-1"></i> Today ({{ stats.today }})
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab==='upcoming'" (click)="switchTab('upcoming')">
+          <i class="far fa-calendar me-1"></i> Upcoming ({{ stats.upcoming }})
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab==='past'" (click)="switchTab('past')">
+          <i class="fas fa-history me-1"></i> Past ({{ stats.completed }})
+        </a>
+      </li>
+    </ul>
+
+    <!-- Appointment Lists -->
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <!-- Today -->
+        <ng-container *ngIf="activeTab === 'today'">
+          <h5 class="mb-3">Today's Appointments</h5>
+          <div *ngIf="appointmentsToday.length === 0" class="text-center text-muted py-4">
+            <i class="far fa-calendar-alt fa-2x mb-2"></i>
+            <p>No appointments scheduled for today</p>
+          </div>
+          <ul class="list-group" *ngIf="appointmentsToday.length > 0">
+            <li class="list-group-item" *ngFor="let apt of appointmentsToday">
+              {{ apt.slot.date }} at {{ apt.slot.startTime }} - Status: {{ apt.status }}
+            </li>
+          </ul>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'upcoming'">
+          <h5 class="mb-3">Upcoming Appointments</h5>
+
+          <div *ngIf="upcomingAppointments.length === 0" class="text-center text-muted py-4">
+            <i class="far fa-calendar-alt fa-2x mb-2"></i>
+            <p>No upcoming appointments</p>
+          </div>
+
+          <div class="list-group" *ngIf="upcomingAppointments.length > 0">
+            <div class="list-group-item appointment-card" *ngFor="let apt of upcomingAppointments">
+              <div class="d-flex align-items-center w-100">
+                <div class="appointment-icon">
+                  <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
+                  <p class="mb-1 text-muted small">Status: {{ apt.status }}</p>
+                  <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor?.fullName }}</p>
+                </div>
+                <div class="ms-auto d-flex gap-2">
+                  <button class="btn btn-sm btn-outline-primary" (click)="rescheduleAppointment(apt)">
+                    <i class="fas fa-calendar-alt me-1"></i> Reschedule
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="cancelAppointment(apt)">
+                    <i class="fas fa-times me-1"></i> Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Past -->
+        <ng-container *ngIf="activeTab === 'past'">
+          <h5 class="mb-3">Past Appointments</h5>
+          <div *ngIf="pastAppointments.length === 0" class="text-center text-muted py-4">
+            <i class="far fa-calendar-alt fa-2x mb-2"></i>
+            <p>No past appointments</p>
+          </div>
+          <ul class="list-group" *ngIf="pastAppointments.length > 0">
+            <li class="list-group-item" *ngFor="let apt of pastAppointments">
+              {{ apt.slot.date }} at {{ apt.slot.startTime }} - Status: {{ apt.status }}
+            </li>
+          </ul>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
