@@ -116,7 +116,7 @@
                 <div class="flex-grow-1 ms-3">
                   <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
                   <p class="mb-1 text-muted small">Status: {{ apt.status }}</p>
-                  <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor?.fullName }}</p>
+                  <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
                 </div>
                 <div class="ms-auto d-flex gap-2">
                   <button class="btn btn-sm btn-outline-primary" (click)="rescheduleAppointment(apt)">

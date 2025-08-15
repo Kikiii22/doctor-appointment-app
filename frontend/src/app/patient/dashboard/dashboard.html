@@ -92,12 +92,12 @@
               </small>
             </div>
 
-            <!-- Right: Status pill -->
+            <!-- Right: Status pill add this for canceled bg-danger-subtle text-danger fw-bold': appointment.status === 'CANCELLED'-->
+
             <span
               class="badge rounded-pill px-3 py-2"
               [ngClass]="{
                 'bg-success-subtle text-success fw-bold': appointment.status === 'BOOKED',
-                'bg-danger-subtle text-danger fw-bold': appointment.status === 'CANCELLED'
               }"
             >
               {{ appointment.status }}
