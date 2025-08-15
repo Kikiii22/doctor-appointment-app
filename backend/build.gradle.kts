@@ -16,9 +16,19 @@ java {
 
 repositories {
     mavenCentral()
+    google()
+    maven { url = uri("https://repo1.maven.org/maven2/") }
+
+
 }
 
 dependencies {
+    ///added google calendar dependencies
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("com.google.api-client:google-api-client:2.6.0")
+    implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

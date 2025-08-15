@@ -5,6 +5,7 @@ import { PatientDashboardComponent} from './patient/dashboard/dashboard';
 import {ListDoctors} from './patient/list-doctors/list-doctors';
 import {DoctorDetails} from './patient/doctor-details/doctor-details';
 import {PatientAppointments} from './patient-appointments/patient-appointments';
+import {LoginSuccess} from './login-success/login-success';
 
 
 export const routes: Routes = [
@@ -32,7 +33,12 @@ export const routes: Routes = [
     path:'patient/appointments',
     component:PatientAppointments
   },
-  { path: '', redirectTo: 'login', pathMatch: 'full' }
+  {
+    path:'login-success',
+    component:LoginSuccess
+  },
+  { path: '',
+    redirectTo: 'login', pathMatch: 'full' }
 
 
 ];

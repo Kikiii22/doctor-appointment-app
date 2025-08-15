@@ -12,12 +12,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 @Configuration
 @EnableConfigurationProperties(JwtProperties::class)
 class New(
     private val userDetailsService: UserDetailsService,
-    jwtAuthenticationFilter: JwtAuthenticationFilter
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val googleAuthenticationHandler: GoogleAuthenticationHandler
 ) {
 
 
@@ -32,14 +33,15 @@ class New(
         println(">>> SecurityConfig loaded and being used! <<<")
         http
             .csrf { it.disable() }
-            .cors { }.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .cors { }.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) }
 
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/api/auth/**", "api/departments", "api/roles", "api/hospitals",
+                    .requestMatchers("/api/auth/**", "api/departments", "api/roles","/oauth2/**", "api/hospitals",
                         ).permitAll()
                     .requestMatchers("/api/patients/*/appointments","api/appointments/book","api/appointments/book/cancel","api/doctors/*").hasRole("PATIENT").anyRequest().authenticated()
             }
+            .oauth2Login { auth->auth.successHandler ( googleAuthenticationHandler ) }
             .userDetailsService(userDetailsService) // <- This wires your custom service
             .formLogin { it.disable() }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
