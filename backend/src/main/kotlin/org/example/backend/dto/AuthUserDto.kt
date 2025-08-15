@@ -1,4 +1,3 @@
 package org.example.backend.dto
 
-class AuthUserDto {
-}
+data class AuthUserDto(val id: Long, val username: String, val roles: List<String>)

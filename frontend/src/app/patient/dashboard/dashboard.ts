@@ -29,12 +29,12 @@ export class PatientDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
+    console.log("najnov korisnik",this.currentUser)
     this.loadUpcomingAppointments();
   }
 
   loadUpcomingAppointments(): void {
-    // This would need patient ID - you might need to modify your user model
-    // For now, assuming the user object has an id
+
     console.log('Loading appointments for patient:', this.currentUser?.id);
     console.log(localStorage.getItem('jwt'))
     console.log(localStorage.getItem('currentUser'))
@@ -45,7 +45,7 @@ export class PatientDashboardComponent implements OnInit {
           console.log(appointments[0])
           this.upcomingAppointments = appointments
             .filter(apt => new Date(`${apt.slot.date}T${apt.slot.startTime}`) > new Date())
-            .slice(0, 3);
+            .slice(0, 5);
           this.notificationService.checkUpcomingAppointments(appointments);
         },
         error: (error) => console.error('Error loading appointments:', error)

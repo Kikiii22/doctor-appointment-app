@@ -11,12 +11,12 @@ export class AppointmentService {
 
   constructor(private http: HttpClient) {}
 
-  bookAppointment(slotId: number, patientId: number): Observable<Appointment> {
-    return this.http.post<Appointment>(`${this.baseUrl}/book`, { slotId, patientId });
+  bookAppointment(slotId: number): Observable<Appointment> {
+    return this.http.post<Appointment>(`${this.baseUrl}/book`, { slotId});
   }
 
-  cancelAppointment(slotId: number, patientId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/cancel`, { slotId, patientId });
+  cancelAppointment(slotId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/cancel`, { slotId });
   }
 
   finishAppointment(id: number, doctorId: number, description: string): Observable<Appointment> {

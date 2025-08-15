@@ -36,8 +36,9 @@ class New(
 
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/api/auth/**", "api/departments", "api/roles", "api/hospitals","api/appointments/book").permitAll()
-                    .requestMatchers("/api/patients/*/appointments","api/doctors/*").hasRole("PATIENT").anyRequest().authenticated()
+                    .requestMatchers("/api/auth/**", "api/departments", "api/roles", "api/hospitals",
+                        ).permitAll()
+                    .requestMatchers("/api/patients/*/appointments","api/appointments/book","api/appointments/book/cancel","api/doctors/*").hasRole("PATIENT").anyRequest().authenticated()
             }
             .userDetailsService(userDetailsService) // <- This wires your custom service
             .formLogin { it.disable() }

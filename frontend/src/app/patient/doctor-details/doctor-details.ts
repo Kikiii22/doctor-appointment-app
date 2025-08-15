@@ -6,6 +6,7 @@ import {DoctorService} from '../../services/doctor';
 import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {Auth} from '../../services/auth';
 import {User} from '../../interfaces/user';
+import {AppointmentService} from '../../services/appointment';
 
 type DayTab = { iso: string; label: string };
 
@@ -17,91 +18,160 @@ interface CalendarDay {
   slots: Slot[];
   loading: boolean;
 }
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-doctor-details',
   imports: [
-    NgClass,
+
     NgIf,
     NgForOf,
     DatePipe,
-    RouterLink
+
   ],
   templateUrl: './doctor-details.html',
   styleUrl: './doctor-details.css'
 })
 export class DoctorDetails {
   doctorId = 0;
-
   doctor: Doctor | null = null;
   currentUser: User | null = null;
-
   earliestSlot: Slot | null = null;
-
-  // Calendar navigation
   currentCalendarDate = new Date();
   calendarDays: CalendarDay[] = [];
-
-  // Legacy support for existing functionality
   days: DayTab[] = [];
   selectedDateISO = '';
-
-  // Slots for the selected date
   loadingSlots = false;
+  selectedSlot:Slot|null=null;
   slots: Slot[] = [];
-
-  // Cache for loaded slots to avoid repeated API calls
   private slotsCache = new Map<string, Slot[]>();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private doctorService: DoctorService,
-    private authService: Auth
+    private authService: Auth,
+    private appointmentService: AppointmentService
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-
     this.doctorId = Number(this.route.snapshot.paramMap.get('id'));
-
-    // Keep existing functionality
     this.buildDays(14);
     this.selectedDateISO = this.days[0]?.iso || this.todayISO();
-
-    // Initialize calendar
-    this.generateCalendar();
-
     this.loadDoctorDetails();
+    this.generateCalendar();
     this.loadEarliestSlot();
     this.loadSlotsForDate(this.selectedDateISO);
   }
+  openConfirmModal(slot: Slot) {
+    console.log('Opening modal for slot:', slot); // Debug log
+    this.selectedSlot = slot;
 
+    try {
+      const modalEl = document.getElementById('confirmBookingModal');
+
+      if (!modalEl) {
+        console.error('Modal element not found!');
+        alert('Modal not found. Please check your template.');
+        return;
+      }
+
+      // Check if Bootstrap is available
+      if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap is not loaded!');
+        alert('Bootstrap is not loaded properly.');
+        return;
+      }
+
+      const modal = new bootstrap.Modal(modalEl, {
+        backdrop: 'static', // Optional: prevent closing by clicking backdrop
+        keyboard: true
+      });
+
+      modal.show();
+      console.log('Modal should be showing now'); // Debug log
+
+    } catch (error) {
+      console.error('Error opening modal:', error);
+      // Fallback to confirm dialog
+      if (confirm(`Book appointment with ${this.doctor?.fullName} on ${slot.date} at ${this.timeOf(slot)}?`)) {
+        this.confirmBooking();
+      }
+    }
+  }
+  confirmBooking() {
+    if (!this.selectedSlot) return;
+
+    this.appointmentService.bookAppointment(this.selectedSlot.id).subscribe({
+      next: () => {
+        this.markSlotAsBooked(this.selectedSlot!);
+        alert('Booking confirmed!');
+        const modalEl = document.getElementById('confirmBookingModal');
+        const modal = bootstrap.Modal.getInstance(modalEl!);
+        modal.hide();
+        this.refreshSlotData();
+      },
+      error: err => {
+        console.error(err);
+        alert('Failed to book slot.');
+      }
+    });
+  }
+  private markSlotAsBooked(slot: Slot): void {
+    // Update in main slots array
+    const mainSlotIndex = this.slots.findIndex(s => s.id === slot.id);
+    if (mainSlotIndex !== -1) {
+      (this.slots[mainSlotIndex] as any).booked = true;
+      (this.slots[mainSlotIndex] as any).isAvailable = false;
+    }
+
+    // Update in calendar days
+    this.calendarDays.forEach(day => {
+      const calendarSlotIndex = day.slots.findIndex(s => s.id === slot.id);
+      if (calendarSlotIndex !== -1) {
+        (day.slots[calendarSlotIndex] as any).booked = true;
+        (day.slots[calendarSlotIndex] as any).isAvailable = false;
+      }
+    });
+    this.slotsCache.forEach((cachedSlots, dateKey) => {
+      const cachedSlotIndex = cachedSlots.findIndex(s => s.id === slot.id);
+      if (cachedSlotIndex !== -1) {
+        (cachedSlots[cachedSlotIndex] as any).booked = true;
+        (cachedSlots[cachedSlotIndex] as any).isAvailable = false;
+      }
+    });
+
+    // Update earliest slot if it was the one booked
+    if (this.earliestSlot && this.earliestSlot.id === slot.id) {
+      this.loadEarliestSlot(); // Reload to find next available
+    }}
   goBack(): void {
     this.router.navigate(['/patient/doctors']);
   }
+  private refreshSlotData(): void {
+    // Clear cache for the booked date to force fresh data
+    this.slotsCache.delete(this.selectedSlot?.date || '');
 
-  // ----- Calendar Navigation -----
-  previousMonth(): void {
-    this.currentCalendarDate.setMonth(this.currentCalendarDate.getMonth() - 1);
-    this.generateCalendar();
+    // Reload slots for current selected date
+    this.loadSlotsForDate(this.selectedDateISO);
+
+    // Reload calendar day slots
+    const calendarDay = this.calendarDays.find(day => day.dateISO === this.selectedSlot?.date);
+    if (calendarDay) {
+      this.loadSlotsForCalendarDay(calendarDay);
+    }
+
+    // Reload earliest slot
+    this.loadEarliestSlot();
   }
-
-  nextMonth(): void {
-    this.currentCalendarDate.setMonth(this.currentCalendarDate.getMonth() + 1);
-    this.generateCalendar();
-  }
-
   generateCalendar(): void {
     const year = this.currentCalendarDate.getFullYear();
     const month = this.currentCalendarDate.getMonth();
 
-    // Get first day of month and calculate start date (beginning of week)
     const firstDay = new Date(year, month, 1);
     const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay()); // Start from Sunday
-
-    // Generate 42 days (6 weeks)
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
     this.calendarDays = [];
     for (let i = 0; i < 42; i++) {
       const date = new Date(startDate);
@@ -120,45 +190,35 @@ export class DoctorDetails {
       this.calendarDays.push(calendarDay);
     }
 
-    // Load slots for all visible days in current month
     this.loadSlotsForVisibleDays();
   }
 
   private loadSlotsForVisibleDays(): void {
     const currentMonthDays = this.calendarDays.filter(day => day.isCurrentMonth);
-
-    // Only load slots for current and future dates
     const futureDays = currentMonthDays.filter(day => !this.isDateInPast(day.dateISO));
-
     futureDays.forEach(day => {
       this.loadSlotsForCalendarDay(day);
     });
   }
 
   private loadSlotsForCalendarDay(day: CalendarDay): void {
-    // Don't load slots for past dates
     if (this.isDateInPast(day.dateISO)) {
       day.slots = [];
       return;
     }
 
-    // Check cache first
     if (this.slotsCache.has(day.dateISO)) {
       day.slots = this.filterFutureSlots(this.slotsCache.get(day.dateISO) || []);
       return;
     }
 
     day.loading = true;
-
     this.doctorService.getDoctorSlots(this.doctorId, undefined, day.dateISO).subscribe({
       next: (slots) => {
         const normalizedSlots = (slots ?? []).map(s => this.normalizeSlot(s));
         const sortedSlots = normalizedSlots.sort((a, b) => this.slotTs(a) - this.slotTs(b));
 
-        // Cache all slots (including past ones for consistency)
         this.slotsCache.set(day.dateISO, sortedSlots);
-
-        // But only show future slots
         day.slots = this.filterFutureSlots(sortedSlots);
       },
       error: (err) => {
@@ -171,7 +231,6 @@ export class DoctorDetails {
     });
   }
 
-  // ----- Existing Data Load Methods -----
   private loadDoctorDetails(): void {
     this.doctorService.getDoctorById(this.doctorId).subscribe({
       next: (doctor) => (this.doctor = doctor),
@@ -184,7 +243,7 @@ export class DoctorDetails {
       next: (slots) => {
         const futureSlots = (slots ?? [])
           .map(x => this.normalizeSlot(x))
-          .filter(slot => !this.isSlotInPast(slot)) // Filter past slots
+          .filter(slot => !this.isSlotInPast(slot))
           .filter(x => !(x as any).booked && (x as any).isAvailable !== false);
 
         this.earliestSlot = futureSlots[0] || null;
@@ -203,7 +262,6 @@ export class DoctorDetails {
         const list = (slots ?? []).map(s => this.normalizeSlot(s));
         const sortedSlots = list.sort((a, b) => this.slotTs(a) - this.slotTs(b));
 
-        // Filter to show only future slots
         this.slots = this.filterFutureSlots(sortedSlots);
       },
       error: (err) => console.error('Error loading slots:', err),
@@ -211,27 +269,10 @@ export class DoctorDetails {
     });
   }
 
-  // ----- UI Helpers -----
-  get hospitalName(): string {
-    return (this.doctor as any)?.department?.hospital?.name || '—';
-  }
-
-  dayLabel(d: DayTab): string {
-    const today = this.todayISO();
-    const tomorrow = this.addDaysISO(today, 1);
-    if (d.iso === today) return 'Today';
-    if (d.iso === tomorrow) return 'Tomorrow';
-    const dt = new Date(d.iso);
-    return dt.toLocaleDateString(undefined, {
-      weekday: 'short', day: '2-digit', month: 'short'
-    });
-  }
-
   isAvailable(slot: Slot): boolean {
     const booked = (slot as any).booked === true;
     const isAvail = (slot as any).isAvailable;
 
-    // Check if slot is in the past
     if (this.isSlotInPast(slot)) {
       return false;
     }
@@ -253,36 +294,38 @@ export class DoctorDetails {
   timeOf(slot: Slot): string {
     return (slot as any).startTime || (slot as any).time || '';
   }
+  navigateTo(url: string) {
+    this.router.navigateByUrl(url);
+  }
+  previousMonth(): void {
+    this.currentCalendarDate = new Date(
+      this.currentCalendarDate.getFullYear(),
+      this.currentCalendarDate.getMonth() - 1,
+      1
+    );
+    this.generateCalendar();
+  }
 
-  bookSlot(slot: Slot): void {
-    if (!this.isAvailable(slot)) return;
+  nextMonth(): void {
+    this.currentCalendarDate = new Date(
+      this.currentCalendarDate.getFullYear(),
+      this.currentCalendarDate.getMonth() + 1,
+      1
+    );
+    this.generateCalendar();
+  }
 
-    // Update selected date when booking from calendar
-    this.selectedDateISO = slot.date;
-
-    this.router.navigate(['/patient/doctor', this.doctorId], {
-      queryParams: { date: slot.date, time: this.timeOf(slot) }
+  get currentMonthLabel(): string {
+    return this.currentCalendarDate.toLocaleDateString(undefined, {
+      month: 'long',
+      year: 'numeric'
     });
   }
-
-  getSlotTooltip(slot: Slot): string {
-    if (this.isSlotInPast(slot)) {
-      return 'This time slot has passed';
-    }
-    if (!(slot as any).booked && ((slot as any).isAvailable === undefined || (slot as any).isAvailable === true)) {
-      return 'Click to book this appointment';
-    }
-    return 'This slot is not available';
-  }
-
-
-
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login'], { replaceUrl: true });
   }
 
-  // ----- Utility Methods -----
   private normalizeSlot(s: Slot): Slot {
     if (!(s as any).startTime && (s as any).time) {
       (s as any).startTime = (s as any).time;

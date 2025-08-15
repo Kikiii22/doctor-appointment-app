@@ -43,8 +43,7 @@ export class ListDoctors implements OnInit{
 
   logout() {
     // hook up to your auth service
-    this.router.navigateByUrl('/login');
-  }
+this.authService.logout();  }
 
   private loadDoctors(): void {
     this.loading = true;

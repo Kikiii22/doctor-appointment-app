@@ -3,6 +3,7 @@ package org.example.backend.config
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.example.backend.dto.AuthUserDto
 import org.example.backend.service.CustomDetailsService
 import org.example.backend.service.TokenService
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -41,19 +42,22 @@ class JwtAuthenticationFilter(
                 if (username != null && SecurityContextHolder.getContext().authentication == null) {
                     val userDetails = userDetailsService.loadUserByUsername(username)
                     val rolesFromToken = (claims["roles"] as? Collection<*>)?.mapNotNull { it?.toString() } ?: emptyList()
+                    val idFromToken = (claims["id"] as? Number)?.toLong()
+                    val principal= AuthUserDto(idFromToken!!,username,rolesFromToken)
                     val authorities = if (rolesFromToken.isNotEmpty()) {
                         rolesFromToken.map { SimpleGrantedAuthority("ROLE_$it") }
                     } else {
                         userDetails.authorities
                     }
+
                     if (tokenService.isValid(jwt, userDetails)) {
                         val authentication = UsernamePasswordAuthenticationToken(
-                            userDetails,
+                            principal,
                             null,
                             authorities
                         )
                        val webDetails = WebAuthenticationDetailsSource().buildDetails(request)
-                        val idFromToken = (claims["id"] as? Number)?.toLong()
+
                         authentication.details = mapOf(
                             "web" to webDetails,
                             "id" to idFromToken

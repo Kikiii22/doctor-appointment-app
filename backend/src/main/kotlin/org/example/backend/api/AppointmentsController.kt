@@ -1,10 +1,12 @@
 package org.example.backend.api
 
 import org.example.backend.dto.AppointmentRequest
+import org.example.backend.dto.AuthUserDto
 import org.example.backend.dto.FinishAppointmentRequest
 import org.example.backend.model.Appointment
 import org.example.backend.service.AppointmentService
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -15,10 +17,11 @@ class AppointmentsController(
 ) {
     @PostMapping("/book")
     fun createAppointment(
-        @RequestBody request: AppointmentRequest
+        @RequestBody request: AppointmentRequest, @AuthenticationPrincipal user: AuthUserDto
     ): ResponseEntity<Appointment> {
-        val appointment = appointmentService.bookAppointment(request.slotId, request.patientId)
+        val appointment = appointmentService.bookAppointment(request.slotId, user.id)
         return ResponseEntity.ok(appointment)
+
     }
 
     @PatchMapping("/{id}/finish")
@@ -38,9 +41,9 @@ class AppointmentsController(
 
     @PostMapping("/cancel")
     fun cancelAppointment(
-        @RequestBody request: AppointmentRequest
+        @RequestBody request: AppointmentRequest,@AuthenticationPrincipal user: AuthUserDto
     ): ResponseEntity<Void> {
-        appointmentService.cancelAppointment(request.slotId, request.patientId)
+        appointmentService.cancelAppointment(request.slotId, user.id)
         return ResponseEntity.ok().build()
     }
 }
