@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {Appointment} from '../interfaces/appointment';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Appointment } from '../interfaces/appointment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +9,10 @@ import {Appointment} from '../interfaces/appointment';
 export class AppointmentService {
   private baseUrl = '/api/appointments';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   bookAppointment(slotId: number): Observable<Appointment> {
-    return this.http.post<Appointment>(`${this.baseUrl}/book`, { slotId});
+    return this.http.post<Appointment>(`${this.baseUrl}/book`, { slotId });
   }
 
   cancelAppointment(slotId: number): Observable<void> {
@@ -27,5 +27,9 @@ export class AppointmentService {
   getPatientAppointments(patientId: number): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`/api/patients/${patientId}/appointments`);
   }
-}
 
+  getDoctorAppointments(doctorId: number): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`/api/doctors/${doctorId}/appointments`);
+  }
+
+}

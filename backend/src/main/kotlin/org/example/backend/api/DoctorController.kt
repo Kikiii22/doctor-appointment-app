@@ -40,7 +40,6 @@ class DoctorController(
         return ResponseEntity.ok(doctorService.findSchedule(id))
     }
 
-    //TO DO show slots only after the local time for today
     @GetMapping("/{id}/slots")
     fun getDoctorSlots(
         @PathVariable id: Long,
@@ -60,5 +59,10 @@ class DoctorController(
     fun getDoctorBreak(@PathVariable id: Long): ResponseEntity<DoctorBreak?> {
         val doctorBreak = doctorService.findBreak(id)
         return ResponseEntity.ok(doctorBreak)
+    }
+
+    @GetMapping("/user/{id}")
+    fun getDoctorByUserId(@PathVariable id: Long): ResponseEntity<Doctor?> {
+        return ResponseEntity.ok(doctorRepository.findByUserId(id))
     }
 }

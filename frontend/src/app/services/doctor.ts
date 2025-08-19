@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {Appointment} from '../interfaces/appointment';
-import {Slot} from '../interfaces/slot';
-import {Doctor} from '../interfaces/doctor';
+import { Appointment } from '../interfaces/appointment';
+import { Slot } from '../interfaces/slot';
+import { Doctor } from '../interfaces/doctor';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ import {Doctor} from '../interfaces/doctor';
 export class DoctorService {
   private baseUrl = '/api/doctors';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllDoctors(): Observable<Doctor[]> {
     return this.http.get<Doctor[]>(this.baseUrl);
@@ -31,5 +31,9 @@ export class DoctorService {
 
   getDoctorAppointments(id: number): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`${this.baseUrl}/${id}/appointments`);
+  }
+
+  getDoctorByUserId(id: number): Observable<Doctor> {
+    return this.http.get<Doctor>(`${this.baseUrl}/user/${id}`);
   }
 }
