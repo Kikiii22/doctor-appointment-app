@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {Appointment} from '../interfaces/appointment';
-import {Auth} from '../services/auth';
-import {AppointmentService} from '../services/appointment';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {Router} from '@angular/router';
-import {User} from '../interfaces/user';
+import { Component, OnInit } from '@angular/core';
+import { Appointment } from '../../interfaces/appointment';
+import { Auth } from '../../services/auth';
+import { AppointmentService } from '../../services/appointment';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import { Router } from '@angular/router';
+import { User } from '../../interfaces/user';
 
 @Component({
   selector: 'app-patient-appointments',
@@ -16,10 +16,10 @@ import {User} from '../interfaces/user';
   templateUrl: './patient-appointments.html',
   styleUrl: './patient-appointments.css'
 })
-export class PatientAppointments implements OnInit{
+export class PatientAppointments implements OnInit {
   today = new Date();
   activeTab: 'today' | 'upcoming' | 'past' = 'today';
-  currentUser: User| null = null;
+  currentUser: User | null = null;
 
   stats = { today: 0, upcoming: 0, thisMonth: 0, completed: 0 };
 
@@ -30,12 +30,12 @@ export class PatientAppointments implements OnInit{
   constructor(
     private appointmentService: AppointmentService,
     private auth: Auth,
-    private router:Router
-  ) {}
+    private router: Router
+  ) { }
 
   ngOnInit() {
-  this.currentUser = this.auth.getCurrentUser();
-    console.log("najnov korisnik",this.currentUser)
+    this.currentUser = this.auth.getCurrentUser();
+    console.log("najnov korisnik", this.currentUser)
     if (this.currentUser?.id) {
       this.loadAppointments(this.currentUser.id);
     }
