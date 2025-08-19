@@ -1,4 +1,5 @@
-import {Slot} from './slot';
+import { Patient } from './patient';
+import { Slot } from './slot';
 
-export interface Appointment
-{ id:number; slot:Slot; patient:number;  description?:string; status:' AVAILABLE'|'BOOKED'|'FINISHED' }
+export interface Appointment { id: number; slot: Slot; patient: Patient; description?: string; status: ' AVAILABLE' | 'BOOKED' | 'FINISHED' }
+

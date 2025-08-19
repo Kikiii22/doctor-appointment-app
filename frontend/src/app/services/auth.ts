@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {User} from '../interfaces/user';
-import {BehaviorSubject, Observable, tap} from 'rxjs';
-import {AuthResponse} from '../interfaces/AuthResponse';
-import {Router} from '@angular/router';
+import { User } from '../interfaces/user';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { AuthResponse } from '../interfaces/AuthResponse';
+import { Router } from '@angular/router';
+import { Doctor } from '../interfaces/doctor';
 
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private api = '/api';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
-  constructor(private http: HttpClient,private router:Router) {
+  constructor(private http: HttpClient, private router: Router) {
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       this.currentUserSubject.next(JSON.parse(storedUser));
@@ -26,7 +27,7 @@ export class Auth {
   }
   login(username: string, password: string): Observable<AuthResponse> {
     return this.http.post<User>(`${this.api}/auth/login`, { username, password }).pipe(
-      tap((res:any)=>{
+      tap((res: any) => {
         localStorage.setItem('jwt', res.token);
         this.currentUser$ = res.user;
         localStorage.setItem('currentUser', JSON.stringify(res.user));
@@ -38,9 +39,9 @@ export class Auth {
     return this.http.get<any[]>(`${this.api}/departments`);
   }
 
-  register(data: any):Observable<AuthResponse> {
+  register(data: any): Observable<AuthResponse> {
     return this.http.post(`${this.api}/auth/register`, data).pipe(
-      tap((res:any)=>{
+      tap((res: any) => {
         localStorage.setItem('jwt', res.token);
         this.currentUser$ = res.user;
         localStorage.setItem('currentUser', JSON.stringify(res.user));
@@ -60,13 +61,17 @@ export class Auth {
   logout() {
     localStorage.removeItem('jwt');
     localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);                      // ✅ notify subscribers
+    this.currentUserSubject.next(null);
     this.router.navigate(['/login'], { replaceUrl: true });
   }
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
-  getToken():string|null {
+  getToken(): string | null {
     return localStorage.getItem('jwt');
+  }
+
+  getDoctorByUserId(id: number): Observable<Doctor> {
+    return this.http.get<Doctor>(`${this.api}/doctors/api/user/${id}`);
   }
 }

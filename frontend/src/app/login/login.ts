@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router, RouterLink} from '@angular/router';
-import {NotificationService} from '../services/notification';
-import {Auth} from '../services/auth';
-import {NgIf} from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { NotificationService } from '../services/notification';
+import { Auth } from '../services/auth';
+import { NgIf } from '@angular/common';
 
 class AuthService {
 }
@@ -20,7 +20,7 @@ class AuthService {
 })
 export class Login {
   loading = false;
-  showPassword=false;
+  showPassword = false;
   loginForm: FormGroup;
 
 
@@ -47,8 +47,11 @@ export class Login {
           this.authService.setCurrentUser(user.user);
           this.notificationService.addNotification('Login successful!', 'success');
           console.log('Logged in:', user.user.role);
+
           if (user.user.role === 'PATIENT') {
             this.router.navigate(['/patient/dashboard']);
+          } else if (user.user.role === 'DOCTOR') {
+            this.router.navigate(['/doctor/dashboard']);
           } else {
             this.router.navigate(['/dashboard']);
           }
@@ -60,8 +63,9 @@ export class Login {
       });
     }
   }
-  loginWithGoogle(){
-    window.location.href ='http://localhost:8080/oauth2/authorization/google'
+
+  loginWithGoogle() {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google'
 
   }
 }

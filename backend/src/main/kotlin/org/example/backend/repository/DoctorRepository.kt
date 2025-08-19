@@ -8,4 +8,5 @@ interface DoctorRepository : JpaRepository<Doctor, Long> {
     fun findByFullName(fullName: String)
     fun findByDepartment(department: Department)
     fun findByHospitalId(id: Long): List<Doctor>
+    fun findByUserId(id:Long):Doctor?
 }
