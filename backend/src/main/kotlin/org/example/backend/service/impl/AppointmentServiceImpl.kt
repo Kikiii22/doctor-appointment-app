@@ -36,6 +36,7 @@ class AppointmentServiceImpl(
         val slot = slotRepository.findById(slotId).orElseThrow { RuntimeException("Slot not found") }
         if (slot.booked) throw RuntimeException("Slot already booked!")
         val patient = patientRepository.findByUserId(patientId)
+
         slot.booked = true
         slotRepository.save(slot)
         val appointment = Appointment(
@@ -49,7 +50,6 @@ class AppointmentServiceImpl(
     override fun cancelAppointment(slotId: Long, patientId: Long) {
         val slot = slotRepository.findById(slotId).orElseThrow { RuntimeException("Slot not found") }
         if (!slot.booked) throw RuntimeException("Slot not booked!")
-        patientRepository.findById(patientId).orElseThrow { RuntimeException("Patient not found") }
         slot.booked = false
         slotRepository.save(slot)
         val appointment = appointmentRepository.findBySlot(slot)
