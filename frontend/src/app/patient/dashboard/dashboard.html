@@ -43,11 +43,9 @@
     </div>
   </nav>
 
-  <!-- Main content -->
   <div class="content flex-grow-1 p-4">
-    <h1 class="mb-4">Welcome, {{ currentUser?.fullName }}!</h1>
+    <h1 class="mb-4">Welcome, {{ currentPatient?.fullName }}!</h1>
 
-    <!-- Quick Actions -->
     <div class="row g-4 mb-4">
       <div class="col-md-6">
         <div class="card shadow-sm action-card h-100" (click)="navigateTo('/patient/doctors')">

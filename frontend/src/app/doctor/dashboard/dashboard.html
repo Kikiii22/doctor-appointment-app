@@ -44,7 +44,7 @@
 
   <!-- Main Content -->
   <div class="content flex-grow-1 p-4">
-    <h1 class="mb-4">Welcome, Dr. {{ currentUser?.fullName }}!</h1>
+    <h1 class="mb-4">Welcome, Dr. {{ currentDoctor?.fullName }}!</h1>
 
     <div *ngIf="upcomingAppointments.length > 0; else noAppointments" class="card shadow-sm">
       <div class="card-header bg-primary text-white">

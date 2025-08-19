@@ -18,7 +18,8 @@ import { PatientService } from '../../services/patient';
   styleUrl: './dashboard.css'
 })
 export class PatientDashboardComponent implements OnInit {
-  currentUser: any;
+  currentUser: any
+  currentPatient: any
   upcomingAppointments: Appointment[] = [];
 
   constructor(
@@ -35,7 +36,7 @@ export class PatientDashboardComponent implements OnInit {
     this.patientService.getPatientByUserId(this.currentUser.id).subscribe({
       next: (patient) => {
         console.log('Patient from API:', patient);
-        this.currentUser = patient;
+        this.currentPatient = patient;
       },
       error: (err) => console.error(err)
     });

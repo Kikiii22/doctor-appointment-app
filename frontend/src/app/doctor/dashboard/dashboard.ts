@@ -18,7 +18,8 @@ import { DoctorService } from '../../services/doctor';
   styleUrl: 'dashboard.css'
 })
 export class DoctorDashboardComponent implements OnInit {
-  currentUser: any;
+  currentUser: any
+  currentDoctor: any
   upcomingAppointments: Appointment[] = [];
 
   constructor(
@@ -32,11 +33,12 @@ export class DoctorDashboardComponent implements OnInit {
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
     if (!user) return;
+    this.currentUser = user;
 
     this.doctorService.getDoctorByUserId(user.id).subscribe({
       next: (doctor) => {
         console.log('Doctor from API:', doctor);
-        this.currentUser = doctor;
+        this.currentDoctor = doctor;
         this.loadUpcomingAppointments();
       },
       error: (err) => console.error(err)
