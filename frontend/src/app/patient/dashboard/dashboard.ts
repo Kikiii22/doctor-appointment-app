@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {Auth} from '../../services/auth';
-import {AppointmentService} from '../../services/appointment';
-import {NotificationService} from '../../services/notification';
-import {Router} from '@angular/router';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {Appointment} from '../../interfaces/appointment';
+import { Component, OnInit } from '@angular/core';
+import { Auth } from '../../services/auth';
+import { AppointmentService } from '../../services/appointment';
+import { NotificationService } from '../../services/notification';
+import { Router } from '@angular/router';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { Appointment } from '../../interfaces/appointment';
+import { PatientService } from '../../services/patient';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,13 +25,20 @@ export class PatientDashboardComponent implements OnInit {
     private authService: Auth,
     private appointmentService: AppointmentService,
     private notificationService: NotificationService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private patientService: PatientService
+  ) { }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    console.log("najnov korisnik",this.currentUser)
     this.loadUpcomingAppointments();
+    this.patientService.getPatientByUserId(this.currentUser.id).subscribe({
+      next: (patient) => {
+        console.log('Patient from API:', patient);
+        this.currentUser = patient;
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   loadUpcomingAppointments(): void {
@@ -41,16 +49,16 @@ export class PatientDashboardComponent implements OnInit {
     if (this.currentUser?.id) {
       this.appointmentService.getPatientAppointments(this.currentUser.id).subscribe({
         next: (appointments) => {
-          console.log("Appointments",appointments)
+          console.log("Appointments", appointments)
           console.log(appointments[0])
           this.upcomingAppointments = appointments
             .filter(apt => new Date(`${apt.slot.date}T${apt.slot.startTime}`) > new Date())
-            .slice(0, 5).sort((a,b)=>{
-            const dateA = new Date(`${a.slot.date}T${a.slot.startTime}`);
-            const dateB = new Date(`${b.slot.date}T${b.slot.startTime}`);
-            return dateA.getTime() - dateB.getTime();
+            .slice(0, 5).sort((a, b) => {
+              const dateA = new Date(`${a.slot.date}T${a.slot.startTime}`);
+              const dateB = new Date(`${b.slot.date}T${b.slot.startTime}`);
+              return dateA.getTime() - dateB.getTime();
 
-          });
+            });
           this.notificationService.checkUpcomingAppointments(appointments);
         },
         error: (error) => console.error('Error loading appointments:', error)
@@ -64,6 +72,6 @@ export class PatientDashboardComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login'],{ replaceUrl: true });
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
 }
