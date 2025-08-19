@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import {Doctor} from '../../interfaces/doctor';
-import {Slot} from '../../interfaces/slot';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {DoctorService} from '../../services/doctor';
-import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
-import {Auth} from '../../services/auth';
-import {User} from '../../interfaces/user';
-import {AppointmentService} from '../../services/appointment';
+import { Doctor } from '../../interfaces/doctor';
+import { Slot } from '../../interfaces/slot';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { DoctorService } from '../../services/doctor';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { Auth } from '../../services/auth';
+import { User } from '../../interfaces/user';
+import { AppointmentService } from '../../services/appointment';
 
 type DayTab = { iso: string; label: string };
 
@@ -42,7 +42,7 @@ export class DoctorDetails {
   days: DayTab[] = [];
   selectedDateISO = '';
   loadingSlots = false;
-  selectedSlot:Slot|null=null;
+  selectedSlot: Slot | null = null;
   slots: Slot[] = [];
   private slotsCache = new Map<string, Slot[]>();
 
@@ -52,7 +52,7 @@ export class DoctorDetails {
     private doctorService: DoctorService,
     private authService: Auth,
     private appointmentService: AppointmentService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
@@ -65,7 +65,7 @@ export class DoctorDetails {
     this.loadSlotsForDate(this.selectedDateISO);
   }
   openConfirmModal(slot: Slot) {
-    console.log('Opening modal for slot:', slot); // Debug log
+    console.log('Opening modal for slot:', slot);
     this.selectedSlot = slot;
 
     try {
@@ -77,7 +77,6 @@ export class DoctorDetails {
         return;
       }
 
-      // Check if Bootstrap is available
       if (typeof bootstrap === 'undefined') {
         console.error('Bootstrap is not loaded!');
         alert('Bootstrap is not loaded properly.');
@@ -85,16 +84,15 @@ export class DoctorDetails {
       }
 
       const modal = new bootstrap.Modal(modalEl, {
-        backdrop: 'static', // Optional: prevent closing by clicking backdrop
+        backdrop: 'static',
         keyboard: true
       });
 
       modal.show();
-      console.log('Modal should be showing now'); // Debug log
+      console.log('Modal should be showing now');
 
     } catch (error) {
       console.error('Error opening modal:', error);
-      // Fallback to confirm dialog
       if (confirm(`Book appointment with ${this.doctor?.fullName} on ${slot.date} at ${this.timeOf(slot)}?`)) {
         this.confirmBooking();
       }
@@ -118,15 +116,14 @@ export class DoctorDetails {
       }
     });
   }
+
   private markSlotAsBooked(slot: Slot): void {
-    // Update in main slots array
     const mainSlotIndex = this.slots.findIndex(s => s.id === slot.id);
     if (mainSlotIndex !== -1) {
       (this.slots[mainSlotIndex] as any).booked = true;
       (this.slots[mainSlotIndex] as any).isAvailable = false;
     }
 
-    // Update in calendar days
     this.calendarDays.forEach(day => {
       const calendarSlotIndex = day.slots.findIndex(s => s.id === slot.id);
       if (calendarSlotIndex !== -1) {
@@ -142,27 +139,23 @@ export class DoctorDetails {
       }
     });
 
-    // Update earliest slot if it was the one booked
     if (this.earliestSlot && this.earliestSlot.id === slot.id) {
-      this.loadEarliestSlot(); // Reload to find next available
-    }}
+      this.loadEarliestSlot();
+    }
+  }
   goBack(): void {
     this.router.navigate(['/patient/doctors']);
   }
   private refreshSlotData(): void {
-    // Clear cache for the booked date to force fresh data
     this.slotsCache.delete(this.selectedSlot?.date || '');
 
-    // Reload slots for current selected date
     this.loadSlotsForDate(this.selectedDateISO);
 
-    // Reload calendar day slots
     const calendarDay = this.calendarDays.find(day => day.dateISO === this.selectedSlot?.date);
     if (calendarDay) {
       this.loadSlotsForCalendarDay(calendarDay);
     }
 
-    // Reload earliest slot
     this.loadEarliestSlot();
   }
   generateCalendar(): void {

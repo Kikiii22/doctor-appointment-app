@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { Appointment } from '../../interfaces/appointment';
 import { DoctorService } from '../../services/doctor';
+import { User } from '../../interfaces/user';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -18,7 +19,7 @@ import { DoctorService } from '../../services/doctor';
   styleUrl: 'dashboard.css'
 })
 export class DoctorDashboardComponent implements OnInit {
-  currentUser: any
+  currentUser: User | null = null
   currentDoctor: any
   upcomingAppointments: Appointment[] = [];
 
