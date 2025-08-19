@@ -77,7 +77,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" [class.active]="activeTab==='past'" (click)="switchTab('past')">
-          <i class="fas fa-history me-1"></i> Past ({{ stats.completed }})
+          <i class="fas fa-history me-1"></i> Past ({{ pastAppointments.length }})
         </a>
       </li>
     </ul>
@@ -85,18 +85,35 @@
     <!-- Appointment Lists -->
     <div class="card shadow-sm">
       <div class="card-body">
-        <!-- Today -->
         <ng-container *ngIf="activeTab === 'today'">
           <h5 class="mb-3">Today's Appointments</h5>
           <div *ngIf="appointmentsToday.length === 0" class="text-center text-muted py-4">
             <i class="far fa-calendar-alt fa-2x mb-2"></i>
             <p>No appointments scheduled for today</p>
           </div>
-          <ul class="list-group" *ngIf="appointmentsToday.length > 0">
-            <li class="list-group-item" *ngFor="let apt of appointmentsToday">
-              {{ apt.slot.date }} at {{ apt.slot.startTime }} - Status: {{ apt.status }}
-            </li>
-          </ul>
+
+          <div class="list-group" *ngIf="appointmentsToday.length > 0">
+            <div class="list-group-item appointment-card" *ngFor="let apt of appointmentsToday">
+              <div class="d-flex align-items-center w-100">
+                <div class="appointment-icon">
+                  <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
+                  <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
+                  <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
+                </div>
+                <div class="ms-auto d-flex gap-2">
+                  <button class="btn btn-sm btn-outline-primary" (click)="rescheduleAppointment(apt)">
+                    <i class="fas fa-calendar-alt me-1"></i> Reschedule
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="cancelAppointment(apt)">
+                    <i class="fas fa-times me-1"></i> Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </ng-container>
 
         <ng-container *ngIf="activeTab === 'upcoming'">
@@ -115,7 +132,7 @@
                 </div>
                 <div class="flex-grow-1 ms-3">
                   <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
-                  <p class="mb-1 text-muted small">Status: {{ apt.status }}</p>
+                  <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
                   <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
                 </div>
                 <div class="ms-auto d-flex gap-2">
@@ -133,17 +150,33 @@
 
         <!-- Past -->
         <ng-container *ngIf="activeTab === 'past'">
-          <h5 class="mb-3">Past Appointments</h5>
-          <div *ngIf="pastAppointments.length === 0" class="text-center text-muted py-4">
-            <i class="far fa-calendar-alt fa-2x mb-2"></i>
-            <p>No past appointments</p>
+        <h5 class="mb-3">Past Appointments</h5>
+        <div *ngIf="pastAppointments.length === 0" class="text-center text-muted py-4">
+          <i class="far fa-calendar-alt fa-2x mb-2"></i>
+          <p>No past appointments</p>
+        </div>
+
+        <div class="list-group" *ngIf="pastAppointments.length > 0">
+          <div class="list-group-item appointment-card" *ngFor="let apt of pastAppointments">
+            <div class="d-flex align-items-center w-100">
+              <div class="appointment-icon">
+                <i class="fas fa-stethoscope"></i>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
+                <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
+                <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
+              </div>
+              <!-- Past appointments usually don’t need reschedule/cancel -->
+              <div class="ms-auto">
+                <button class="btn btn-sm btn-outline-secondary" disabled>
+                  <i class="fas fa-check me-1"></i> Completed
+                </button>
+              </div>
+            </div>
           </div>
-          <ul class="list-group" *ngIf="pastAppointments.length > 0">
-            <li class="list-group-item" *ngFor="let apt of pastAppointments">
-              {{ apt.slot.date }} at {{ apt.slot.startTime }} - Status: {{ apt.status }}
-            </li>
-          </ul>
-        </ng-container>
+        </div>
+      </ng-container>
       </div>
     </div>
   </div>

@@ -45,7 +45,12 @@ export class PatientDashboardComponent implements OnInit {
           console.log(appointments[0])
           this.upcomingAppointments = appointments
             .filter(apt => new Date(`${apt.slot.date}T${apt.slot.startTime}`) > new Date())
-            .slice(0, 5);
+            .slice(0, 5).sort((a,b)=>{
+            const dateA = new Date(`${a.slot.date}T${a.slot.startTime}`);
+            const dateB = new Date(`${b.slot.date}T${b.slot.startTime}`);
+            return dateA.getTime() - dateB.getTime();
+
+          });
           this.notificationService.checkUpcomingAppointments(appointments);
         },
         error: (error) => console.error('Error loading appointments:', error)
