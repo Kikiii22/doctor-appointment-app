@@ -5,6 +5,7 @@ import { AppointmentService } from '../../services/appointment';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { User } from '../../interfaces/user';
+import { PatientService } from '../../services/patient';
 
 @Component({
   selector: 'app-patient-appointments',
@@ -20,6 +21,7 @@ export class PatientAppointments implements OnInit {
   today = new Date();
   activeTab: 'today' | 'upcoming' | 'past' = 'today';
   currentUser: User | null = null;
+  currentPatient: any;
 
   stats = { today: 0, upcoming: 0, thisMonth: 0, completed: 0 };
 
@@ -30,15 +32,20 @@ export class PatientAppointments implements OnInit {
   constructor(
     private appointmentService: AppointmentService,
     private auth: Auth,
-    private router: Router
+    private router: Router,
+    private patientService: PatientService
   ) { }
 
   ngOnInit() {
     this.currentUser = this.auth.getCurrentUser();
     console.log("najnov korisnik", this.currentUser)
-    if (this.currentUser?.id) {
-      this.loadAppointments(this.currentUser.id);
-    }
+    this.patientService.getPatientByUserId(this.currentUser!.id).subscribe({
+      next: (patient) => {
+        this.currentPatient = patient;
+        this.loadAppointments(this.currentPatient.id)
+      },
+      error: (err) => console.error('Error loading patient:', err)
+    });
   }
 
   private loadAppointments(patientId: number) {
@@ -92,10 +99,8 @@ export class PatientAppointments implements OnInit {
     this.appointmentService.cancelAppointment(apt.slot.id)
       .subscribe({
         next: () => {
-          // Remove from UI immediately
           this.upcomingAppointments = this.upcomingAppointments.filter(a => a.id !== apt.id);
 
-          // Optional: toast message
           alert('Appointment cancelled and slot is now available.');
         },
         error: (err) => {
