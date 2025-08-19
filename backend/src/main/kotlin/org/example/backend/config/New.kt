@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 class New(
     private val userDetailsService: UserDetailsService,
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val googleAuthenticationHandler: GoogleAuthenticationHandler
 ) {
 
 
@@ -41,8 +40,7 @@ class New(
                         ).permitAll()
                     .requestMatchers("/api/patients/*/appointments","api/appointments/book","api/appointments/book/cancel","api/doctors/*").hasRole("PATIENT").anyRequest().authenticated()
             }
-            .oauth2Login { auth->auth.successHandler ( googleAuthenticationHandler ) }
-            .userDetailsService(userDetailsService) // <- This wires your custom service
+            .userDetailsService(userDetailsService)
             .formLogin { it.disable() }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()

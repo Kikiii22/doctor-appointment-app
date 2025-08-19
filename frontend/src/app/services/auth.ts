@@ -38,16 +38,14 @@ export class Auth {
   getDepartments() {
     return this.http.get<any[]>(`${this.api}/departments`);
   }
-
   register(data: any): Observable<AuthResponse> {
-    return this.http.post(`${this.api}/auth/register`, data).pipe(
-      tap((res: any) => {
+    return this.http.post<AuthResponse>(`${this.api}/auth/register`, data).pipe(
+      tap(res => {
         localStorage.setItem('jwt', res.token);
-        this.currentUser$ = res.user;
         localStorage.setItem('currentUser', JSON.stringify(res.user));
+        this.currentUserSubject.next(res.user);
       })
-    )
-      ;
+    );
   }
 
   setCurrentUser(user: User | null): void {
@@ -69,9 +67,5 @@ export class Auth {
   }
   getToken(): string | null {
     return localStorage.getItem('jwt');
-  }
-
-  getDoctorByUserId(id: number): Observable<Doctor> {
-    return this.http.get<Doctor>(`${this.api}/doctors/api/user/${id}`);
   }
 }

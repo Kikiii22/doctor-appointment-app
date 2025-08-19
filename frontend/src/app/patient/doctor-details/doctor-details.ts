@@ -3,7 +3,7 @@ import { Doctor } from '../../interfaces/doctor';
 import { Slot } from '../../interfaces/slot';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DoctorService } from '../../services/doctor';
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { Auth } from '../../services/auth';
 import { User } from '../../interfaces/user';
 import { AppointmentService } from '../../services/appointment';

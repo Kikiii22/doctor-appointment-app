@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Auth} from "../services/auth";
-import {NgForOf, NgIf} from "@angular/common";
-import {Router, RouterLink} from "@angular/router";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Auth } from "../services/auth";
+import { NgForOf, NgIf } from "@angular/common";
+import { Router, RouterLink } from "@angular/router";
 
 
 @Component({
@@ -17,13 +17,13 @@ import {Router, RouterLink} from "@angular/router";
   styleUrl: './register.css'
 })
 export class Register implements OnInit {
-  loading=false;
-  showPassword=false;
+  loading = false;
+  showPassword = false;
   registerForm!: FormGroup;
   roles: string[] = [];
   hospitals: any[] = [];
   departments: any[] = [];
-  constructor( private router: Router ,private fb: FormBuilder, private registerService: Auth) {}
+  constructor(private router: Router, private fb: FormBuilder, private registerService: Auth) { }
 
   ngOnInit() {
     this.registerService.getRoles().subscribe(data => {
@@ -75,24 +75,24 @@ export class Register implements OnInit {
   onSubmit() {
     if (this.registerForm.invalid) return;
     this.registerService.register(this.registerForm.value).subscribe(
-        (res: any) => {
-          if (res && res.token) {
-            localStorage.setItem('jwt', res.token);
-            localStorage.setItem('currentUser', JSON.stringify(res.user));
-            alert('Registered and logged in!');
-            if(res.user.role === 'PATIENT'){
+      (res: any) => {
+        if (res && res.token) {
+          localStorage.setItem('jwt', res.token);
+          localStorage.setItem('currentUser', JSON.stringify(res.user));
+          alert('Registered and logged in!');
+          if (res.user.role === 'PATIENT') {
             this.router.navigate(['/patient/dashboard']);
-          } else{
-
-            }
+          } else {
+            this.router.navigate(['/doctor/dashboard']);
           }
-            else {
-            alert('Registered! Please log in.');
-            this.router.navigate(['/login']);
+        }
+        else {
+          alert('Registered! Please log in.');
+          this.router.navigate(['/login']);
 
-          }
-        },
-        err => alert('Registration failed')
+        }
+      },
+      err => alert('Registration failed')
     );
   }
 }

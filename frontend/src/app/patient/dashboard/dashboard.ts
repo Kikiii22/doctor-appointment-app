@@ -32,11 +32,11 @@ export class PatientDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    this.loadUpcomingAppointments();
     this.patientService.getPatientByUserId(this.currentUser.id).subscribe({
       next: (patient) => {
         console.log('Patient from API:', patient);
         this.currentPatient = patient;
+        this.loadUpcomingAppointments();
       },
       error: (err) => console.error(err)
     });
@@ -44,11 +44,11 @@ export class PatientDashboardComponent implements OnInit {
 
   loadUpcomingAppointments(): void {
 
-    console.log('Loading appointments for patient:', this.currentUser?.id);
+    console.log('Loading appointments for patient:', this.currentPatient?.id);
     console.log(localStorage.getItem('jwt'))
     console.log(localStorage.getItem('currentUser'))
     if (this.currentUser?.id) {
-      this.appointmentService.getPatientAppointments(this.currentUser.id).subscribe({
+      this.appointmentService.getPatientAppointments(this.currentPatient.id).subscribe({
         next: (appointments) => {
           console.log("Appointments", appointments)
           console.log(appointments[0])
