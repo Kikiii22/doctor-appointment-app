@@ -32,10 +32,13 @@ class AppointmentsController(
         val userId = when (val principal = SecurityContextHolder.getContext().authentication.principal) {
             is AuthUserDto -> principal.id
             is OAuth2User -> {
+
                 val email = principal.getAttribute<String>("email")
                     ?: throw RuntimeException("Email not found in OAuth2User")
                 val user = userRepository.findByEmail(email)
                     ?: throw RuntimeException("User not found for email: $email")
+                println("User is logged in via Google: ${principal.getAttribute<String>("email")}")
+
                 user.id
             }
             else -> throw RuntimeException("Unknown principal type: ${principal::class.simpleName}")
@@ -62,9 +65,24 @@ class AppointmentsController(
 
     @PostMapping("/cancel")
     fun cancelAppointment(
-        @RequestBody request: AppointmentRequest,@AuthenticationPrincipal user: AuthUserDto
+        @RequestBody request: AppointmentRequest,@AuthenticationPrincipal principal: Any
     ): ResponseEntity<Void> {
-        appointmentService.cancelAppointment(request.slotId, user.id)
+        val userId = when (val principal = SecurityContextHolder.getContext().authentication.principal) {
+            is AuthUserDto -> principal.id
+            is OAuth2User -> {
+
+                val email = principal.getAttribute<String>("email")
+                    ?: throw RuntimeException("Email not found in OAuth2User")
+                val user = userRepository.findByEmail(email)
+                    ?: throw RuntimeException("User not found for email: $email")
+                println("User is logged in via Google: ${principal.getAttribute<String>("email")}")
+
+                user.id
+            }
+            else -> throw RuntimeException("Unknown principal type: ${principal::class.simpleName}")
+        }
+
+        appointmentService.cancelAppointment(request.slotId, userId)
         return ResponseEntity.ok().build()
     }
 }
