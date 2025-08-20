@@ -12,8 +12,7 @@ import { User } from '../../interfaces/user';
   selector: 'app-doctor-dashboard',
   imports: [
     NgForOf,
-    NgIf,
-    NgClass
+    NgIf
   ],
   templateUrl: 'dashboard.html',
   styleUrl: 'dashboard.css'

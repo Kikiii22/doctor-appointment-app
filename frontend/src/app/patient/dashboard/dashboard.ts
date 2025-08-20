@@ -11,8 +11,7 @@ import { PatientService } from '../../services/patient';
   selector: 'app-dashboard',
   imports: [
     NgForOf,
-    NgIf,
-    NgClass
+    NgIf
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
