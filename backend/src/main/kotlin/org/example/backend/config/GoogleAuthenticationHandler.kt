@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.stereotype.Component
@@ -30,9 +31,12 @@ class GoogleAuthenticationHandler (private val userRepository: UserRepository,
         response: HttpServletResponse,
         authentication: Authentication
     ) {
-        val oauthUser = authentication.principal as OAuth2User
-        val email = oauthUser.getAttribute<String>("email") ?: throw RuntimeException("Email not found")
+        val oauthToken = authentication as? OAuth2AuthenticationToken
+            ?: throw RuntimeException("Not a Google OAuth2 login")
 
+        val oauthUser = oauthToken.principal as OAuth2User
+        val email = oauthUser.getAttribute<String>("email")
+            ?: throw RuntimeException("Email not found")
         val user = userRepository.findByEmail(email)
             ?: userRepository.save(User(username = email, email = email, role = Role.PATIENT))
 
@@ -47,30 +51,30 @@ if (patientRepository.findByUserId(user.id) == null) {
         )
     )
 }
-        val authorities = listOf(SimpleGrantedAuthority("ROLE_${user.role.name}"))
-        val principal = AuthUserDto(user.id, user.username, listOf(user.role.name))
-
-        // Set authentication in security context with proper authorities
-        val authToken = UsernamePasswordAuthenticationToken(
-            principal,
-            null,
-            authorities
+        val authorities = listOf(SimpleGrantedAuthority("ROLE_PATIENT"))
+        val newAuth = OAuth2AuthenticationToken(
+            oauthUser,
+            authorities,
+            oauthToken.authorizedClientRegistrationId
         )
-        SecurityContextHolder.getContext().authentication = authToken
+        SecurityContextHolder.getContext().authentication = newAuth
 
         println("Google Auth Success -> username=${user.username}, role=${user.role.name}, authorities=$authorities, id=${user.id}")
 
-        // Create JWT token
+        // Generate JWT for frontend
         val claims = mapOf("id" to user.id, "roles" to listOf(user.role.name))
         val jwt = tokenService.generate(
-            org.example.backend.model.CustomUserDetails(user),
-            Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration.expiration),
-            claims
+            userDetails = org.example.backend.model.CustomUserDetails(user),
+            expirationDate = Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration.expiration),
+            additionalClaims = claims
         )
 
-        val userDto = UserDto(user.id, user.username, user.role, user.email)
-        val userJson = URLEncoder.encode(ObjectMapper().writeValueAsString(userDto), StandardCharsets.UTF_8)
+        val userJson = URLEncoder.encode(
+            ObjectMapper().writeValueAsString(UserDto(user.id, user.username, user.role, user.email)),
+            StandardCharsets.UTF_8
+        )
 
         response.sendRedirect("http://localhost:4200/google-success?token=$jwt&user=$userJson")
     }
+
 }

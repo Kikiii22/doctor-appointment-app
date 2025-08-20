@@ -7,9 +7,13 @@ import org.example.backend.model.Appointment
 import org.example.backend.model.AppointmentStatus
 import org.example.backend.repository.AppointmentRepository
 import org.example.backend.repository.DoctorRepository
+import org.example.backend.repository.UserRepository
 import org.example.backend.service.AppointmentService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -18,14 +22,26 @@ import org.springframework.web.bind.annotation.*
 class AppointmentsController(
     private val appointmentService: AppointmentService,
     private val appointmentRepository: AppointmentRepository,
-    private val doctorRepository: DoctorRepository
+    private val doctorRepository: DoctorRepository,
+    private val userRepository: UserRepository
 ) {
     @PostMapping("/book")
     fun createAppointment(
-        @RequestBody request: AppointmentRequest, @AuthenticationPrincipal user: AuthUserDto
+        @RequestBody request: AppointmentRequest, @AuthenticationPrincipal principal: Any
     ): ResponseEntity<Appointment> {
-        val appointment = appointmentService.bookAppointment(request.slotId, user.id)
-        return ResponseEntity.ok(appointment)
+        val userId = when (val principal = SecurityContextHolder.getContext().authentication.principal) {
+            is AuthUserDto -> principal.id
+            is OAuth2User -> {
+                val email = principal.getAttribute<String>("email")
+                    ?: throw RuntimeException("Email not found in OAuth2User")
+                val user = userRepository.findByEmail(email)
+                    ?: throw RuntimeException("User not found for email: $email")
+                user.id
+            }
+            else -> throw RuntimeException("Unknown principal type: ${principal::class.simpleName}")
+        }
+
+        return ResponseEntity.ok(appointmentService.bookAppointment(request.slotId, userId))
 
     }
 
