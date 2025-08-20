@@ -8,6 +8,8 @@ import { PatientAppointments } from './patient/patient-appointments/patient-appo
 import { LoginSuccess } from './login-success/login-success';
 import { DoctorDashboardComponent } from './doctor/dashboard/dashboard';
 import {GoogleSuccess} from './patient/google-success/google-success';
+import { DoctorAppointments } from './doctor/doctor-appointments/doctor-appointments';
+
 
 
 export const routes: Routes = [
@@ -42,6 +44,10 @@ export const routes: Routes = [
   {
     path: 'doctor/dashboard',
     component: DoctorDashboardComponent
+  },
+  {
+    path: 'doctor/appointments',
+    component: DoctorAppointments
   },
   {
     path: '',

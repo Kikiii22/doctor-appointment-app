@@ -1,7 +1,9 @@
 package org.example.backend.api
 
+import org.example.backend.exception.AppointmentNotFoundException
 import org.example.backend.exception.DoctorNotFoundException
 import org.example.backend.model.*
+import org.example.backend.repository.AppointmentRepository
 import org.example.backend.repository.DoctorRepository
 import org.example.backend.service.AppointmentService
 import org.example.backend.service.DoctorService
@@ -16,7 +18,8 @@ import java.time.LocalDate
 class DoctorController(
     private val doctorService: DoctorService,
     private val doctorRepository: DoctorRepository,
-    private val appointmentService: AppointmentService
+    private val appointmentService: AppointmentService,
+    private val appointmentRepository: AppointmentRepository
 ) {
     @GetMapping
     fun getAllDoctors(): ResponseEntity<List<Doctor>> {
@@ -64,5 +67,41 @@ class DoctorController(
     @GetMapping("/user/{id}")
     fun getDoctorByUserId(@PathVariable id: Long): ResponseEntity<Doctor?> {
         return ResponseEntity.ok(doctorRepository.findByUserId(id))
+    }
+
+
+    @GetMapping("/{id}/description")
+    fun findFinishedAppointmentsForDoctorToAddDescription(@PathVariable id: Long): ResponseEntity<List<Appointment>>{
+        return ResponseEntity.ok(
+            appointmentRepository.findBySlotDoctorIdAndStatusAndDescription(id)
+        )
+    }
+
+    @PostMapping("/{id}/description")
+    fun addDescriptionToAppointment(
+        @PathVariable id: Long,
+        @RequestBody newDescription: String
+    ): ResponseEntity<Appointment> {
+        val appointment = appointmentRepository.findById(id)
+            .orElseThrow { AppointmentNotFoundException(id) }
+
+        appointment.description = newDescription
+        val updated = appointmentRepository.save(appointment)
+        return ResponseEntity.ok(updated)
+    }
+
+
+    @GetMapping("/{id}/finished")
+    fun findFinishedAppointmentsForDoctor(@PathVariable id: Long): ResponseEntity<List<Appointment>>{
+        return ResponseEntity.ok(
+            appointmentRepository.findBySlotDoctorIdAndStatus(id)
+        )
+    }
+
+    @GetMapping("/{id}/upcoming")
+    fun findUpcomingAppointmentsForDoctor(@PathVariable id: Long): ResponseEntity<List<Appointment>>{
+        return ResponseEntity.ok(
+            appointmentRepository.findBySlotDoctorIdAndStatus(id, AppointmentStatus.BOOKED)
+        )
     }
 }

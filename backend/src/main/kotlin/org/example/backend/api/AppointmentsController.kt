@@ -4,6 +4,9 @@ import org.example.backend.dto.AppointmentRequest
 import org.example.backend.dto.AuthUserDto
 import org.example.backend.dto.FinishAppointmentRequest
 import org.example.backend.model.Appointment
+import org.example.backend.model.AppointmentStatus
+import org.example.backend.repository.AppointmentRepository
+import org.example.backend.repository.DoctorRepository
 import org.example.backend.service.AppointmentService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -13,7 +16,9 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/appointments")
 @CrossOrigin(origins = ["http://localhost:4200"])
 class AppointmentsController(
-    private val appointmentService: AppointmentService
+    private val appointmentService: AppointmentService,
+    private val appointmentRepository: AppointmentRepository,
+    private val doctorRepository: DoctorRepository
 ) {
     @PostMapping("/book")
     fun createAppointment(

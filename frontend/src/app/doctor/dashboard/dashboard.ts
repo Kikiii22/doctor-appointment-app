@@ -12,8 +12,7 @@ import { User } from '../../interfaces/user';
   selector: 'app-doctor-dashboard',
   imports: [
     NgForOf,
-    NgIf,
-    NgClass
+    NgIf
   ],
   templateUrl: 'dashboard.html',
   styleUrl: 'dashboard.css'
@@ -54,18 +53,17 @@ export class DoctorDashboardComponent implements OnInit {
     console.log(localStorage.getItem('currentUser'));
 
     if (this.currentUser?.id) {
-      this.appointmentService.getDoctorAppointments(this.currentUser.id).subscribe({
+      this.appointmentService.getDoctorUpcomingAppointments(this.currentUser.id).subscribe({
         next: (appointments) => {
           console.log("Appointments", appointments);
-          this.upcomingAppointments = appointments
-            .filter(apt => new Date(`${apt.slot.date}T${apt.slot.startTime}`) > new Date())
-            .slice(0, 5);
+          this.upcomingAppointments = appointments.slice(0, 5);
           this.notificationService.checkUpcomingAppointments(appointments);
         },
         error: (error) => console.error('Error loading doctor appointments:', error)
       });
     }
   }
+
 
   navigateTo(route: string): void {
     this.router.navigate([route]);

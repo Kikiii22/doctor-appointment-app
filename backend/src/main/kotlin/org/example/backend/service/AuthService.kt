@@ -11,7 +11,7 @@ import org.example.backend.model.Patient
 import org.example.backend.model.Role
 import org.example.backend.model.User
 import org.example.backend.repository.*
-import org.example.backend.service.generator.SlotGeneratorService
+import org.example.backend.service.scheduled.SlotGeneratorService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder

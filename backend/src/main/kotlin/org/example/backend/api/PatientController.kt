@@ -1,6 +1,7 @@
 package org.example.backend.api
 
 import org.example.backend.model.Appointment
+import org.example.backend.model.AppointmentStatus
 import org.example.backend.model.Patient
 import org.example.backend.repository.AppointmentRepository
 import org.example.backend.service.PatientService
@@ -27,5 +28,20 @@ class PatientController(
     fun getPatientByUserId(@PathVariable id: Long): ResponseEntity<Patient?> {
         return ResponseEntity.ok(patientRepository.findByUserId(id))
     }
+
+    @GetMapping("/{id}/finished")
+    fun findFinishedAppointmentsForPatient(@PathVariable id: Long): ResponseEntity<List<Appointment>>{
+        return ResponseEntity.ok(
+            appointmentRepository.findByPatientIdAndStatus(id)
+        )
+    }
+
+    @GetMapping("/{id}/upcoming")
+    fun findUpcomingAppointmentsForPatient(@PathVariable id: Long): ResponseEntity<List<Appointment>>{
+        return ResponseEntity.ok(
+            appointmentRepository.findByPatientIdAndStatus(id, AppointmentStatus.BOOKED)
+        )
+    }
+
 
 }

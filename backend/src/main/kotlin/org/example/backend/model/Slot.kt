@@ -14,7 +14,7 @@ data class Slot(
     @Column(name = "date")
     val date: LocalDate = LocalDate.now(),
 
-    //all appointments will have a length of 15, if more is needed more appointments can be booked
+    //all appointments will have a length of 60, if more is needed more appointments can be booked
     @Column(name = "start_time")
     val startTime: LocalTime = LocalTime.of(9, 0),
 

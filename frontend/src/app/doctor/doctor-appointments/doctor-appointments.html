@@ -7,22 +7,17 @@
   <nav class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
     <div class="d-flex align-items-center mb-3 text-white text-decoration-none">
       <i class="fas fa-user-md fs-3 me-2"></i>
-      <span class="fs-4 fw-bold">Patient Panel</span>
+      <span class="fs-4 fw-bold">Doctor Panel</span>
     </div>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li>
-        <a (click)="navigateTo('/patient/dashboard')" class="nav-link text-white">
+        <a (click)="navigateTo('/doctor/dashboard')" class="nav-link text-white">
           <i class="fas fa-gauge me-2"></i> Dashboard
         </a>
       </li>
       <li>
-        <a (click)="navigateTo('/patient/doctors')" class="nav-link text-white">
-          <i class="fas fa-search me-2"></i> Find Doctors
-        </a>
-      </li>
-      <li>
-        <a (click)="navigateTo('/patient/appointments')" class="nav-link text-white active">
+        <a (click)="navigateTo('/doctor/appointments')" class="nav-link text-white active">
           <i class="fas fa-calendar-check me-2"></i> My Appointments
         </a>
       </li>
@@ -41,7 +36,6 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
   <div class="content flex-grow-1 p-4">
     <h1 class="mb-4">My Appointments</h1>
 
@@ -98,7 +92,7 @@
                 <div class="flex-grow-1 ms-3">
                   <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
                   <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
-                  <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
+                  <p class="mb-0 text-muted small">Patient: {{ apt.patient.fullName }}</p>
                 </div>
                 <div class="ms-auto d-flex gap-2">
                   <button class="btn btn-sm btn-outline-primary" (click)="rescheduleAppointment(apt)">
@@ -130,7 +124,7 @@
                 <div class="flex-grow-1 ms-3">
                   <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
                   <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
-                  <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
+                  <p class="mb-0 text-muted small">Patient: {{ apt.patient.fullName }}</p>
                 </div>
                 <div class="ms-auto d-flex gap-2">
                   <button class="btn btn-sm btn-outline-primary" (click)="rescheduleAppointment(apt)">
@@ -161,7 +155,7 @@
               <div class="flex-grow-1 ms-3">
                 <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
                 <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
-                <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
+                <p class="mb-0 text-muted small">Patient: {{ apt.patient.fullName }}</p>
               </div>
 
               <div class="ms-auto">

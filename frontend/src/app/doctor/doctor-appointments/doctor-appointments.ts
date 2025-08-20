@@ -5,23 +5,23 @@ import { AppointmentService } from '../../services/appointment';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { User } from '../../interfaces/user';
-import { PatientService } from '../../services/patient';
+import { DoctorService } from '../../services/doctor';
 
 @Component({
-  selector: 'app-patient-appointments',
+  selector: 'app-doctor-appointments',
   imports: [
     NgIf,
     NgForOf,
 
   ],
-  templateUrl: './patient-appointments.html',
-  styleUrl: './patient-appointments.css'
+  templateUrl: './doctor-appointments.html',
+  styleUrl: './doctor-appointments.css'
 })
-export class PatientAppointments implements OnInit {
+export class DoctorAppointments implements OnInit {
   today = new Date();
   activeTab: 'today' | 'upcoming' | 'past' = 'today';
   currentUser: User | null = null;
-  currentPatient: any;
+  currentDoctor: any;
 
   stats = { today: 0, upcoming: 0, thisMonth: 0, completed: 0 };
 
@@ -33,57 +33,55 @@ export class PatientAppointments implements OnInit {
     private appointmentService: AppointmentService,
     private auth: Auth,
     private router: Router,
-    private patientService: PatientService
+    private doctorService: DoctorService
   ) { }
 
   ngOnInit() {
     this.currentUser = this.auth.getCurrentUser();
     console.log("najnov korisnik", this.currentUser)
-    this.patientService.getPatientByUserId(this.currentUser!.id).subscribe({
-      next: (patient) => {
-        this.currentPatient = patient;
-        this.loadAppointments(this.currentPatient.id)
-        this.loadFinishedAppointments(this.currentPatient.id);
+    this.doctorService.getDoctorByUserId(this.currentUser!.id).subscribe({
+      next: (doctor) => {
+        this.currentDoctor = doctor
+        this.loadAppointments(this.currentDoctor.id)
+        this.loadFinishedAppointments(this.currentDoctor.id);
       },
       error: (err) => console.error('Error loading patient:', err)
     });
   }
 
-  private loadAppointments(patientId: number) {
-    this.appointmentService.getPatientUpcomingAppointments(patientId).subscribe({
+  private loadAppointments(doctorId: number) {
+    this.appointmentService.getDoctorUpcomingAppointments(doctorId).subscribe({
       next: (appointments) => {
-        const todayAppointments: Appointment[] = [];
-        const upcomingAppointments: Appointment[] = [];
-
-        appointments.forEach(apt => {
+        this.appointmentsToday = appointments.filter(apt => {
           const slotDate = new Date(`${apt.slot.date}T${apt.slot.startTime}`);
-          if (
+          return (
             slotDate.getFullYear() === this.today.getFullYear() &&
             slotDate.getMonth() === this.today.getMonth() &&
             slotDate.getDate() === this.today.getDate()
-          ) {
-            todayAppointments.push(apt);
-          }
-          if (slotDate.getMonth() == this.today.getMonth()) {
-            this.stats.thisMonth++;
-          }
-          upcomingAppointments.push(apt);
-
+          );
         });
 
-        this.appointmentsToday = todayAppointments;
-        this.upcomingAppointments = upcomingAppointments;
+        this.upcomingAppointments = appointments.filter(apt => {
+          const slotDate = new Date(`${apt.slot.date}T${apt.slot.startTime}`);
+          return slotDate > this.today;
+        });
 
-        this.stats.today = todayAppointments.length;
-        this.stats.upcoming = upcomingAppointments.length;
+        this.stats.today = this.appointmentsToday.length;
+        this.stats.upcoming = this.upcomingAppointments.length;
+        this.stats.thisMonth = appointments.filter(apt => {
+          const slotDate = new Date(`${apt.slot.date}T${apt.slot.startTime}`);
+          return slotDate.getMonth() === this.today.getMonth() &&
+            slotDate.getFullYear() === this.today.getFullYear();
+        }).length;
       },
       error: (err) => console.error('Error loading upcoming appointments:', err)
     });
   }
 
 
-  private loadFinishedAppointments(patientId: number) {
-    this.appointmentService.getPatientFinishedAppointments(patientId).subscribe({
+
+  private loadFinishedAppointments(doctorId: number) {
+    this.appointmentService.getDoctorFinishedAppointments(doctorId).subscribe({
       next: (appointments) => {
         this.pastAppointments = appointments;
         this.stats.completed = appointments.length;
