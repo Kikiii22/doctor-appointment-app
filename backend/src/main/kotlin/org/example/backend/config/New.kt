@@ -17,7 +17,8 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 @EnableConfigurationProperties(JwtProperties::class)
 class New(
     private val userDetailsService: UserDetailsService,
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val googleAuthenticationHandler: GoogleAuthenticationHandler,
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
 ) {
 
 
@@ -36,10 +37,10 @@ class New(
 
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/api/auth/**", "api/departments", "api/roles","/oauth2/**", "api/hospitals",
+                    .requestMatchers("/api/auth/**", "/api/departments", "/api/roles","/oauth2/**", "/api/hospitals",
                         ).permitAll()
-                    .requestMatchers("/api/patients/*/appointments","api/appointments/book","api/appointments/book/cancel","api/doctors/*").hasRole("PATIENT").anyRequest().authenticated()
-            }
+                    .requestMatchers("/api/patients/*/appointments","/api/appointments/book","/api/appointments/cancel","/api/doctors","/api/doctors/*").hasRole("PATIENT").anyRequest().authenticated()
+            }.oauth2Login { auth->auth.successHandler ( googleAuthenticationHandler ) }
             .userDetailsService(userDetailsService)
             .formLogin { it.disable() }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)

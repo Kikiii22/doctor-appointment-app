@@ -58,6 +58,9 @@ export class DoctorDetails {
     this.currentUser = this.authService.getCurrentUser();
     this.doctorId = Number(this.route.snapshot.paramMap.get('id'));
     this.buildDays(14);
+    console.log("google korisnik",this.currentUser);
+    console.log("doctor id",this.doctorId);
+
     this.selectedDateISO = this.days[0]?.iso || this.todayISO();
     this.loadDoctorDetails();
     this.generateCalendar();

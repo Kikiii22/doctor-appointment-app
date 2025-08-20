@@ -7,6 +7,7 @@ import { DoctorDetails } from './patient/doctor-details/doctor-details';
 import { PatientAppointments } from './patient/patient-appointments/patient-appointments';
 import { LoginSuccess } from './login-success/login-success';
 import { DoctorDashboardComponent } from './doctor/dashboard/dashboard';
+import {GoogleSuccess} from './patient/google-success/google-success';
 
 
 export const routes: Routes = [
@@ -45,6 +46,10 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: 'login', pathMatch: 'full'
+  },
+  {
+    path:'google-success',
+    component:GoogleSuccess
   }
 
 
