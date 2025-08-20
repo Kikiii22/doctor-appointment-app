@@ -69,7 +69,7 @@ CREATE TABLE appointments
     slot_id     INTEGER REFERENCES slots (id),
     patient_id  INTEGER REFERENCES patients (id),
     description TEXT,
-    status      VARCHAR(20) NOT NULL CHECK (status IN ('AVAILABLE', 'BOOKED', 'FINISHED'))
+    status      VARCHAR(20) NOT NULL CHECK (status IN ('BOOKED', 'FINISHED'))
 );
 
 INSERT INTO departments (id, name, description)

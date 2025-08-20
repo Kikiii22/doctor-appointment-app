@@ -24,12 +24,21 @@ export class AppointmentService {
       { description });
   }
 
-  getPatientAppointments(patientId: number): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`/api/patients/${patientId}/appointments`);
+  getPatientUpcomingAppointments(patientId: number): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`/api/patients/${patientId}/upcoming`);
   }
 
-  getDoctorAppointments(doctorId: number): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`/api/doctors/${doctorId}/appointments`);
+  getPatientFinishedAppointments(patientId: number): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`/api/patients/${patientId}/finished`);
+  }
+
+
+  getDoctorUpcomingAppointments(doctorId: number): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`/api/doctors/${doctorId}/upcoming`);
+  }
+
+  getDoctorFinishedAppointments(doctorId: number): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`/api/doctors/${doctorId}/finished`);
   }
 
 }

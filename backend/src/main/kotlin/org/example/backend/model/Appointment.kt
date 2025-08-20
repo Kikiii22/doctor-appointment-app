@@ -18,7 +18,8 @@ class Appointment(
     val patient: Patient = Patient(),
 
     @Enumerated(EnumType.STRING)
-    var status: AppointmentStatus = AppointmentStatus.AVAILABLE,
+    var status: AppointmentStatus = AppointmentStatus.BOOKED,
 
+    @Column(nullable = false)
     var description: String = "",
 )

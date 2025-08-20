@@ -7,6 +7,7 @@ import { DoctorDetails } from './patient/doctor-details/doctor-details';
 import { PatientAppointments } from './patient/patient-appointments/patient-appointments';
 import { LoginSuccess } from './login-success/login-success';
 import { DoctorDashboardComponent } from './doctor/dashboard/dashboard';
+import { DoctorAppointments } from './doctor/doctor-appointments/doctor-appointments';
 
 
 export const routes: Routes = [
@@ -41,6 +42,10 @@ export const routes: Routes = [
   {
     path: 'doctor/dashboard',
     component: DoctorDashboardComponent
+  },
+  {
+    path: 'doctor/appointments',
+    component: DoctorAppointments
   },
   {
     path: '',

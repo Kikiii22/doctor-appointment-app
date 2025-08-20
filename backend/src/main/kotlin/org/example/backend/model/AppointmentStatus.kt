@@ -1,5 +1,3 @@
 package org.example.backend.model
 
-enum class AppointmentStatus {
-    AVAILABLE, BOOKED, FINISHED
-}
+enum class AppointmentStatus { BOOKED, FINISHED }

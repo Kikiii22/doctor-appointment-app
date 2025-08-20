@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import { DoctorService} from '../../services/doctor';
-import {Slot} from '../../interfaces/slot';
-import {Router} from '@angular/router';
-import {Doctor} from '../../interfaces/doctor';
-import {FormsModule} from '@angular/forms';
-import {NgForOf, NgIf} from '@angular/common';
-import {Auth} from '../../services/auth';
+import { Component, OnInit } from '@angular/core';
+import { DoctorService } from '../../services/doctor';
+import { Slot } from '../../interfaces/slot';
+import { Router } from '@angular/router';
+import { Doctor } from '../../interfaces/doctor';
+import { FormsModule } from '@angular/forms';
+import { NgForOf, NgIf } from '@angular/common';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-list-doctors',
@@ -17,8 +17,8 @@ import {Auth} from '../../services/auth';
   templateUrl: './list-doctors.html',
   styleUrl: './list-doctors.css'
 })
-export class ListDoctors implements OnInit{
-  currentUser: { username: string } | null = null; // wire to your auth user if you have one
+export class ListDoctors implements OnInit {
+  currentUser: { username: string } | null = null;
   searchTerm = '';
   loading = false;
   error: string | null = null;
@@ -30,7 +30,7 @@ export class ListDoctors implements OnInit{
     private doctorsService: DoctorService,
     private authService: Auth,
     protected router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
@@ -42,8 +42,8 @@ export class ListDoctors implements OnInit{
   }
 
   logout() {
-    // hook up to your auth service
-this.authService.logout();  }
+    this.authService.logout();
+  }
 
   private loadDoctors(): void {
     this.loading = true;

@@ -42,23 +42,16 @@ export class PatientDashboardComponent implements OnInit {
   }
 
   loadUpcomingAppointments(): void {
-
     console.log('Loading appointments for patient:', this.currentPatient?.id);
     console.log(localStorage.getItem('jwt'))
     console.log(localStorage.getItem('currentUser'))
-    if (this.currentUser?.id) {
-      this.appointmentService.getPatientAppointments(this.currentPatient.id).subscribe({
+
+    if (this.currentPatient?.id) {
+      this.appointmentService.getPatientUpcomingAppointments(this.currentPatient.id).subscribe({
         next: (appointments) => {
           console.log("Appointments", appointments)
           console.log(appointments[0])
-          this.upcomingAppointments = appointments
-            .filter(apt => new Date(`${apt.slot.date}T${apt.slot.startTime}`) > new Date())
-            .slice(0, 5).sort((a, b) => {
-              const dateA = new Date(`${a.slot.date}T${a.slot.startTime}`);
-              const dateB = new Date(`${b.slot.date}T${b.slot.startTime}`);
-              return dateA.getTime() - dateB.getTime();
-
-            });
+          this.upcomingAppointments = appointments.slice(0, 5);
           this.notificationService.checkUpcomingAppointments(appointments);
         },
         error: (error) => console.error('Error loading appointments:', error)
