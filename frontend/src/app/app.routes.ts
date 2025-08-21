@@ -29,11 +29,15 @@ export const routes: Routes = [
   },
   {
     path: 'patient/doctors',
-    component: ListDoctors
+    component: ListDoctors,
+    canActivate:[AuthGuard]
+
   },
   {
     path: 'patient/doctors/:id',
-    component: DoctorDetails
+    component: DoctorDetails,
+    canActivate:[AuthGuard]
+
   },
   {
     path: 'patient/appointments',
