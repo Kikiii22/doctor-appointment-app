@@ -9,6 +9,7 @@ import { LoginSuccess } from './login-success/login-success';
 import { DoctorDashboardComponent } from './doctor/dashboard/dashboard';
 import {GoogleSuccess} from './patient/google-success/google-success';
 import { DoctorAppointments } from './doctor/doctor-appointments/doctor-appointments';
+import {AuthGuard} from './auth.guard';
 
 
 
@@ -23,7 +24,8 @@ export const routes: Routes = [
   },
   {
     path: 'patient/dashboard',
-    component: PatientDashboardComponent
+    component: PatientDashboardComponent,
+    canActivate:[AuthGuard]
   },
   {
     path: 'patient/doctors',
@@ -35,7 +37,9 @@ export const routes: Routes = [
   },
   {
     path: 'patient/appointments',
-    component: PatientAppointments
+    component: PatientAppointments,
+    canActivate:[AuthGuard]
+
   },
   {
     path: 'login-success',
@@ -43,7 +47,9 @@ export const routes: Routes = [
   },
   {
     path: 'doctor/dashboard',
-    component: DoctorDashboardComponent
+    component: DoctorDashboardComponent,
+    canActivate:[AuthGuard]
+
   },
   {
     path: 'doctor/appointments',

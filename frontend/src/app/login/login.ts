@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../services/notification';
 import { Auth } from '../services/auth';
 import { NgIf } from '@angular/common';
-
+import { Toast } from 'bootstrap';
 class AuthService {
 }
 
@@ -22,8 +22,8 @@ export class Login {
   loading = false;
   showPassword = false;
   loginForm: FormGroup;
-
-
+  @ViewChild('errorToast', { static: true }) errorToastRef!: ElementRef;
+  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -57,9 +57,13 @@ export class Login {
           }
         },
         error: (error) => {
-          this.notificationService.addNotification('Invalid credentials', 'error');
           this.loading = false;
+          this.errorMessage = error.message;
+          const toastEl = this.errorToastRef.nativeElement;
+          const toast = new Toast(toastEl, { delay: 3000 });
+          toast.show();
         }
+
       });
     }
   }

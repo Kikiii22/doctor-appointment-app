@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { User } from '../interfaces/user';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
 import { AuthResponse } from '../interfaces/AuthResponse';
 import { Router } from '@angular/router';
 import { Doctor } from '../interfaces/doctor';
@@ -26,14 +26,25 @@ export class Auth {
     return this.http.get<any[]>(`${this.api}/hospitals`);
   }
   login(username: string, password: string): Observable<AuthResponse> {
-    return this.http.post<User>(`${this.api}/auth/login`, { username, password }).pipe(
-      tap((res: any) => {
+    return this.http.post<AuthResponse>(`${this.api}/auth/login`, { username, password }).pipe(
+      tap((res) => {
         localStorage.setItem('jwt', res.token);
-        this.currentUser$ = res.user;
         localStorage.setItem('currentUser', JSON.stringify(res.user));
+        this.currentUserSubject.next(res.user);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let message = 'An unknown error occurred';
+        if (error.status === 401) {
+          message = 'Username or password is incorrect';
+        } else if (error.status === 404) {
+          message = 'User not found';
+        } else if (error.error?.message) {
+          // Backend may send a custom message
+          message = error.error.message;
+        }
+        return throwError(() => new Error(message));
       })
-    )
-      ;
+    );
   }
   getDepartments() {
     return this.http.get<any[]>(`${this.api}/departments`);

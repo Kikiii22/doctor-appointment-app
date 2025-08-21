@@ -13,7 +13,9 @@ import org.example.backend.model.User
 import org.example.backend.repository.*
 import org.example.backend.service.scheduled.SlotGeneratorService
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
@@ -34,12 +36,18 @@ class AuthService
     private val departmentRepository: DepartmentRepository
 ) {
     fun login(authRequest: AuthRequest): JwtResponse {
-        //authManager.authenticate(UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password))
-        //
         println("Authenticating: ${authRequest.username}")
-        authManager.authenticate(UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password))
+        val domainUser=userRepository.findByUsername(authRequest.username) ?: throw UsernameNotFoundException("User ${authRequest.username} not found")
+
+        try {
+            // Authenticate username + password
+            authManager.authenticate(
+                UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)
+            )
+        } catch (ex: BadCredentialsException) {
+            throw BadCredentialsException("Username or password is incorrect")
+        }
         println("passed")
-        val domainUser=userRepository.findByUsername(authRequest.username) ?: throw Exception("User ${authRequest.username} not found")
         val user = userDetailsService.loadUserByUsername(authRequest.username)
         val claims = mapOf(
             "id" to domainUser.id,

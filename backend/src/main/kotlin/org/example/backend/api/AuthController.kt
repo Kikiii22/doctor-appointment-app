@@ -9,7 +9,11 @@ import org.example.backend.repository.PatientRepository
 import org.example.backend.repository.UserRepository
 import org.example.backend.service.AuthService
 import org.example.backend.service.TokenService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 
@@ -31,8 +35,15 @@ class AuthController(
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody req: AuthRequest): JwtResponse {
-        return authService.login(req)
+    fun login(@RequestBody req: AuthRequest): ResponseEntity<Any> {
+        return try {
+            val jwtResponse = authService.login(req)
+            ResponseEntity.ok(jwtResponse)
+        } catch (ex: UsernameNotFoundException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("message" to ex.message))
+        } catch (ex: BadCredentialsException) {
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mapOf("message" to ex.message))
+        }
     }
     @PostMapping("/logout")
     fun logout(request: HttpServletRequest, response: HttpServletResponse) {

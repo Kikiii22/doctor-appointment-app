@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import { Doctor } from '../../interfaces/doctor';
 import { Slot } from '../../interfaces/slot';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -7,7 +7,7 @@ import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { Auth } from '../../services/auth';
 import { User } from '../../interfaces/user';
 import { AppointmentService } from '../../services/appointment';
-
+import { Toast } from 'bootstrap';
 type DayTab = { iso: string; label: string };
 
 interface CalendarDay {
@@ -44,6 +44,9 @@ export class DoctorDetails {
   loadingSlots = false;
   selectedSlot: Slot | null = null;
   slots: Slot[] = [];
+  toastMessage = '';
+  @ViewChild('successToast', { static: true }) successToastRef!: ElementRef;
+  @ViewChild('errorToast', { static: true }) errorToastRef!: ElementRef;
   private slotsCache = new Map<string, Slot[]>();
 
   constructor(
@@ -107,7 +110,9 @@ export class DoctorDetails {
     this.appointmentService.bookAppointment(this.selectedSlot.id).subscribe({
       next: () => {
         this.markSlotAsBooked(this.selectedSlot!);
-        alert('Booking confirmed!');
+        this.toastMessage = 'Appointment is booked successfully.';
+        const toast = new Toast(this.successToastRef.nativeElement, { delay: 3000 });
+        toast.show();
         const modalEl = document.getElementById('confirmBookingModal');
         const modal = bootstrap.Modal.getInstance(modalEl!);
         modal.hide();
@@ -115,8 +120,9 @@ export class DoctorDetails {
       },
       error: err => {
         console.error(err);
-        alert('Failed to book slot.');
-      }
+        this.toastMessage = 'Could not book the appointment.';
+        const toast = new Toast(this.errorToastRef.nativeElement, { delay: 3000 });
+        toast.show();      }
     });
   }
 
