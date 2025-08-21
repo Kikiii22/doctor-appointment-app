@@ -1,5 +1,7 @@
 package org.example.backend.api
 
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.example.backend.dto.AuthRequest
 import org.example.backend.dto.JwtResponse
 import org.example.backend.dto.RegisterRequest
@@ -7,6 +9,7 @@ import org.example.backend.repository.PatientRepository
 import org.example.backend.repository.UserRepository
 import org.example.backend.service.AuthService
 import org.example.backend.service.TokenService
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 
@@ -31,4 +34,14 @@ class AuthController(
     fun login(@RequestBody req: AuthRequest): JwtResponse {
         return authService.login(req)
     }
+    @PostMapping("/logout")
+    fun logout(request: HttpServletRequest, response: HttpServletResponse) {
+        val auth = SecurityContextHolder.getContext().authentication
+        if (auth != null) {
+            SecurityContextHolder.clearContext()
+            request.session.invalidate()
+        }
+        response.status = HttpServletResponse.SC_OK
+    }
+
 }

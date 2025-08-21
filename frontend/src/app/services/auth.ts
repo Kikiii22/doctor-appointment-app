@@ -60,7 +60,21 @@ export class Auth {
     localStorage.removeItem('jwt');
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login'], { replaceUrl: true });
+    if (localStorage.getItem('isGoogleUser')) {
+      const googleEmail = localStorage.getItem('googleUserEmail');
+     const isGoogle=localStorage.getItem('isGoogleUser')
+      if (googleEmail && (window as any).google?.accounts?.id) {
+        (window as any).google.accounts.id.revoke(googleEmail, () => {
+          console.log("Google session revoked");
+        });
+        console.log("Google session revoked",googleEmail, (window as any).google?.accounts?.id);
+      }
+      localStorage.removeItem('isGoogleUser');
+      localStorage.removeItem('googleUserEmail');
+    }
+    this.http.post('/api/auth/logout', {}).subscribe(() => {
+      this.router.navigate(['/login'], { replaceUrl: true });
+    });
   }
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;

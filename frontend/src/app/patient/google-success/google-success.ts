@@ -22,6 +22,11 @@ export class GoogleSuccess implements OnInit{
             try {
               const user = JSON.parse(decodeURIComponent(userJson));
               localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.setItem('isGoogleUser', 'true');
+                localStorage.setItem('googleUserEmail', user.email);
+                console.log("Google", user);
+                console.log("Google email", user.email);
+
             } catch (e) {
               console.log("Error parsing user");
             }

@@ -99,6 +99,8 @@ export class PatientAppointments implements OnInit {
 
   logout() {
     this.auth.logout();
+    this.router.navigate(['/login'], { replaceUrl: true });
+
   }
 
   navigateTo(s: string) {
