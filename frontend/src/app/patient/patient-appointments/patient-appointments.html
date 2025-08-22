@@ -162,6 +162,16 @@
                 <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
                 <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
                 <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
+                <p class="mb-0 text-muted small">
+                  <span class="fw-bold">Description: </span>
+                  <span *ngIf="apt.description; else noDesc" class="text-dark">
+        {{ apt.description }}
+      </span>
+                </p>
+
+                <ng-template #noDesc>
+                  <span class="text-muted fst-italic">Doctor hasn't added a description yet</span>
+                </ng-template>
               </div>
 
               <div class="ms-auto">
