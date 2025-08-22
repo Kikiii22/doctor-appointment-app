@@ -20,9 +20,14 @@ export class AppointmentService {
   }
 
   finishAppointment(id: number, doctorId: number, description: string): Observable<Appointment> {
-    return this.http.patch<Appointment>(`${this.baseUrl}/${id}/finish?doctorId=${doctorId}`,
-      { description });
+    return this.http.patch<Appointment>(
+      `${this.baseUrl}/${id}/finish`,
+      { doctorId, description }
+    );
   }
+
+
+
 
   getPatientUpcomingAppointments(patientId: number): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`/api/patients/${patientId}/upcoming`);
@@ -39,6 +44,10 @@ export class AppointmentService {
 
   getDoctorFinishedAppointments(doctorId: number): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`/api/doctors/${doctorId}/finished`);
+  }
+
+  getDoctorFinishedAppointmentsWithoutDescription(doctorId: number): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`/api/doctors/${doctorId}/description`);
   }
 
 }

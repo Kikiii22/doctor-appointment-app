@@ -96,7 +96,6 @@ class AppointmentServiceImpl(
     ): Appointment {
         val appointment =
             appointmentRepository.findById(appointmentId).orElseThrow { RuntimeException("Appointment not found") }
-        if (appointment.status == AppointmentStatus.FINISHED) throw RuntimeException("Appointment already finished!")
         if (appointment.slot.doctor.id != doctorId) throw RuntimeException("Not your appointment!")
 
         appointment.status = AppointmentStatus.FINISHED

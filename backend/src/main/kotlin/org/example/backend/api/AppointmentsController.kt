@@ -48,19 +48,21 @@ class AppointmentsController(
 
     }
 
+    data class FinishAppointmentRequest(
+        val doctorId: Long,
+        val description: String
+    )
+
+
     @PatchMapping("/{id}/finish")
     fun finishAppointment(
-        @PathVariable id: Long, @RequestBody request: FinishAppointmentRequest,
-        @RequestParam doctorId: Long
-    )
-            : ResponseEntity<Any> {
-        try {
-            val appointment = appointmentService.finishAppointment(id, doctorId, request.description)
-            return ResponseEntity.ok(appointment)
-        } catch (e: Exception) {
-            return ResponseEntity.badRequest().body(null)
-        }
+        @PathVariable id: Long,
+        @RequestBody request: FinishAppointmentRequest
+    ): ResponseEntity<Any> {
+        val appointment = appointmentService.finishAppointment(id, request.doctorId, request.description)
+        return ResponseEntity.ok(appointment)
     }
+
 
 
     @PostMapping("/cancel")

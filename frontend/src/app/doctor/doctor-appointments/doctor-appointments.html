@@ -3,7 +3,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="d-flex vh-100 bg-light">
-  <!-- Sidebar -->
   <nav class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
     <div class="d-flex align-items-center mb-3 text-white text-decoration-none">
       <i class="fas fa-user-md fs-3 me-2"></i>
@@ -70,6 +69,7 @@
       <li class="nav-item">
         <a class="nav-link" [class.active]="activeTab==='past'" (click)="switchTab('past')">
           <i class="fas fa-history me-1"></i> Past ({{ pastAppointments.length }})
+          <span *ngIf="unfinishedCount > 0" class="badge bg-danger ms-2">{{ unfinishedCount }}</span>
         </a>
       </li>
     </ul>
@@ -86,9 +86,7 @@
           <div class="list-group" *ngIf="appointmentsToday.length > 0">
             <div class="list-group-item appointment-card" *ngFor="let apt of appointmentsToday">
               <div class="d-flex align-items-center w-100">
-                <div class="appointment-icon">
-                  <i class="fas fa-stethoscope"></i>
-                </div>
+                <div class="appointment-icon"><i class="fas fa-stethoscope"></i></div>
                 <div class="flex-grow-1 ms-3">
                   <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
                   <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
@@ -109,7 +107,6 @@
 
         <ng-container *ngIf="activeTab === 'upcoming'">
           <h5 class="mb-3">Upcoming Appointments</h5>
-
           <div *ngIf="upcomingAppointments.length === 0" class="text-center text-muted py-4">
             <i class="far fa-calendar-alt fa-2x mb-2"></i>
             <p>No upcoming appointments</p>
@@ -118,9 +115,7 @@
           <div class="list-group" *ngIf="upcomingAppointments.length > 0">
             <div class="list-group-item appointment-card" *ngFor="let apt of upcomingAppointments">
               <div class="d-flex align-items-center w-100">
-                <div class="appointment-icon">
-                  <i class="fas fa-stethoscope"></i>
-                </div>
+                <div class="appointment-icon"><i class="fas fa-stethoscope"></i></div>
                 <div class="flex-grow-1 ms-3">
                   <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
                   <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
@@ -140,33 +135,55 @@
         </ng-container>
 
         <ng-container *ngIf="activeTab === 'past'">
-        <h5 class="mb-3">Past Appointments</h5>
-        <div *ngIf="pastAppointments.length === 0" class="text-center text-muted py-4">
-          <i class="far fa-calendar-alt fa-2x mb-2"></i>
-          <p>No past appointments</p>
-        </div>
-
-        <div class="list-group" *ngIf="pastAppointments.length > 0">
-          <div class="list-group-item appointment-card" *ngFor="let apt of pastAppointments">
-            <div class="d-flex align-items-center w-100">
-              <div class="appointment-icon">
-                <i class="fas fa-stethoscope"></i>
-              </div>
-              <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
-                <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
-                <p class="mb-0 text-muted small">Patient: {{ apt.patient.fullName }}</p>
-              </div>
-
-              <div class="ms-auto">
-                <button class="btn btn-sm btn-outline-secondary" disabled>
-                  <i class="fas fa-check me-1"></i> Completed
-                </button>
-              </div>
-            </div>
+          <h5 class="mb-3">Past Appointments</h5>
+          <div *ngIf="pastAppointments.length === 0" class="text-center text-muted py-4">
+            <i class="far fa-calendar-alt fa-2x mb-2"></i>
+            <p>No past appointments</p>
           </div>
-        </div>
-      </ng-container>
+
+
+
+
+          <div class="list-group" *ngIf="pastAppointments.length > 0">
+  <div class="list-group-item appointment-card" *ngFor="let apt of pastAppointments">
+    <div class="d-flex align-items-start w-100">
+      <div class="appointment-icon"><i class="fas fa-stethoscope"></i></div>
+      <div class="flex-grow-1 ms-3">
+        <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
+        <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
+        <p class="mb-0 text-muted small">Patient: {{ apt.patient.fullName }}</p>
+
+        <ng-container *ngIf="apt.description && apt.description.trim() !== ''">
+          <p class="mt-2"><strong>Description:</strong> {{ apt.description }}</p>
+          <button class="btn btn-sm btn-outline-secondary mt-2" (click)="toggleDescriptionForm(apt)">
+            <i class="fas fa-edit me-1"></i> Edit Description
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="!apt.description || apt.description.trim() === '' || apt.showDescriptionForm">
+          <button *ngIf="!apt.showDescriptionForm" class="btn btn-sm btn-outline-primary mt-2" (click)="toggleDescriptionForm(apt)">
+            <i class="fas fa-pen me-1"></i> Add Description
+          </button>
+          <div *ngIf="apt.showDescriptionForm" class="mt-2">
+            <textarea [(ngModel)]="apt.newDescription" rows="2" class="form-control mb-2" placeholder="Enter description..."></textarea>
+            <button class="btn btn-sm btn-success me-2" (click)="saveDescription(apt)">Save</button>
+            <button class="btn btn-sm btn-secondary" (click)="toggleDescriptionForm(apt)">Cancel</button>
+          </div>
+        </ng-container>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+        </ng-container>
       </div>
     </div>
   </div>
