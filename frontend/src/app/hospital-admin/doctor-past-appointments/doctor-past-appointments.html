@@ -1,0 +1,64 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="d-flex vh-100 bg-light">
+  <nav class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white position-sticky top-0">
+    <div class="d-flex align-items-center mb-3 text-white text-decoration-none">
+      <i class="fas fa-user-md fs-3 me-2"></i>
+      <span class="fs-4 fw-bold">Hospital Panel</span>
+    </div>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li>
+        <a (click)="navigateTo('/hospital/dashboard')" class="nav-link text-white">
+          <i class="fas fa-gauge me-2"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a (click)="navigateTo('/hospital/doctors')" class="nav-link text-white active">
+          <i class="fas fa-search me-2"></i> Find Doctors
+        </a>
+      </li>
+    </ul>
+    <hr>
+
+    <div class="mt-auto pt-3 border-top">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center text-white">
+          <i class="fas fa-user-shield me-2 fs-4"></i>
+          <strong>{{ currentUser?.username || 'Admin' }}</strong>
+        </div>
+        <button class="btn btn-outline-light btn-sm" (click)="logout()">
+          <i class="fas fa-right-from-bracket me-1"></i> Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content flex-grow-1 p-4">
+    <div class="d-flex align-items-center mb-3">
+      <button class="btn btn-link text-decoration-none me-2" (click)="back()">
+        <i class="fas fa-arrow-left me-1"></i> Back
+      </button>
+      <h2 class="mb-0">Past Appointments of Dr. {{ doctor?.fullName }}</h2>
+    </div>
+
+    <div class="card shadow-sm p-3">
+      <div *ngIf="loading" class="text-center my-3">Loading...</div>
+
+      <ul class="list-group" *ngIf="!loading && pastAppointments.length">
+        <li *ngFor="let app of pastAppointments" class="list-group-item mb-2 p-3">
+          <div><strong>Patient:</strong> {{ app.patient.fullName }}</div>
+          <div><strong>Date:</strong> {{ app!.slot.date }}</div>
+          <div><strong>Time:</strong> {{ app!.slot.startTime }}</div>
+          <div><strong>Notes:</strong> {{ app.description || 'No notes' }}</div>
+        </li>
+      </ul>
+
+      <div *ngIf="!loading && pastAppointments.length === 0" class="text-muted text-center">
+        No past appointments
+      </div>
+    </div>
+  </div>
+</div>

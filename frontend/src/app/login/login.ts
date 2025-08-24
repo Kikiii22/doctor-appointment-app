@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../services/notification';
@@ -53,7 +53,7 @@ export class Login {
           } else if (user.user.role === 'DOCTOR') {
             this.router.navigate(['/doctor/dashboard']);
           } else {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/hospital/dashboard']);
           }
         },
         error: (error) => {
@@ -67,8 +67,8 @@ export class Login {
       });
     }
   }
-  loginWithGoogle(){
-    window.location.href ='http://localhost:8080/oauth2/authorization/google'
+  loginWithGoogle() {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google'
 
   }
 

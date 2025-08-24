@@ -38,7 +38,7 @@ class New(
                 authz
                     .requestMatchers("/api/auth/**", "/api/departments", "/api/roles","/oauth2/**", "/api/hospitals",
                         ).permitAll()
-                    .requestMatchers("/api/patients/*/appointments","/api/appointments/book","/api/appointments/cancel","/api/doctors","/api/doctors/*").hasRole("PATIENT").anyRequest().authenticated()
+                    .requestMatchers("/api/patients/*/appointments","/api/appointments/book","/api/appointments/cancel","/api/doctors","/api/doctors/*").hasAnyRole("PATIENT", "ADMIN").anyRequest().authenticated()
             }.oauth2Login { auth->auth.successHandler ( googleAuthenticationHandler ) }
             .userDetailsService(userDetailsService)
             .formLogin { it.disable() }

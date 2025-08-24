@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Doctor } from '../../interfaces/doctor';
 import { Slot } from '../../interfaces/slot';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -23,7 +23,6 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-doctor-details',
   imports: [
-
     NgIf,
     NgForOf,
     DatePipe,
@@ -61,8 +60,8 @@ export class DoctorDetails {
     this.currentUser = this.authService.getCurrentUser();
     this.doctorId = Number(this.route.snapshot.paramMap.get('id'));
     this.buildDays(14);
-    console.log("google korisnik",this.currentUser);
-    console.log("doctor id",this.doctorId);
+    console.log("google korisnik", this.currentUser);
+    console.log("doctor id", this.doctorId);
 
     this.selectedDateISO = this.days[0]?.iso || this.todayISO();
     this.loadDoctorDetails();
@@ -122,7 +121,8 @@ export class DoctorDetails {
         console.error(err);
         this.toastMessage = 'Could not book the appointment.';
         const toast = new Toast(this.errorToastRef.nativeElement, { delay: 3000 });
-        toast.show();      }
+        toast.show();
+      }
     });
   }
 

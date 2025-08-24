@@ -82,8 +82,10 @@ export class Register implements OnInit {
           alert('Registered and logged in!');
           if (res.user.role === 'PATIENT') {
             this.router.navigate(['/patient/dashboard']);
-          } else {
+          } else if (res.user.role === 'DOCTOR') {
             this.router.navigate(['/doctor/dashboard']);
+          } else {
+            this.router.navigate(['/hospital/dashboard']);
           }
         }
         else {

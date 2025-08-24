@@ -7,9 +7,13 @@ import { DoctorDetails } from './patient/doctor-details/doctor-details';
 import { PatientAppointments } from './patient/patient-appointments/patient-appointments';
 import { LoginSuccess } from './login-success/login-success';
 import { DoctorDashboardComponent } from './doctor/dashboard/dashboard';
-import {GoogleSuccess} from './patient/google-success/google-success';
+import { GoogleSuccess } from './patient/google-success/google-success';
 import { DoctorAppointments } from './doctor/doctor-appointments/doctor-appointments';
-import {AuthGuard} from './auth.guard';
+import { AuthGuard } from './auth.guard';
+import { HospitalDashboardComponent } from './hospital-admin/dashboard/dashboard';
+import { HospitalListDoctorsComponent } from './hospital-admin/list-doctors/list-doctors';
+import { HospitalDoctorDetails } from './hospital-admin/doctor-details/doctor-details';
+import { DoctorPastAppointmentsComponent } from './hospital-admin/doctor-past-appointments/doctor-past-appointments';
 
 
 
@@ -25,7 +29,7 @@ export const routes: Routes = [
   {
     path: 'patient/dashboard',
     component: PatientDashboardComponent,
-    canActivate:[AuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: 'patient/doctors',
@@ -38,7 +42,7 @@ export const routes: Routes = [
   {
     path: 'patient/appointments',
     component: PatientAppointments,
-    canActivate:[AuthGuard]
+    canActivate: [AuthGuard]
 
   },
   {
@@ -48,7 +52,7 @@ export const routes: Routes = [
   {
     path: 'doctor/dashboard',
     component: DoctorDashboardComponent,
-    canActivate:[AuthGuard]
+    canActivate: [AuthGuard]
 
   },
   {
@@ -60,9 +64,28 @@ export const routes: Routes = [
     redirectTo: 'login', pathMatch: 'full'
   },
   {
-    path:'google-success',
-    component:GoogleSuccess
+    path: 'google-success',
+    component: GoogleSuccess
+  },
+  {
+    path: 'hospital/dashboard',
+    component: HospitalDashboardComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'hospital/doctors',
+    component: HospitalListDoctorsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'hospital/doctor-details/:id',
+    component: HospitalDoctorDetails,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'hospital/doctors/:id/past',
+    component: DoctorPastAppointmentsComponent,
+    canActivate: [AuthGuard]
   }
-
 
 ];

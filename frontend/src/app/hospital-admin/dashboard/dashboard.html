@@ -6,19 +6,19 @@
   <!-- Sidebar -->
   <nav class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white">
     <div class="d-flex align-items-center mb-3 text-white text-decoration-none">
-      <i class="fas fa-user-md fs-3 me-2"></i>
-      <span class="fs-4 fw-bold">Doctor Panel</span>
+      <i class="fas fa-hospital fs-3 me-2"></i>
+      <span class="fs-4 fw-bold">Hospital Admin</span>
     </div>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li>
-        <a (click)="navigateTo('/doctor/dashboard')" class="nav-link text-white active">
+        <a (click)="navigateTo('/hospital/dashboard')" class="nav-link text-white active">
           <i class="fas fa-gauge me-2"></i> Dashboard
         </a>
       </li>
       <li>
-        <a (click)="navigateTo('/doctor/appointments')" class="nav-link text-white">
-          <i class="fas fa-calendar-check me-2"></i> My Appointments
+        <a (click)="navigateTo('/hospital/doctors')" class="nav-link text-white">
+          <i class="fas fa-user-md me-2"></i> Manage Doctors
         </a>
       </li>
     </ul>
@@ -27,8 +27,8 @@
     <div class="mt-auto pt-3 border-top">
       <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center text-white">
-          <i class="fas fa-user-circle me-2 fs-4"></i>
-          <strong>{{ currentUser?.username || 'Doctor' }}</strong>
+          <i class="fas fa-user-shield me-2 fs-4"></i>
+          <strong>{{ currentUser?.username || 'Guest' }}</strong>
         </div>
         <button class="btn btn-outline-light btn-sm" (click)="logout()">
           <i class="fas fa-right-from-bracket me-1"></i> Logout
@@ -37,40 +37,33 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <div class="content flex-grow-1 p-4">
-    <h1 class="mb-4">Welcome, Dr. {{ currentDoctor?.fullName }}!</h1>
 
-    <div *ngIf="upcomingAppointments.length > 0; else noAppointments" class="card shadow-sm">
+  <div class="content flex-grow-1 p-4">
+    <h1 class="mb-4">Welcome, {{ currentHospital?.name }} Admin!</h1>
+
+    <div *ngIf="doctors.length > 0; else noDoctors" class="card shadow-sm">
       <div class="card-header bg-primary text-white">
-        Upcoming Patient Appointments
+        Registered Doctors
       </div>
 
       <div class="list-group list-group-flush">
-        <div class="list-group-item" *ngFor="let appointment of upcomingAppointments">
+        <div class="list-group-item" *ngFor="let doctor of doctors">
           <div class="d-flex justify-content-between align-items-center">
             <div>
-              <h5 class="mb-1">
-                {{ appointment.patient.fullName }}
-                <span class="badge rounded-pill bg-info text-dark ms-2">
-                  {{ appointment.patient.phone }}
-                </span>
-              </h5>
-              <small class="text-muted">
-                {{ appointment.slot.date }} at {{ appointment.slot.startTime }}
-              </small>
+              <h5 class="mb-1">{{ doctor.fullName }}</h5>
+              <small class="text-muted">Department: {{ doctor.department.name || 'N/A' }}</small>
             </div>
-
+            <span class="badge bg-secondary">{{ doctor.user.email }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <ng-template #noAppointments>
+    <ng-template #noDoctors>
       <div class="card shadow-sm text-center p-5">
-        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-        <h4 class="mb-2">No Upcoming Appointments</h4>
-        <p class="text-muted mb-4">You don’t have any scheduled appointments at the moment.</p>
+        <i class="fas fa-user-md fa-3x text-muted mb-3"></i>
+        <h4 class="mb-2">No Doctors Registered</h4>
+        <p class="text-muted mb-4">Your hospital doesn’t have any registered doctors yet.</p>
       </div>
     </ng-template>
   </div>
