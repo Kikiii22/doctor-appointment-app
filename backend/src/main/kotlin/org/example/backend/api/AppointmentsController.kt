@@ -87,4 +87,9 @@ class AppointmentsController(
         appointmentService.cancelAppointment(request.slotId, userId)
         return ResponseEntity.ok().build()
     }
+
+    @GetMapping("/slot/{id}")
+    fun getAppointmentBySlot(@PathVariable id: Long): ResponseEntity<Appointment>{
+        return ResponseEntity.ok(appointmentRepository.findBySlotId(id))
+    }
 }

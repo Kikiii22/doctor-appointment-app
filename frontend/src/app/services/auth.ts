@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { User } from '../interfaces/user';
-import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { AuthResponse } from '../interfaces/AuthResponse';
 import { Router } from '@angular/router';
 import { Doctor } from '../interfaces/doctor';
@@ -73,12 +73,12 @@ export class Auth {
     this.currentUserSubject.next(null);
     if (localStorage.getItem('isGoogleUser')) {
       const googleEmail = localStorage.getItem('googleUserEmail');
-     const isGoogle=localStorage.getItem('isGoogleUser')
+      const isGoogle = localStorage.getItem('isGoogleUser')
       if (googleEmail && (window as any).google?.accounts?.id) {
         (window as any).google.accounts.id.revoke(googleEmail, () => {
           console.log("Google session revoked");
         });
-        console.log("Google session revoked",googleEmail, (window as any).google?.accounts?.id);
+        console.log("Google session revoked", googleEmail, (window as any).google?.accounts?.id);
       }
       localStorage.removeItem('isGoogleUser');
       localStorage.removeItem('googleUserEmail');

@@ -26,9 +26,6 @@ export class AppointmentService {
     );
   }
 
-
-
-
   getPatientUpcomingAppointments(patientId: number): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`/api/patients/${patientId}/upcoming`);
   }
@@ -48,6 +45,10 @@ export class AppointmentService {
 
   getDoctorFinishedAppointmentsWithoutDescription(doctorId: number): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`/api/doctors/${doctorId}/description`);
+  }
+
+  getAppointmentBySlot(slotId: number): Observable<Appointment | null> {
+    return this.http.get<Appointment | null>(`${this.baseUrl}/slot/${slotId}`);
   }
 
 }
