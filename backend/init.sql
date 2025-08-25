@@ -75,4 +75,10 @@ CREATE TABLE appointments
 INSERT INTO departments (id, name, description)
 VALUES (1, 'Cardiology', 'Heart and cardiovascular diseases'),
        (2, 'Dermatology', 'Skin conditions treatment'),
-       (3, 'Neurology', 'Nervous system disorders');
+       (3, 'Neurology', 'Nervous system disorders'),
+       (4, 'Endocrinology', 'Endocrine system and hormones'),
+       (5, 'Psychiatry', 'Diagnosis and treatment of mental illness.'),
+       (6, 'Infectology','Treatment of acute or chronic infectious diseases'),
+       (7, 'Gastroenterology', 'Digestive system and its disorders'),
+       (8, 'Toxicology', 'Illness from exposures to drugs and chemicals')
+
