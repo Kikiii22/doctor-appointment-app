@@ -80,5 +80,6 @@ VALUES (1, 'Cardiology', 'Heart and cardiovascular diseases'),
        (5, 'Psychiatry', 'Diagnosis and treatment of mental illness.'),
        (6, 'Infectology','Treatment of acute or chronic infectious diseases'),
        (7, 'Gastroenterology', 'Digestive system and its disorders'),
-       (8, 'Toxicology', 'Illness from exposures to drugs and chemicals')
+       (8, 'Toxicology', 'Illness from exposures to drugs and chemicals'),
+       (9, 'Orthopedics', 'Conditions affecting the entire musculoskeletal system')
 
