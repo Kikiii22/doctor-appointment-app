@@ -9,6 +9,7 @@ import org.example.backend.repository.SlotRepository
 import org.example.backend.service.DoctorService
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalTime
 
 @Service
 class DoctorServiceImpl(
@@ -21,7 +22,8 @@ class DoctorServiceImpl(
     }
 
     override fun findSlots(id: Long, limit: Int): List<Slot> {
-        return slotRepository.findByDoctorIdAndDateAfter(id, LocalDate.now()).take(limit)
+        return slotRepository.findByDoctorIdAndDateGreaterThanEqual(id, LocalDate.now()).filter { it.date.isAfter(LocalDate.now()) ||
+                (it.date.isEqual(LocalDate.now()) && it.startTime.isAfter(LocalTime.now())) }.take(limit)
     }
 
     override fun findBreak(id: Long): DoctorBreak {
