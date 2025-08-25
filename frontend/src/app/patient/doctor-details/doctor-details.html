@@ -90,8 +90,10 @@
               <div class="text-muted small mb-2">
                 {{ earliestSlot.date }} at {{ earliestSlot.startTime || '—' }}
               </div>
-              <button class="btn btn-primary btn-sm" >
-                <i class="far fa-calendar-plus me-1"></i> Book Now
+              <button class="btn btn-primary btn-sm"
+                      (click)="openConfirmModal(earliestSlot)" >
+                <i class="far fa-calendar-plus me-1"></i
+                > Book Now
               </button>
             </div>
           </div>
