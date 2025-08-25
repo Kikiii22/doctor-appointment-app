@@ -60,10 +60,6 @@ export const routes: Routes = [
     component: DoctorAppointments
   },
   {
-    path: '',
-    redirectTo: 'login', pathMatch: 'full'
-  },
-  {
     path: 'google-success',
     component: GoogleSuccess
   },
@@ -86,6 +82,13 @@ export const routes: Routes = [
     path: 'hospital/doctors/:id/past',
     component: DoctorPastAppointmentsComponent,
     canActivate: [AuthGuard]
-  }
-
+  },
+  {
+    path: '',
+    redirectTo: 'login', pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'login', pathMatch: 'full'
+  },
 ];

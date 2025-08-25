@@ -1,12 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../services/notification';
 import { Auth } from '../services/auth';
 import { NgIf } from '@angular/common';
 import { Toast } from 'bootstrap';
-class AuthService {
-}
 
 @Component({
   selector: 'app-login',
@@ -18,7 +16,7 @@ class AuthService {
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnInit{
   loading = false;
   showPassword = false;
   loginForm: FormGroup;
@@ -29,7 +27,7 @@ export class Login {
     private fb: FormBuilder,
     private authService: Auth,
     private router: Router,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -37,7 +35,25 @@ export class Login {
     });
   }
 
-  onSubmit(): void {
+  ngOnInit(): void {
+    const nav = history.state;
+    if (nav && nav.message) {
+      this.errorMessage = nav.message;
+
+      // Delay to ensure DOM is ready
+      setTimeout(() => {
+        const toastEl = this.errorToastRef.nativeElement;
+        const toast = new Toast(toastEl, { delay: 3000 });
+        toast.show();
+      }, 0);
+      delete history.state.message;
+    }
+  }
+
+
+
+
+onSubmit(): void {
     if (this.loginForm.valid) {
       this.loading = true;
       const { username, password } = this.loginForm.value;
