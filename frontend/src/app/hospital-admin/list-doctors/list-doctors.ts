@@ -39,10 +39,21 @@ export class HospitalListDoctorsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    if (this.currentUser?.id) {
-      this.loadHospitalDoctors();
-    }
+    if (!this.currentUser) return;
+
+
+    this.hospitalService.getAllHospitals().subscribe({
+      next: (hospitals) => {
+        const hospital = hospitals.find(h => h.user.id === this.currentUser?.id);
+        if (hospital) {
+          this.currentHospital = hospital;
+          this.loadHospitalDoctors(this.currentHospital);
+        }
+      },
+      error: (err) => console.error('Error loading hospitals:', err)
+    });
   }
+
 
   navigateTo(url: string) {
     this.router.navigateByUrl(url);
@@ -53,30 +64,20 @@ export class HospitalListDoctorsComponent implements OnInit {
     this.router.navigate(['/login'], { replaceUrl: true });
   }
 
-  private loadHospitalDoctors(): void {
+  private loadHospitalDoctors(hospital: Hospital): void {
     this.loading = true;
     this.error = null;
 
-    this.hospitalService.getHospitalById(this.currentUser!.id).subscribe({
-      next: (hospital) => {
-        this.currentHospital = hospital;
-        this.hospitalService.getHospitalDoctors(hospital.id).subscribe({
-          next: (docs) => {
-            this.doctors = docs ?? [];
-            for (const d of this.doctors) this.loadEarliestSlot(d.id);
-          },
-          error: (e) => {
-            console.error(e);
-            this.error = 'Failed to load doctors.';
-          },
-          complete: () => (this.loading = false),
-        });
+    this.hospitalService.getHospitalDoctors(hospital.id).subscribe({
+      next: (docs) => {
+        this.doctors = docs ?? [];
+        for (const d of this.doctors) this.loadEarliestSlot(d.id);
       },
       error: (e) => {
         console.error(e);
-        this.error = 'Failed to load hospital info.';
-        this.loading = false;
-      }
+        this.error = 'Failed to load doctors.';
+      },
+      complete: () => (this.loading = false),
     });
   }
 
