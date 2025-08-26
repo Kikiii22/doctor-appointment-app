@@ -34,3 +34,10 @@
   background: #f8f9fa;
 }
 .next-available { background: #f8f9fa; }
+
+.fixed-width-btn {
+  width: 200px;
+  text-align: left !important;
+  display: flex;
+  align-items: center;
+}

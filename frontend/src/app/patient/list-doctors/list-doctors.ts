@@ -4,7 +4,7 @@ import { Slot } from '../../interfaces/slot';
 import { Router } from '@angular/router';
 import { Doctor } from '../../interfaces/doctor';
 import { FormsModule } from '@angular/forms';
-import { NgForOf, NgIf } from '@angular/common';
+import { NgForOf, NgIf, NgStyle } from '@angular/common';
 import { Auth } from '../../services/auth';
 import { DepartmentService } from '../../services/department';
 
