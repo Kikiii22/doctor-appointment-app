@@ -147,9 +147,6 @@ export class DoctorAppointments implements OnInit {
     this.router.navigateByUrl(s);
   }
 
-  rescheduleAppointment(apt: Appointment) {
-  }
-
   cancelAppointment(apt: Appointment) {
     if (!this.currentUser?.id) return;
     this.appointmentService.cancelAppointment(apt.slot.id).subscribe({
