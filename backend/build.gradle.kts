@@ -17,9 +17,7 @@ java {
 repositories {
     mavenCentral()
     google()
-    maven { url = uri("https://repo1.maven.org/maven2/") }
-
-
+    maven { url = uri("https://mlrepo.djl.ai/") }
 }
 
 dependencies {
@@ -49,6 +47,19 @@ dependencies {
     implementation("org.springframework.retry:spring-retry")
     implementation("org.springframework.boot:spring-boot-starter-aop")
 
+    // DJL BOM
+    implementation(platform("ai.djl:bom:0.34.0"))
+
+    // DJL
+    implementation("ai.djl:api")
+    implementation("ai.djl:model-zoo")
+
+    // DJL PyTorch engine
+    runtimeOnly("ai.djl.pytorch:pytorch-engine")
+    runtimeOnly("ai.djl.pytorch:pytorch-native-auto")
+
+    // DJL HuggingFace tokenizers
+    implementation("ai.djl.huggingface:tokenizers")
 
 
 }

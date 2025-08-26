@@ -6,6 +6,7 @@ import { Doctor } from '../../interfaces/doctor';
 import { FormsModule } from '@angular/forms';
 import { NgForOf, NgIf } from '@angular/common';
 import { Auth } from '../../services/auth';
+import { DepartmentService } from '../../services/department';
 
 @Component({
   selector: 'app-list-doctors',
@@ -18,10 +19,11 @@ import { Auth } from '../../services/auth';
   styleUrl: './list-doctors.css'
 })
 export class ListDoctors implements OnInit {
-  currentUser: { username: string } | null = null;
-  searchTerm = '';
-  loading = false;
-  error: string | null = null;
+  currentUser: { username: string } | null = null
+  searchTerm = ''
+  loading = false
+  error: string | null = null
+  searchBySymptoms = false
 
   doctors: Doctor[] = [];
   earliest: Record<number, Slot | null> = {};
@@ -29,7 +31,8 @@ export class ListDoctors implements OnInit {
   constructor(
     private doctorsService: DoctorService,
     private authService: Auth,
-    protected router: Router
+    protected router: Router,
+    private departmentService: DepartmentService
   ) { }
 
   ngOnInit(): void {
@@ -54,6 +57,7 @@ export class ListDoctors implements OnInit {
     this.doctorsService.getAllDoctors().subscribe({
       next: (docs) => {
         this.doctors = docs ?? [];
+        this.filteredDoctors = this.doctors;
         for (const d of this.doctors) this.loadEarliestSlot(d.id);
       },
       error: (e) => {
@@ -79,13 +83,28 @@ export class ListDoctors implements OnInit {
     });
   }
 
-  get filteredDoctors(): Doctor[] {
-    const q = this.searchTerm.trim().toLowerCase();
-    if (!q) return this.doctors;
-    return this.doctors.filter(d =>
-      d.fullName.toLowerCase().includes(q) ||
-      d.department.name.toLowerCase().includes(q)
-    );
+  filteredDoctors: Doctor[] = [];
+
+  searchDoctors() {
+    if (this.searchBySymptoms) {
+      const query = this.searchTerm.trim();
+      if (!query) {
+        this.filteredDoctors = this.doctors;
+        return;
+      }
+
+      this.departmentService.searchDoctorsBySymptoms(query).subscribe(doctors => {
+        this.filteredDoctors = doctors;
+      });
+    } else {
+      const q = this.searchTerm.trim().toLowerCase();
+      this.filteredDoctors = !q
+        ? this.doctors
+        : this.doctors.filter(d =>
+          d.fullName.toLowerCase().includes(q) ||
+          d.department.name.toLowerCase().includes(q)
+        );
+    }
   }
 
   bookAppointment(id: number) {
@@ -94,5 +113,9 @@ export class ListDoctors implements OnInit {
 
   viewDoctor(id: number) {
     this.router.navigate(['/patient/doctors', id]);
+  }
+
+  toggleSearchBySymptoms() {
+    this.searchBySymptoms = !this.searchBySymptoms;
   }
 }
