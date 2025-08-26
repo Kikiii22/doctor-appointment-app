@@ -1,13 +1,8 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from huggingface_hub import InferenceClient
-import os
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, field_validator
+from sentence_transformers import SentenceTransformer, util
 
 app = FastAPI()
-client = InferenceClient(api_key=os.environ["HF_TOKEN"])
-
-print(os.environ["HF_TOKEN"])
-
 
 departments = {
     "Cardiology": [
@@ -65,12 +60,50 @@ departments = {
 class SentenceRequest(BaseModel):
     sentence: str
 
+    @field_validator('sentence')
+    @classmethod
+    def sentence_must_not_be_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError('Sentence cannot be empty')
+        return v.strip()[:500]
+
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+department_embeddings = {}
+for dept, texts in departments.items():
+    combined_text = " ".join(texts)
+    department_embeddings[dept] = model.encode(
+        combined_text, convert_to_tensor=True)
+
 
 @app.post("/embedding/similarity")
 def similarity(req: SentenceRequest):
-    scores = {}
-    for dept, sentences in departments.items():
-        combined_text = " ".join(sentences)
-        result = client.sentence_similarity(req.sentence, combined_text)
-        scores[dept] = result['scores'][0]
-    return scores
+    try:
+        input_embedding = model.encode(req.sentence, convert_to_tensor=True)
+        scores = {}
+
+        for dept, dept_emb in department_embeddings.items():
+            sim_score = util.cos_sim(input_embedding, dept_emb).item()
+            scores[dept] = sim_score
+
+        max_score = max(scores.values()) if scores else 1
+        if max_score > 0:
+            scores = {dept: score/max_score for dept, score in scores.items()}
+
+        return scores
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Similarity calculation failed: {str(e)}"
+        )
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "mode": "embedding_similarity", "message": "Service running locally"}
+
+
+@app.get("/")
+def root():
+    return {"message": "Medical Department Similarity API", "mode": "embedding_similarity", "dependencies": "none"}

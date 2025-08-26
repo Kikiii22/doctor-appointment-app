@@ -1,4 +1,10 @@
-fastapi
-uvicorn
-huggingface_hub
-pydantic
+fastapi==0.111.1
+uvicorn[standard]==0.23.2
+pydantic==2.7.2
+sentence-transformers==2.2.2
+torch==2.3.1
+transformers==4.43.0
+huggingface-hub==1.26.0
+numpy==1.26.5
+scipy==1.11.2
+
