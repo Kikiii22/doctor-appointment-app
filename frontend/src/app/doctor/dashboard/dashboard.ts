@@ -20,7 +20,11 @@ import { User } from '../../interfaces/user';
 export class DoctorDashboardComponent implements OnInit {
   currentUser: User | null = null
   currentDoctor: any
+  currentAppointment:Appointment | null = null;
   upcomingAppointments: Appointment[] = [];
+  appointmentsToday: Appointment[] = [];
+  today = new Date();
+  timeUntilCurrent: string = '';
 
   constructor(
     private authService: Auth,
@@ -39,7 +43,7 @@ export class DoctorDashboardComponent implements OnInit {
       next: (doctor) => {
         console.log('Doctor from API:', doctor);
         this.currentDoctor = doctor;
-        this.loadUpcomingAppointments();
+        this.loadAppointments(doctor.id);
       },
       error: (err) => console.error(err)
     });
@@ -47,23 +51,55 @@ export class DoctorDashboardComponent implements OnInit {
   }
 
 
-  loadUpcomingAppointments(): void {
-    console.log('Loading appointments for doctor:', this.currentUser?.id);
-    console.log(localStorage.getItem('jwt'));
-    console.log(localStorage.getItem('currentUser'));
+  private loadAppointments(doctorId: number) {
+    this.appointmentService.getDoctorUpcomingAppointments(doctorId).subscribe({
+      next: (appointments) => {
+       console.log("appointments", appointments)
+        this.upcomingAppointments = appointments.filter(apt => {
+          const slotDate = new Date(`${apt.slot.date}T${apt.slot.startTime}`);
+          return slotDate.toDateString() > this.today.toDateString();
+        });
+        this.appointmentsToday = appointments.filter(apt => {
+          const slotDate2 = new Date(`${apt.slot.date}T${apt.slot.startTime}`);
+          return slotDate2.toDateString() === this.today.toDateString();})
+        console.log("appointments today", this.appointmentsToday)
+        this.updateCurrentAppointment();
+        setInterval(() => this.updateCurrentAppointment(), 60 * 1000);
+      },
+      error: (err) => console.error('Error loading upcoming appointments:', err)
+    });
+  }
 
-    if (this.currentUser?.id) {
-      this.appointmentService.getDoctorUpcomingAppointments(this.currentUser.id).subscribe({
-        next: (appointments) => {
-          console.log("Appointments", appointments);
-          this.upcomingAppointments = appointments.slice(0, 5);
-          this.notificationService.checkUpcomingAppointments(appointments);
-        },
-        error: (error) => console.error('Error loading doctor appointments:', error)
-      });
+  private updateCurrentAppointment() {
+    const now = new Date();
+
+    this.currentAppointment = this.appointmentsToday.find(apt => {
+      const start = new Date(`${apt.slot.date}T${apt.slot.startTime}`);
+      const end = new Date(start.getTime() + 30 * 60000); //
+      return end > now;
+    }) || null;
+
+    if (this.currentAppointment) {
+      this.timeUntilCurrent = this.getTimeUntil(`${this.currentAppointment.slot.date}T${this.currentAppointment.slot.startTime}`);
+    } else {
+      this.timeUntilCurrent = '';
     }
   }
 
+  private getTimeUntil(startTime: string): string {
+    const now = new Date();
+    const start = new Date(startTime);
+    const diffMs = start.getTime() - now.getTime();
+
+    if (diffMs > 0) {
+      const mins = Math.floor(diffMs / 60000);
+      const hours = Math.floor(mins / 60);
+      if (hours > 0) return `in ${hours}h ${mins % 60}m`;
+      return `in ${mins} mins`;
+    } else {
+      return 'ongoing';
+    }
+  }
 
   navigateTo(route: string): void {
     this.router.navigate([route]);
