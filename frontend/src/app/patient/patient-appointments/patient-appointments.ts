@@ -19,7 +19,7 @@ import { PatientService } from '../../services/patient';
 })
 export class PatientAppointments implements OnInit {
   today = new Date();
-  activeTab: 'today' | 'upcoming' | 'past' = 'today';
+  activeTab: 'today' | 'upcoming' | 'past'|'cancelled' = 'today';
   currentUser: User | null = null;
   currentPatient: any;
 
@@ -28,7 +28,7 @@ export class PatientAppointments implements OnInit {
   appointmentsToday: Appointment[] = [];
   upcomingAppointments: Appointment[] = [];
   pastAppointments: Appointment[] = [];
-
+cancelledAppointments: Appointment[] = [];
   constructor(
     private appointmentService: AppointmentService,
     private auth: Auth,
@@ -44,11 +44,19 @@ export class PatientAppointments implements OnInit {
         this.currentPatient = patient;
         this.loadAppointments(this.currentPatient.id)
         this.loadFinishedAppointments(this.currentPatient.id);
+        this.loadCancelledAppointments(this.currentPatient.id);
       },
       error: (err) => console.error('Error loading patient:', err)
     });
   }
-
+private loadCancelledAppointments(patientId: number) {
+    this.appointmentService.getCancelledAppointments(patientId).subscribe({
+      next: (appointments) => {
+        this.cancelledAppointments = appointments;
+      },
+      error: (err) => console.error('Error loading cancelled appointments:', err)
+    })
+}
   private loadAppointments(patientId: number) {
     this.appointmentService.getPatientUpcomingAppointments(patientId).subscribe({
       next: (appointments) => {
@@ -93,7 +101,7 @@ export class PatientAppointments implements OnInit {
   }
 
 
-  switchTab(tab: 'today' | 'upcoming' | 'past') {
+  switchTab(tab: 'today' | 'upcoming' | 'past'|'cancelled') {
     this.activeTab = tab;
   }
 

@@ -78,6 +78,11 @@
           <i class="fas fa-history me-1"></i> Past ({{ pastAppointments.length }})
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab==='cancelled'" (click)="switchTab('cancelled')">
+          <i class="fas fa-ban me-1 text-danger"></i> Cancelled ({{ cancelledAppointments.length }})
+        </a>
+      </li>
     </ul>
 
     <div class="card shadow-sm">
@@ -183,6 +188,45 @@
           </div>
         </div>
       </ng-container>
+        <ng-container *ngIf="activeTab === 'cancelled'">
+          <h5 class="mb-3 text-danger">Cancelled Appointments</h5>
+
+          <div *ngIf="cancelledAppointments.length === 0" class="text-center text-muted py-4">
+            <i class="fas fa-ban fa-2x mb-2"></i>
+            <p>No cancelled appointments</p>
+          </div>
+
+          <div class="list-group" *ngIf="cancelledAppointments.length > 0">
+            <div class="list-group-item appointment-card border-danger" *ngFor="let apt of cancelledAppointments">
+              <div class="d-flex align-items-center w-100">
+                <div class="appointment-icon text-danger">
+                  <i class="fas fa-ban"></i>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-1 fw-bold text-danger">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
+                  <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
+                  <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
+                  <p class="mb-0 text-muted small">
+                    <span class="fw-bold">Description: </span>
+                    <span *ngIf="apt.description; else noCancelDesc" class="text-dark">
+                  {{ apt.description }}
+                </span>
+                  </p>
+
+                  <ng-template #noCancelDesc>
+                    <span class="text-muted fst-italic">No reason provided</span>
+                  </ng-template>
+                </div>
+
+                <div class="ms-auto">
+                  <button class="btn btn-sm btn-outline-danger" disabled>
+                    <i class="fas fa-ban me-1"></i> Cancelled
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

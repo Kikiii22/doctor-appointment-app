@@ -78,7 +78,7 @@
       </div>
     </div>
 
-    <div *ngIf="upcomingAppointments.length > 0; else noAppointments" class="card shadow-sm my-4">
+    <div *ngIf="upcomingAppointments.length > 0; else noUpcommingAppointments" class="card shadow-sm my-4">
       <div class="card-header bg-primary text-white">
         Upcoming Patient Appointments
       </div>
@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <ng-template #noAppointments>
+    <ng-template #noUpcommingAppointments>
       <div class="card shadow-sm text-center p-5">
         <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
         <h4 class="mb-2">No Upcoming Appointments</h4>

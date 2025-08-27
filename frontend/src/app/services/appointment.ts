@@ -29,12 +29,16 @@ export class AppointmentService {
   getPatientUpcomingAppointments(patientId: number): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`/api/patients/${patientId}/upcoming`);
   }
-
+getCancelledAppointments(patientId: number): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`/api/patients/${patientId}/cancelled`);
+  }
   getPatientFinishedAppointments(patientId: number): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`/api/patients/${patientId}/finished`);
   }
 
-
+  getCancelledAppointmentsForDoctor(doctorId: number): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`/api/doctors/${doctorId}/cancelled`);
+  }
   getDoctorUpcomingAppointments(doctorId: number): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`/api/doctors/${doctorId}/upcoming`);
   }

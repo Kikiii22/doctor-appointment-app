@@ -57,7 +57,7 @@ export class DoctorDashboardComponent implements OnInit {
        console.log("appointments", appointments)
         this.upcomingAppointments = appointments.filter(apt => {
           const slotDate = new Date(`${apt.slot.date}T${apt.slot.startTime}`);
-          return slotDate.toDateString() > this.today.toDateString();
+          return slotDate > this.today;
         });
         this.appointmentsToday = appointments.filter(apt => {
           const slotDate2 = new Date(`${apt.slot.date}T${apt.slot.startTime}`);

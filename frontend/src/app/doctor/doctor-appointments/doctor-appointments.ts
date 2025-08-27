@@ -18,7 +18,7 @@ import { AppointmentView } from '../../interfaces/appointmentView';
 
 export class DoctorAppointments implements OnInit {
   today = new Date();
-  activeTab: 'today' | 'upcoming' | 'past' = 'today';
+  activeTab: 'today' | 'upcoming' | 'past' |'cancelled' = 'today';
   currentUser: User | null = null;
   currentDoctor: any;
 
@@ -29,7 +29,7 @@ export class DoctorAppointments implements OnInit {
   pastAppointments: AppointmentView[] = [];
 
   unfinishedCount = 0;
-
+  cancelledAppointments: Appointment[] = [];
   editingAppointmentId: number | null = null;
   newDescription: string = '';
 
@@ -47,11 +47,19 @@ export class DoctorAppointments implements OnInit {
         this.currentDoctor = doctor;
         this.loadAppointments(this.currentDoctor.id);
         this.loadFinishedAppointments(this.currentDoctor.id);
+        this.loadCancelledAppointments(this.currentDoctor.id);
       },
       error: (err) => console.error('Error loading doctor:', err)
     });
   }
-
+  private loadCancelledAppointments(patientId: number) {
+    this.appointmentService.getCancelledAppointmentsForDoctor(patientId).subscribe({
+      next: (appointments) => {
+        this.cancelledAppointments = appointments;
+      },
+      error: (err) => console.error('Error loading cancelled appointments:', err)
+    })
+  }
   private loadAppointments(doctorId: number) {
     this.appointmentService.getDoctorUpcomingAppointments(doctorId).subscribe({
       next: (appointments) => {
@@ -135,7 +143,7 @@ export class DoctorAppointments implements OnInit {
 
 
 
-  switchTab(tab: 'today' | 'upcoming' | 'past') {
+  switchTab(tab: 'today' | 'upcoming' | 'past'|'cancelled') {
     this.activeTab = tab;
   }
 
