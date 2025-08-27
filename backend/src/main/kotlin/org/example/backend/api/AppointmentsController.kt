@@ -83,8 +83,9 @@ class AppointmentsController(
             }
             else -> throw RuntimeException("Unknown principal type: ${principal::class.simpleName}")
         }
-
+println("User with id is cancelling the appointment: $userId, appointment id: ${request.slotId}")
         appointmentService.cancelAppointment(request.slotId, userId)
+
         return ResponseEntity.ok().build()
     }
 

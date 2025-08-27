@@ -2,6 +2,7 @@ package org.example.backend.service.impl
 
 import org.example.backend.model.Appointment
 import org.example.backend.model.AppointmentStatus
+import org.example.backend.model.Role
 import org.example.backend.repository.AppointmentRepository
 import org.example.backend.repository.PatientRepository
 import org.example.backend.repository.SlotRepository
@@ -86,7 +87,17 @@ class AppointmentServiceImpl(
         slot.booked = false
         slotRepository.save(slot)
         val appointment = appointmentRepository.findBySlot(slot)
-        appointmentRepository.delete(appointment)
+        appointment.status = AppointmentStatus.CANCELED
+        val user= userRepository.findById(patientId).orElseThrow { RuntimeException("Patient not found") }
+        if(user.role== Role.PATIENT)
+        {
+            appointment.description="Canceled by the patient"
+        }
+        else if (user.role== Role.DOCTOR){
+            appointment.description="Canceled by the doctor"
+
+        }
+        appointmentRepository.save(appointment)
     }
 
     override fun finishAppointment(

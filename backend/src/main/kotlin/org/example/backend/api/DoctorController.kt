@@ -104,4 +104,11 @@ class DoctorController(
             appointmentRepository.findBySlotDoctorIdAndStatus(id, AppointmentStatus.BOOKED)
         )
     }
+
+    @GetMapping("/{id}/cancelled")
+    fun findCancelledAppointmentsForDoctor(@PathVariable id: Long): ResponseEntity<List<Appointment>>{
+        return ResponseEntity.ok(
+            appointmentRepository.findBySlotDoctorIdAndStatus(id, AppointmentStatus.CANCELED)
+        )
+    }
 }
