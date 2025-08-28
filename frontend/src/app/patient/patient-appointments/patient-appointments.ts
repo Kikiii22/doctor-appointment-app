@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { Appointment } from '../../interfaces/appointment';
 import { Auth } from '../../services/auth';
 import { AppointmentService } from '../../services/appointment';
-import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import {  NgForOf, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { User } from '../../interfaces/user';
 import { PatientService } from '../../services/patient';
+import { Toast } from 'bootstrap';
+import {Slot} from '../../interfaces/slot';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-patient-appointments',
@@ -22,13 +25,14 @@ export class PatientAppointments implements OnInit {
   activeTab: 'today' | 'upcoming' | 'past'|'cancelled' = 'today';
   currentUser: User | null = null;
   currentPatient: any;
-
+  toastMessage = '';
+  @ViewChild('successToast', { static: true }) successToastRef!: ElementRef;
   stats = { today: 0, upcoming: 0, thisMonth: 0, completed: 0 };
-
+  selectedAppointment: Appointment | null = null;
   appointmentsToday: Appointment[] = [];
   upcomingAppointments: Appointment[] = [];
   pastAppointments: Appointment[] = [];
-cancelledAppointments: Appointment[] = [];
+  cancelledAppointments: Appointment[] = [];
   constructor(
     private appointmentService: AppointmentService,
     private auth: Auth,
@@ -118,20 +122,59 @@ private loadCancelledAppointments(patientId: number) {
   rescheduleAppointment(apt: Appointment) {
 
   }
+  openCancelModal(appointment: Appointment) {
+    this.selectedAppointment = appointment;
 
-  cancelAppointment(apt: Appointment) {
-    if (!this.currentUser?.id) return;
-    this.appointmentService.cancelAppointment(apt.slot.id)
+    try {
+      const modalEl = document.getElementById('cancelAppointmentModal');
+
+      if (!modalEl) {
+        alert('Modal not found. Please check your template.');
+        return;
+      }
+
+      if (typeof bootstrap === 'undefined') {
+        alert('Bootstrap is not loaded properly.');
+        return;
+      }
+
+      const modal = new bootstrap.Modal(modalEl, {
+        backdrop: 'static',
+        keyboard: true
+      });
+
+      modal.show();
+    } catch (error) {
+      if (confirm(`Cancel appointment with Dr. ${appointment.slot.doctor.fullName} on ${appointment.slot.date} at ${this.timeOf(appointment.slot)}?`)) {
+        this.cancelAppointment();
+      }
+    }
+  }
+  timeOf(slot: Slot): string {
+    return (slot as any).startTime || (slot as any).time || '';
+  }
+  cancelAppointment() {
+    if (!this.selectedAppointment ||!this.currentUser?.id) return;
+    this.appointmentService.cancelAppointment(this.selectedAppointment.slot.id)
       .subscribe({
         next: () => {
-          this.upcomingAppointments = this.upcomingAppointments.filter(a => a.id !== apt.id);
+          this.upcomingAppointments = this.upcomingAppointments.filter(a => a.id !== this.selectedAppointment!.id);
+          this.appointmentsToday = this.appointmentsToday.filter(a => a.id !== this.selectedAppointment!.id);
 
-          alert('Appointment cancelled and slot is now available.');
-        },
+          const modalEl = document.getElementById('cancelAppointmentModal');
+          const modal = bootstrap.Modal.getInstance(modalEl!);
+          this.toastMessage = 'Appointment cancelled successfully and slot is now available';
+          const toast = new Toast(this.successToastRef.nativeElement, { delay: 3000 });
+          toast.show();
+          if (modalEl) {
+            const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.hide();
+          }
+
+          },
         error: (err) => {
           console.error('Error cancelling appointment:', err);
-          alert('Could not cancel the appointment.');
-        }
+                 }
       });
   }
 }

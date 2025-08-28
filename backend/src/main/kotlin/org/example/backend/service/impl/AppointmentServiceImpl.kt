@@ -30,6 +30,7 @@ class AppointmentServiceImpl(
         return appointmentRepository.findBySlotDoctorId(id)
     }
 
+
     override fun findAppointmentsByPatient(id: Long): List<Appointment> {
         return appointmentRepository.findByPatientId(id)
     }
@@ -86,7 +87,7 @@ class AppointmentServiceImpl(
         if (!slot.booked) throw RuntimeException("Slot not booked!")
         slot.booked = false
         slotRepository.save(slot)
-        val appointment = appointmentRepository.findBySlot(slot)
+        val appointment = appointmentRepository.findBySlotIdAndStatus(slot.id, AppointmentStatus.BOOKED)
         appointment.status = AppointmentStatus.CANCELED
         val user= userRepository.findById(patientId).orElseThrow { RuntimeException("Patient not found") }
         if(user.role== Role.PATIENT)

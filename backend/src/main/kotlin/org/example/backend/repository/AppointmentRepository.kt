@@ -11,6 +11,7 @@ import java.time.LocalTime
 
 @Repository
 interface AppointmentRepository : JpaRepository<Appointment, Long> {
+    fun findBySlotIdAndStatus(id: Long, status: AppointmentStatus): Appointment
     fun findByPatientId(id: Long, sort: Sort = Sort.by("slot.date").and(Sort.by("slot.startTime"))): List<Appointment>
     fun findBySlotDoctorId(id: Long, sort: Sort = Sort.by("slot.date").and(Sort.by("slot.startTime"))): List<Appointment>
     fun findBySlotDoctorHospitalId(id: Long, sort: Sort = Sort.by("slot.date").and(Sort.by("slot.startTime"))): List<Appointment>

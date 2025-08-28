@@ -5,6 +5,7 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
+import com.google.api.services.calendar.model.EventAttendee
 import com.google.api.services.calendar.model.EventDateTime
 import org.example.backend.model.Appointment
 import org.example.backend.model.User
@@ -27,11 +28,9 @@ class GoogleService {
         val startZoned: ZonedDateTime = appointment.slot.date.atTime(appointment.slot.startTime).atZone(zoneId)
         val endZoned: ZonedDateTime = startZoned.plusHours(1)
 
-// Convert ZonedDateTime to java.util.Date
         val startDate = Date.from(startZoned.toInstant())
         val endDate = Date.from(endZoned.toInstant())
 
-// Create Google DateTime
         val startDateTime = DateTime(startDate, java.util.TimeZone.getTimeZone(zoneId))
         val endDateTime = DateTime(endDate, java.util.TimeZone.getTimeZone(zoneId))
 
@@ -40,6 +39,15 @@ class GoogleService {
             .setDescription("Appointment booked by ${user.username}")
             .setStart(EventDateTime().setDateTime(startDateTime).setTimeZone(zoneId.id))
             .setEnd(EventDateTime().setDateTime(endDateTime).setTimeZone(zoneId.id))
+            .setAttendees(
+                listOf(
+                    EventAttendee().setEmail(user.email),
+                            EventAttendee().setEmail(appointment.slot.doctor.user.email)
+                )
+            )
+        service.events().insert("primary", event).setSendUpdates("all").execute()
+    }
 
-        service.events().insert("primary", event).execute()  }
+
+
 }
