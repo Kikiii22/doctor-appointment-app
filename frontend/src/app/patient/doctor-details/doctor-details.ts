@@ -130,8 +130,8 @@ export class DoctorDetails {
             const modal = bootstrap.Modal.getInstance(modalEl!);
             modal.hide();
             this.refreshSlotData();
+            this.rescheduleMode=false
             this.router.navigate(['/patient/doctors',this.selectedSlot?.doctor.id]);
-
           },
           error: () => {
             alert('Error rescheduling appointment!');
