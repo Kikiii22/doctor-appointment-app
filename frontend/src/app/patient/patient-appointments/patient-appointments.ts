@@ -120,7 +120,9 @@ private loadCancelledAppointments(patientId: number) {
   }
 
   rescheduleAppointment(apt: Appointment) {
-
+    this.router.navigate(['/patient/doctors', apt.slot.doctor.id], {
+      queryParams: { reschedule: apt.slot.id }
+    });
   }
   openCancelModal(appointment: Appointment) {
     this.selectedAppointment = appointment;

@@ -8,6 +8,7 @@ import { Auth } from '../../services/auth';
 import { User } from '../../interfaces/user';
 import { AppointmentService } from '../../services/appointment';
 import { Toast } from 'bootstrap';
+import {switchMap} from 'rxjs';
 type DayTab = { iso: string; label: string };
 
 interface CalendarDay {
@@ -43,6 +44,8 @@ export class DoctorDetails {
   loadingSlots = false;
   selectedSlot: Slot | null = null;
   slots: Slot[] = [];
+  rescheduleMode = false;
+  appointmentSlotIdToReschedule: number | null = null;
   toastMessage = '';
   @ViewChild('successToast', { static: true }) successToastRef!: ElementRef;
   @ViewChild('errorToast', { static: true }) errorToastRef!: ElementRef;
@@ -59,16 +62,22 @@ export class DoctorDetails {
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     this.doctorId = Number(this.route.snapshot.paramMap.get('id'));
+    this.route.queryParams.subscribe(params => {
+      if (params['reschedule']) {
+        this.rescheduleMode = true;
+        this.appointmentSlotIdToReschedule = +params['reschedule'];
+      }
+    });
     this.buildDays(14);
     console.log("google korisnik", this.currentUser);
     console.log("doctor id", this.doctorId);
-
     this.selectedDateISO = this.days[0]?.iso || this.todayISO();
     this.loadDoctorDetails();
     this.generateCalendar();
     this.loadEarliestSlot();
     this.loadSlotsForDate(this.selectedDateISO);
   }
+
   openConfirmModal(slot: Slot) {
     console.log('Opening modal for slot:', slot);
     this.selectedSlot = slot;
@@ -104,26 +113,53 @@ export class DoctorDetails {
     }
   }
   confirmBooking() {
-    if (!this.selectedSlot) return;
+    if (this.rescheduleMode && this.appointmentSlotIdToReschedule) {
+      this.appointmentService
+        .cancelAppointment(this.appointmentSlotIdToReschedule)
+        .pipe(
+          switchMap(() =>
+            this.appointmentService.bookAppointment(this.selectedSlot!.id)
+          )
+        )
+        .subscribe({
+          next: () => {
+            this.toastMessage = 'Appointment rescheduled successfully!';
+            const toast = new Toast(this.successToastRef.nativeElement, {delay: 3000});
+            toast.show();
+            const modalEl = document.getElementById('confirmBookingModal');
+            const modal = bootstrap.Modal.getInstance(modalEl!);
+            modal.hide();
+            this.refreshSlotData();
+            this.router.navigate(['/patient/doctors',this.selectedSlot?.doctor.id]);
 
-    this.appointmentService.bookAppointment(this.selectedSlot.id).subscribe({
-      next: () => {
-        this.markSlotAsBooked(this.selectedSlot!);
-        this.toastMessage = 'Appointment is booked successfully.';
-        const toast = new Toast(this.successToastRef.nativeElement, { delay: 3000 });
-        toast.show();
-        const modalEl = document.getElementById('confirmBookingModal');
-        const modal = bootstrap.Modal.getInstance(modalEl!);
-        modal.hide();
-        this.refreshSlotData();
-      },
-      error: err => {
-        console.error(err);
-        this.toastMessage = 'Could not book the appointment.';
-        const toast = new Toast(this.errorToastRef.nativeElement, { delay: 3000 });
-        toast.show();
-      }
-    });
+          },
+          error: () => {
+            alert('Error rescheduling appointment!');
+          }
+        });
+    }
+    else {
+      if (!this.selectedSlot) return;
+      this.appointmentService.bookAppointment(this.selectedSlot.id).subscribe({
+        next: () => {
+          this.markSlotAsBooked(this.selectedSlot!);
+          this.toastMessage = 'Appointment is booked successfully.';
+          const toast = new Toast(this.successToastRef.nativeElement, {delay: 3000});
+          toast.show();
+          const modalEl = document.getElementById('confirmBookingModal');
+          const modal = bootstrap.Modal.getInstance(modalEl!);
+          modal.hide();
+          this.refreshSlotData();
+
+        },
+        error: err => {
+          console.error(err);
+          this.toastMessage = 'Could not book the appointment.';
+          const toast = new Toast(this.errorToastRef.nativeElement, {delay: 3000});
+          toast.show();
+        }
+      });
+    }
   }
 
   private markSlotAsBooked(slot: Slot): void {

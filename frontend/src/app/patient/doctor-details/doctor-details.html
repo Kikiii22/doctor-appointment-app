@@ -192,7 +192,9 @@
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                  <h5 class="modal-title" id="confirmBookingLabel">Confirm Booking</h5>
+                  <h5 class="modal-title" id="confirmBookingLabel">
+                    {{ rescheduleMode ? 'Confirm Reschedule' : 'Confirm Booking' }}
+                  </h5>
                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -200,7 +202,16 @@
                   <p><strong>Date:</strong> {{ selectedSlot?.date }}</p>
                   <p><strong>Time:</strong> {{ selectedSlot?.startTime }}</p>
                   <p><strong>Hospital:</strong> {{ doctor?.hospital?.name }}</p>
-                  <p class="text-muted small">Do you want to confirm this appointment?</p>
+                  <ng-container *ngIf="rescheduleMode; else normalBooking">
+                    <div class="alert alert-warning p-2 mt-2">
+                      You are rescheduling your existing appointment.
+                      <br />
+                      The previous one will be cancelled and a new one will be booked.
+                    </div>
+                  </ng-container>
+                  <ng-template #normalBooking>
+                    <p class="text-muted small">Do you want to confirm this appointment?</p>
+                  </ng-template>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
