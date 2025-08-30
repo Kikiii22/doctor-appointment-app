@@ -149,43 +149,43 @@
         </ng-container>
 
         <ng-container *ngIf="activeTab === 'past'">
-        <h5 class="mb-3">Past Appointments</h5>
-        <div *ngIf="pastAppointments.length === 0" class="text-center text-muted py-4">
-          <i class="far fa-calendar-alt fa-2x mb-2"></i>
-          <p>No past appointments</p>
-        </div>
+          <h5 class="mb-3">Past Appointments</h5>
+          <div *ngIf="pastAppointments.length === 0" class="text-center text-muted py-4">
+            <i class="far fa-calendar-alt fa-2x mb-2"></i>
+            <p>No past appointments</p>
+          </div>
 
-        <div class="list-group" *ngIf="pastAppointments.length > 0">
-          <div class="list-group-item appointment-card" *ngFor="let apt of pastAppointments">
-            <div class="d-flex align-items-center w-100">
-              <div class="appointment-icon">
-                <i class="fas fa-stethoscope"></i>
-              </div>
-              <div class="flex-grow-1 ms-3">
-                <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
-                <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
-                <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
-                <p class="mb-0 text-muted small">
-                  <span class="fw-bold">Description: </span>
-                  <span *ngIf="apt.description; else noDesc" class="text-dark">
+          <div class="list-group" *ngIf="pastAppointments.length > 0">
+            <div class="list-group-item appointment-card" *ngFor="let apt of pastAppointments">
+              <div class="d-flex align-items-center w-100">
+                <div class="appointment-icon">
+                  <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-1 fw-bold">{{ apt.slot.date }} • {{ apt.slot.startTime }}</h6>
+                  <p class="mb-1 text-muted small">Department: {{ apt.slot.doctor.department.name }}</p>
+                  <p class="mb-0 text-muted small">Doctor: {{ apt.slot.doctor.fullName }}</p>
+                  <p class="mb-0 text-muted small">
+                    <span class="fw-bold">Description: </span>
+                    <span *ngIf="apt.description; else noDesc" class="text-dark">
         {{ apt.description }}
       </span>
-                </p>
+                  </p>
 
-                <ng-template #noDesc>
-                  <span class="text-muted fst-italic">Doctor hasn't added a description yet</span>
-                </ng-template>
-              </div>
+                  <ng-template #noDesc>
+                    <span class="text-muted fst-italic">Doctor hasn't added a description yet</span>
+                  </ng-template>
+                </div>
 
-              <div class="ms-auto">
-                <button class="btn btn-sm btn-outline-secondary" disabled>
-                  <i class="fas fa-check me-1"></i> Completed
-                </button>
+                <div class="ms-auto">
+                  <button class="btn btn-sm btn-outline-secondary" disabled>
+                    <i class="fas fa-check me-1"></i> Completed
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </ng-container>
+        </ng-container>
         <ng-container *ngIf="activeTab === 'cancelled'">
           <h5 class="mb-3 text-danger">Cancelled Appointments</h5>
 
@@ -228,7 +228,8 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="cancelAppointmentModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+  <div class="modal fade" id="cancelAppointmentModal" tabindex="-1" aria-labelledby="cancelModalLabel"
+       aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content rounded-3 shadow">
         <div class="modal-header">
@@ -294,7 +295,4 @@
       </div>
     </div>
   </div>
-
-
-
 </div>

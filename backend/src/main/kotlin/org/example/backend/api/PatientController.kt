@@ -4,7 +4,6 @@ import org.example.backend.model.Appointment
 import org.example.backend.model.AppointmentStatus
 import org.example.backend.model.Patient
 import org.example.backend.repository.AppointmentRepository
-import org.example.backend.service.PatientService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.example.backend.repository.PatientRepository
@@ -15,7 +14,6 @@ import org.example.backend.repository.PatientRepository
 @RequestMapping("/api/patients")
 class PatientController(
     val appointmentRepository: AppointmentRepository,
-    val patientService: PatientService,
     val patientRepository: PatientRepository
 ) {
 

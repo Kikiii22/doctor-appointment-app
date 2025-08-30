@@ -24,7 +24,6 @@ export class ListDoctors implements OnInit {
   loading = false
   error: string | null = null
   searchBySymptoms = false
-
   doctors: Doctor[] = [];
   earliest: Record<number, Slot | null> = {};
 
@@ -47,7 +46,6 @@ export class ListDoctors implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login'], { replaceUrl: true });
-
   }
 
   private loadDoctors(): void {

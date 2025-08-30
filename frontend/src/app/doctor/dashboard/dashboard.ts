@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { AppointmentService } from '../../services/appointment';
-import { NotificationService } from '../../services/notification';
 import { Router } from '@angular/router';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import {  NgForOf, NgIf } from '@angular/common';
 import { Appointment } from '../../interfaces/appointment';
 import { DoctorService } from '../../services/doctor';
 import { User } from '../../interfaces/user';
@@ -29,7 +28,6 @@ export class DoctorDashboardComponent implements OnInit {
   constructor(
     private authService: Auth,
     private appointmentService: AppointmentService,
-    private notificationService: NotificationService,
     private router: Router,
     private doctorService: DoctorService
   ) { }

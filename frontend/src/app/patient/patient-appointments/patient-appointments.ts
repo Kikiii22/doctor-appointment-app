@@ -42,7 +42,6 @@ export class PatientAppointments implements OnInit {
 
   ngOnInit() {
     this.currentUser = this.auth.getCurrentUser();
-    console.log("najnov korisnik", this.currentUser)
     this.patientService.getPatientByUserId(this.currentUser!.id).subscribe({
       next: (patient) => {
         this.currentPatient = patient;

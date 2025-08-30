@@ -11,7 +11,6 @@ export class PatientService {
 
   constructor(private http: HttpClient) { }
 
-
   getPatientByUserId(id: number): Observable<Patient> {
     return this.http.get<Patient>(`${this.baseUrl}/user/${id}`);
   }

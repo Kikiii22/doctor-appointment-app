@@ -1,14 +1,15 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { Doctor } from '../../interfaces/doctor';
-import { Slot } from '../../interfaces/slot';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { DoctorService } from '../../services/doctor';
-import { DatePipe, NgForOf, NgIf } from '@angular/common';
-import { Auth } from '../../services/auth';
-import { User } from '../../interfaces/user';
-import { AppointmentService } from '../../services/appointment';
-import { Toast } from 'bootstrap';
+import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Doctor} from '../../interfaces/doctor';
+import {Slot} from '../../interfaces/slot';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {DoctorService} from '../../services/doctor';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {Auth} from '../../services/auth';
+import {User} from '../../interfaces/user';
+import {AppointmentService} from '../../services/appointment';
+import {Toast} from 'bootstrap';
 import {switchMap} from 'rxjs';
+
 type DayTab = { iso: string; label: string };
 
 interface CalendarDay {
@@ -19,6 +20,7 @@ interface CalendarDay {
   slots: Slot[];
   loading: boolean;
 }
+
 declare var bootstrap: any;
 
 @Component({
@@ -47,8 +49,8 @@ export class DoctorDetails {
   rescheduleMode = false;
   appointmentSlotIdToReschedule: number | null = null;
   toastMessage = '';
-  @ViewChild('successToast', { static: true }) successToastRef!: ElementRef;
-  @ViewChild('errorToast', { static: true }) errorToastRef!: ElementRef;
+  @ViewChild('successToast', {static: true}) successToastRef!: ElementRef;
+  @ViewChild('errorToast', {static: true}) errorToastRef!: ElementRef;
   private slotsCache = new Map<string, Slot[]>();
 
   constructor(
@@ -57,7 +59,8 @@ export class DoctorDetails {
     private doctorService: DoctorService,
     private authService: Auth,
     private appointmentService: AppointmentService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
@@ -69,8 +72,6 @@ export class DoctorDetails {
       }
     });
     this.buildDays(14);
-    console.log("google korisnik", this.currentUser);
-    console.log("doctor id", this.doctorId);
     this.selectedDateISO = this.days[0]?.iso || this.todayISO();
     this.loadDoctorDetails();
     this.generateCalendar();
@@ -79,39 +80,29 @@ export class DoctorDetails {
   }
 
   openConfirmModal(slot: Slot) {
-    console.log('Opening modal for slot:', slot);
     this.selectedSlot = slot;
-
     try {
       const modalEl = document.getElementById('confirmBookingModal');
-
       if (!modalEl) {
-        console.error('Modal element not found!');
         alert('Modal not found. Please check your template.');
         return;
       }
-
       if (typeof bootstrap === 'undefined') {
-        console.error('Bootstrap is not loaded!');
         alert('Bootstrap is not loaded properly.');
         return;
       }
-
       const modal = new bootstrap.Modal(modalEl, {
         backdrop: 'static',
         keyboard: true
       });
-
       modal.show();
-      console.log('Modal should be showing now');
-
     } catch (error) {
-      console.error('Error opening modal:', error);
       if (confirm(`Book appointment with ${this.doctor?.fullName} on ${slot.date} at ${this.timeOf(slot)}?`)) {
         this.confirmBooking();
       }
     }
   }
+
   confirmBooking() {
     if (this.rescheduleMode && this.appointmentSlotIdToReschedule) {
       this.appointmentService
@@ -130,15 +121,14 @@ export class DoctorDetails {
             const modal = bootstrap.Modal.getInstance(modalEl!);
             modal.hide();
             this.refreshSlotData();
-            this.rescheduleMode=false
-            this.router.navigate(['/patient/doctors',this.selectedSlot?.doctor.id]);
+            this.rescheduleMode = false
+            this.router.navigate(['/patient/doctors', this.selectedSlot?.doctor.id]);
           },
           error: () => {
             alert('Error rescheduling appointment!');
           }
         });
-    }
-    else {
+    } else {
       if (!this.selectedSlot) return;
       this.appointmentService.bookAppointment(this.selectedSlot.id).subscribe({
         next: () => {
@@ -153,7 +143,6 @@ export class DoctorDetails {
 
         },
         error: err => {
-          console.error(err);
           this.toastMessage = 'Could not book the appointment.';
           const toast = new Toast(this.errorToastRef.nativeElement, {delay: 3000});
           toast.show();
@@ -176,7 +165,7 @@ export class DoctorDetails {
         (day.slots[calendarSlotIndex] as any).isAvailable = false;
       }
     });
-    this.slotsCache.forEach((cachedSlots, dateKey) => {
+    this.slotsCache.forEach((cachedSlots) => {
       const cachedSlotIndex = cachedSlots.findIndex(s => s.id === slot.id);
       if (cachedSlotIndex !== -1) {
         (cachedSlots[cachedSlotIndex] as any).booked = true;
@@ -188,25 +177,24 @@ export class DoctorDetails {
       this.loadEarliestSlot();
     }
   }
+
   goBack(): void {
     this.router.navigate(['/patient/doctors']);
   }
+
   private refreshSlotData(): void {
     this.slotsCache.delete(this.selectedSlot?.date || '');
-
     this.loadSlotsForDate(this.selectedDateISO);
-
     const calendarDay = this.calendarDays.find(day => day.dateISO === this.selectedSlot?.date);
     if (calendarDay) {
       this.loadSlotsForCalendarDay(calendarDay);
     }
-
     this.loadEarliestSlot();
   }
+
   generateCalendar(): void {
     const year = this.currentCalendarDate.getFullYear();
     const month = this.currentCalendarDate.getMonth();
-
     const firstDay = new Date(year, month, 1);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
@@ -214,7 +202,6 @@ export class DoctorDetails {
     for (let i = 0; i < 42; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
-
       const dateISO = this.dateToISO(date);
       const calendarDay: CalendarDay = {
         dayNumber: date.getDate(),
@@ -224,10 +211,8 @@ export class DoctorDetails {
         slots: [],
         loading: false
       };
-
       this.calendarDays.push(calendarDay);
     }
-
     this.loadSlotsForVisibleDays();
   }
 
@@ -260,7 +245,6 @@ export class DoctorDetails {
         day.slots = this.filterFutureSlots(sortedSlots);
       },
       error: (err) => {
-        console.error('Error loading slots for', day.dateISO, err);
         day.slots = [];
       },
       complete: () => {
@@ -294,12 +278,10 @@ export class DoctorDetails {
     this.selectedDateISO = dateISO;
     this.loadingSlots = true;
     this.slots = [];
-
     this.doctorService.getDoctorSlots(this.doctorId, undefined, dateISO).subscribe({
       next: (slots) => {
         const list = (slots ?? []).map(s => this.normalizeSlot(s));
         const sortedSlots = list.sort((a, b) => this.slotTs(a) - this.slotTs(b));
-
         this.slots = this.filterFutureSlots(sortedSlots);
       },
       error: (err) => console.error('Error loading slots:', err),
@@ -332,9 +314,11 @@ export class DoctorDetails {
   timeOf(slot: Slot): string {
     return (slot as any).startTime || (slot as any).time || '';
   }
+
   navigateTo(url: string) {
     this.router.navigateByUrl(url);
   }
+
   previousMonth(): void {
     this.currentCalendarDate = new Date(
       this.currentCalendarDate.getFullYear(),
@@ -359,9 +343,10 @@ export class DoctorDetails {
       year: 'numeric'
     });
   }
+
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login'], { replaceUrl: true });
+    this.router.navigate(['/login'], {replaceUrl: true});
   }
 
   private normalizeSlot(s: Slot): Slot {
@@ -387,9 +372,9 @@ export class DoctorDetails {
 
   private buildDays(n: number) {
     const base = this.todayISO();
-    this.days = Array.from({ length: n }, (_, i) => {
+    this.days = Array.from({length: n}, (_, i) => {
       const iso = this.addDaysISO(base, i);
-      return { iso, label: iso };
+      return {iso, label: iso};
     });
   }
 

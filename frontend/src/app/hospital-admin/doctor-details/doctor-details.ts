@@ -7,7 +7,6 @@ import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { Auth } from '../../services/auth';
 import { User } from '../../interfaces/user';
 import { AppointmentService } from '../../services/appointment';
-import { Toast } from 'bootstrap';
 
 type DayTab = { iso: string; label: string };
 

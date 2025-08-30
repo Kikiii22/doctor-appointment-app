@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { AppointmentService } from '../../services/appointment';
-import { NotificationService } from '../../services/notification';
 import { Router } from '@angular/router';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { Appointment } from '../../interfaces/appointment';
@@ -24,7 +23,6 @@ export class PatientDashboardComponent implements OnInit {
   constructor(
     private authService: Auth,
     private appointmentService: AppointmentService,
-    private notificationService: NotificationService,
     private router: Router,
     private patientService: PatientService
   ) { }
@@ -52,7 +50,6 @@ export class PatientDashboardComponent implements OnInit {
           console.log("Appointments", appointments)
           console.log(appointments[0])
           this.upcomingAppointments = appointments.slice(0, 5);
-          this.notificationService.checkUpcomingAppointments(appointments);
         },
         error: (error) => console.error('Error loading appointments:', error)
       });

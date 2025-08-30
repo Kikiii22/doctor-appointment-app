@@ -61,7 +61,6 @@ if (patientRepository.findByUserId(user.id) == null) {
 
         println("Google Auth Success -> username=${user.username}, role=${user.role.name}, authorities=$authorities, id=${user.id}")
 
-        // Generate JWT for frontend
         val claims = mapOf("id" to user.id, "roles" to listOf(user.role.name))
         val jwt = tokenService.generate(
             userDetails = org.example.backend.model.CustomUserDetails(user),

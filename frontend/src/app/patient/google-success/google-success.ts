@@ -24,8 +24,6 @@ export class GoogleSuccess implements OnInit{
               localStorage.setItem('currentUser', JSON.stringify(user));
                 localStorage.setItem('isGoogleUser', 'true');
                 localStorage.setItem('googleUserEmail', user.email);
-                console.log("Google", user);
-                console.log("Google email", user.email);
 
             } catch (e) {
               console.log("Error parsing user");

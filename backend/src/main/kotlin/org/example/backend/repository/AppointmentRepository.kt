@@ -24,7 +24,6 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         description: String = "",
         sort: Sort = Sort.by("slot.date").and(Sort.by("slot.startTime"))
     ): List<Appointment>
-
     fun findBySlotDoctorIdAndStatus(id: Long, status: AppointmentStatus = AppointmentStatus.FINISHED, sort: Sort = Sort.by("slot.date").and(Sort.by("slot.startTime"))): List<Appointment>
     fun findByPatientIdAndStatus(id: Long, status: AppointmentStatus = AppointmentStatus.FINISHED, sort: Sort = Sort.by("slot.date").and(Sort.by("slot.startTime"))): List<Appointment>
     fun findBySlotId(id: Long): Appointment

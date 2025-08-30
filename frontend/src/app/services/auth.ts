@@ -39,7 +39,6 @@ export class Auth {
         } else if (error.status === 404) {
           message = 'User not found';
         } else if (error.error?.message) {
-          // Backend may send a custom message
           message = error.error.message;
         }
         return throwError(() => new Error(message));

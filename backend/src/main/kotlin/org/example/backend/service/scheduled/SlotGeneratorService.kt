@@ -123,7 +123,7 @@ class SlotGeneratorService(
         logger.info("Completed initialization for {} doctors", doctors.size)
     }
 
-    @Scheduled(cron = "0 0 0 * * ?") // Run at midnight every day
+    @Scheduled(cron = "0 0 0 * * ?")
     fun generateDailySlotsForAllDoctors() {
         logger.info("Running daily slot generation...")
         val tomorrow = LocalDate.now().plusDays(1)

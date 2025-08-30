@@ -135,8 +135,6 @@
                 <div class="calendar-header-day">Fri</div>
                 <div class="calendar-header-day">Sat</div>
               </div>
-
-              <!-- Calendar Grid -->
               <div class="calendar-grid">
                 <div
                   *ngFor="let day of calendarDays"
@@ -148,12 +146,9 @@
 
                   <div class="day-number">{{ day.dayNumber }}</div>
 
-                  <!-- Show "Past" indicator for past dates -->
                   <div *ngIf="isDateInPast(day.dateISO) && day.isCurrentMonth" class="past-indicator">
                     <small class="text-muted">Past</small>
                   </div>
-
-                  <!-- Slots for this day -->
                   <div *ngFor="let slot of day.slots" class="slot-container">
                     <button
                       class="slot-item"
@@ -166,13 +161,11 @@
                     </button>
                   </div>
 
-                  <!-- No slots message for current/future dates -->
                   <div *ngIf="!day.loading && day.slots.length === 0 && !isDateInPast(day.dateISO) && day.isCurrentMonth"
                        class="no-slots-indicator">
                     <small class="text-muted">No slots</small>
                   </div>
 
-                  <!-- Loading indicator for specific day -->
                   <div *ngIf="day.loading" class="d-flex justify-content-center mt-1">
                     <div class="spinner-border spinner-border-sm" role="status">
                       <span class="visually-hidden">Loading...</span>

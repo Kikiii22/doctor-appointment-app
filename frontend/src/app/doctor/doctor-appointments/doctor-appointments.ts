@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { Appointment } from '../../interfaces/appointment';
-import { Auth } from '../../services/auth';
-import { AppointmentService } from '../../services/appointment';
-import { NgForOf, NgIf } from '@angular/common';
-import { Router } from '@angular/router';
-import { User } from '../../interfaces/user';
-import { DoctorService } from '../../services/doctor';
-import { FormsModule } from '@angular/forms';
-import { AppointmentView } from '../../interfaces/appointmentView';
+import {Component, OnInit} from '@angular/core';
+import {Appointment} from '../../interfaces/appointment';
+import {Auth} from '../../services/auth';
+import {AppointmentService} from '../../services/appointment';
+import {NgForOf, NgIf} from '@angular/common';
+import {Router} from '@angular/router';
+import {User} from '../../interfaces/user';
+import {DoctorService} from '../../services/doctor';
+import {FormsModule} from '@angular/forms';
+import {AppointmentView} from '../../interfaces/appointmentView';
 
 @Component({
   selector: 'app-doctor-appointments',
@@ -18,16 +18,13 @@ import { AppointmentView } from '../../interfaces/appointmentView';
 
 export class DoctorAppointments implements OnInit {
   today = new Date();
-  activeTab: 'today' | 'upcoming' | 'past' |'cancelled' = 'today';
+  activeTab: 'today' | 'upcoming' | 'past' | 'cancelled' = 'today';
   currentUser: User | null = null;
   currentDoctor: any;
-
-  stats = { today: 0, upcoming: 0, thisMonth: 0, completed: 0 };
-
+  stats = {today: 0, upcoming: 0, thisMonth: 0, completed: 0};
   appointmentsToday: Appointment[] = [];
   upcomingAppointments: Appointment[] = [];
   pastAppointments: AppointmentView[] = [];
-
   unfinishedCount = 0;
   cancelledAppointments: Appointment[] = [];
   editingAppointmentId: number | null = null;
@@ -38,7 +35,8 @@ export class DoctorAppointments implements OnInit {
     private auth: Auth,
     private router: Router,
     private doctorService: DoctorService
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.currentUser = this.auth.getCurrentUser();
@@ -52,6 +50,7 @@ export class DoctorAppointments implements OnInit {
       error: (err) => console.error('Error loading doctor:', err)
     });
   }
+
   private loadCancelledAppointments(patientId: number) {
     this.appointmentService.getCancelledAppointmentsForDoctor(patientId).subscribe({
       next: (appointments) => {
@@ -60,6 +59,7 @@ export class DoctorAppointments implements OnInit {
       error: (err) => console.error('Error loading cancelled appointments:', err)
     })
   }
+
   private loadAppointments(doctorId: number) {
     this.appointmentService.getDoctorUpcomingAppointments(doctorId).subscribe({
       next: (appointments) => {
@@ -115,12 +115,6 @@ export class DoctorAppointments implements OnInit {
   }
 
 
-  startEditing(appointmentId: number) {
-    this.editingAppointmentId = appointmentId;
-    this.newDescription = '';
-  }
-
-
   saveDescription(apt: AppointmentView) {
     if (!apt.newDescription || apt.newDescription.trim() === '') return;
 
@@ -142,8 +136,7 @@ export class DoctorAppointments implements OnInit {
   }
 
 
-
-  switchTab(tab: 'today' | 'upcoming' | 'past'|'cancelled') {
+  switchTab(tab: 'today' | 'upcoming' | 'past' | 'cancelled') {
     this.activeTab = tab;
   }
 

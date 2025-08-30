@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { AppointmentService } from '../../services/appointment';
-import { Appointment } from '../../interfaces/appointment';
-import { DatePipe, NgForOf, NgIf } from '@angular/common';
-import { User } from '../../interfaces/user';
-import { Auth } from '../../services/auth';
-import { DoctorService } from '../../services/doctor';
-import { Doctor } from '../../interfaces/doctor';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {AppointmentService} from '../../services/appointment';
+import {Appointment} from '../../interfaces/appointment';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {User} from '../../interfaces/user';
+import {Auth} from '../../services/auth';
+import {DoctorService} from '../../services/doctor';
+import {Doctor} from '../../interfaces/doctor';
 
 @Component({
   selector: 'app-doctor-past-appointments',
@@ -30,7 +30,8 @@ export class DoctorPastAppointmentsComponent implements OnInit {
     private appointmentService: AppointmentService,
     private authService: Auth,
     private doctorService: DoctorService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
@@ -57,12 +58,13 @@ export class DoctorPastAppointmentsComponent implements OnInit {
     this.router.navigate([`/hospital/doctor-details/${this.doctorId}`]);
   }
 
-  navigateTo(url: string) { this.router.navigateByUrl(url); }
-
+  navigateTo(url: string) {
+    this.router.navigateByUrl(url);
+  }
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login'], { replaceUrl: true });
+    this.router.navigate(['/login'], {replaceUrl: true});
   }
 
 }

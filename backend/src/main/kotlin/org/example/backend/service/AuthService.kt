@@ -40,7 +40,7 @@ class AuthService
         val domainUser=userRepository.findByUsername(authRequest.username) ?: throw UsernameNotFoundException("User ${authRequest.username} not found")
 
         try {
-            // Authenticate username + password
+
             authManager.authenticate(
                 UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)
             )

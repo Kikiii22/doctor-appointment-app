@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 @Configuration
 @EnableConfigurationProperties(JwtProperties::class)
-class New(
+class Security(
     private val userDetailsService: UserDetailsService,
     private val googleAuthenticationHandler: GoogleAuthenticationHandler,
     private val jwtAuthenticationFilter: JwtAuthenticationFilter

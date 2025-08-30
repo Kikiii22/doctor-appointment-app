@@ -24,8 +24,6 @@ data class RegisterRequest(
     val phone: String,
     @field:NotBlank
     val role: Role,
-
-    //for doctors
     val hospitalId: Long?,
     val departmentId: Long?
 )

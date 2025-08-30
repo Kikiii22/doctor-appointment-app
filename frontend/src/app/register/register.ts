@@ -47,7 +47,6 @@ export class Register implements OnInit {
       departmentId: [null]
     });
 
-    // Load roles, hospitals
     this.registerService.getRoles().subscribe(data => this.roles = data);
     this.registerService.getHospitals().subscribe(data => this.hospitals = data);
   }

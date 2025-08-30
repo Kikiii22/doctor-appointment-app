@@ -24,7 +24,7 @@ class GoogleService {
         val service = Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credential)
             .setApplicationName("doctorapp")
             .build()
-        val zoneId = ZoneId.of("Europe/Skopje") // CET/CEST
+        val zoneId = ZoneId.of("Europe/Skopje")
         val startZoned: ZonedDateTime = appointment.slot.date.atTime(appointment.slot.startTime).atZone(zoneId)
         val endZoned: ZonedDateTime = startZoned.plusHours(1)
 

@@ -56,17 +56,14 @@ class AppointmentServiceImpl(
         )
         val savedAppointment = appointmentRepository.save(appointment)
 
-        // --- Check if the patient is Google-authenticated ---
         val principal = SecurityContextHolder.getContext().authentication.principal
 
         if (principal is OAuth2User) {
-            // Load User entity using email
             val email = principal.getAttribute<String>("email")
                 ?: throw RuntimeException("Email not found in OAuth2User")
             val user = userRepository.findByEmail(email)
                 ?: throw RuntimeException("User not found for email: $email")
 
-            // If you have the OAuth2AuthorizedClientService, you can get the access token
             val auth = SecurityContextHolder.getContext().authentication
             if (auth is OAuth2AuthenticationToken) {
                 val authorizedClient: org.springframework.security.oauth2.client.OAuth2AuthorizedClient? =

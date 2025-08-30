@@ -1,7 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { NotificationService } from '../services/notification';
 import { Auth } from '../services/auth';
 import { NgIf } from '@angular/common';
 import { Toast } from 'bootstrap';
@@ -27,7 +26,6 @@ export class Login implements OnInit{
     private fb: FormBuilder,
     private authService: Auth,
     private router: Router,
-    private notificationService: NotificationService,
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -40,7 +38,6 @@ export class Login implements OnInit{
     if (nav && nav.message) {
       this.errorMessage = nav.message;
 
-      // Delay to ensure DOM is ready
       setTimeout(() => {
         const toastEl = this.errorToastRef.nativeElement;
         const toast = new Toast(toastEl, { delay: 3000 });
@@ -61,9 +58,6 @@ onSubmit(): void {
       this.authService.login(username, password).subscribe({
         next: (user) => {
           this.authService.setCurrentUser(user.user);
-          this.notificationService.addNotification('Login successful!', 'success');
-          console.log('Logged in:', user.user.role);
-
           if (user.user.role === 'PATIENT') {
             this.router.navigate(['/patient/dashboard']);
           } else if (user.user.role === 'DOCTOR') {
